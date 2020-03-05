@@ -1,0 +1,8 @@
+[requires]
+restinio/0.6.5@stiffstream/stable
+
+[generators]
+cmake_find_package
+
+[options]
+restinio:use_openssl=true
