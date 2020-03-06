@@ -47,11 +47,14 @@ using router_t = rr::express_router_t<>;
 auto server_handler() {
   auto router = std::make_unique<router_t>();
 
-  router->http_get("/", [](auto req, auto) {
+  router->http_get("/Timer.js", [](auto req, auto) {
     init_resp(req->create_response())
         .append_header(restinio::http_field::content_type,
-                       "application/json; charset=utf-8")
-        .set_body(R"###(class Timer extends React.Component {
+                       "application/javascript; charset=utf-8")
+        .set_body(R"###(import React from 'react';
+import ReactDOM from 'react-dom';
+
+class Timer extends React.Component {
   constructor(props) {
     super(props);
     this.state = { seconds: 0 };
@@ -88,7 +91,20 @@ ReactDOM.render(
 
     return restinio::request_accepted();
   });
+  router->http_get("/", [](auto req, auto) {
+    init_resp(req->create_response())
+        .append_header(restinio::http_field::content_type,
+                       "text/html; charset=utf-8")
+        .set_body(R"###(<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script src=Timer.js></script>
+    </body>
+    )###")
+        .done();
 
+    return restinio::request_accepted();
+  });
   
   return router;
 }
