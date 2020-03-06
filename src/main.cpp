@@ -97,7 +97,7 @@ ReactDOM.render(
                        "text/html; charset=utf-8")
         .set_body(R"###(<body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="timer-example"></div>
     <script src=Timer.js></script>
     </body>
     )###")
