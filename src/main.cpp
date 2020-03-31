@@ -267,12 +267,12 @@ int main( int argc, char const *argv[] )
 
 		if( !args.m_help )
 		{
-			using traits_t =
-				restinio::traits_t<
-					restinio::asio_timer_manager_t,
-					restinio::null_logger_t,
-					router_t >;
-    
+      using traits_t =
+        restinio::single_thread_tls_traits_t<
+          restinio::asio_timer_manager_t,
+          restinio::single_threaded_ostream_logger_t,
+          router_t >;
+
     namespace asio_ns = restinio::asio_ns;
 
     asio_ns::ssl::context tls_context{asio_ns::ssl::context::tls};
@@ -281,10 +281,10 @@ int main( int argc, char const *argv[] )
         asio_ns::ssl::context::no_sslv2 | asio_ns::ssl::context::no_sslv3 |
         asio_ns::ssl::context::no_tlsv1 | asio_ns::ssl::context::single_dh_use);
 
-    tls_context.use_certificate_chain_file(certs_dir + "/server.pem");
-    tls_context.use_private_key_file(certs_dir + "/key.pem",
+    tls_context.use_certificate_chain_file(args.m_certs_dir + "/server.pem");
+    tls_context.use_private_key_file(args.m_certs_dir + "/key.pem",
                                      asio_ns::ssl::context::pem);
-    tls_context.use_tmp_dh_file(certs_dir + "/dh2048.pem");
+    tls_context.use_tmp_dh_file(args.m_certs_dir + "/dh2048.pem");
       
 			restinio::run(
 				restinio::on_thread_pool< traits_t >( args.m_pool_size )
@@ -293,7 +293,7 @@ int main( int argc, char const *argv[] )
 					.request_handler( server_handler( args.m_root_dir ) )
 					.read_next_http_message_timelimit( 10s )
 					.write_http_response_timelimit( 1s )
-					.handle_request_timeout( 1s ) )
+					.handle_request_timeout( 1s )
           .tls_context(std::move(tls_context)));
 		}
 	}
