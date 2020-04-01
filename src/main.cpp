@@ -186,7 +186,37 @@ auto server_handler(const std::string &root_dir) {
     server_root_dir = root_dir;
   }
 
-  // GET request to homepage.
+  router->http_get("/",[server_root_dir](auto req, auto params) {
+          const auto file_path = server_root_dir + "/index.html";
+
+          try {
+            auto sf = restinio::sendfile(file_path);
+            auto modified_at =
+                restinio::make_date_field_value(sf.meta().last_modified_at());
+
+            auto expires_at = restinio::make_date_field_value(
+                std::chrono::system_clock::now() + std::chrono::hours(24 * 7));
+
+            return req->create_response()
+                .append_header(restinio::http_field::server, "RESTinio")
+                .append_header_date_field()
+                .append_header(restinio::http_field::last_modified,
+                               std::move(modified_at))
+                .append_header(restinio::http_field::expires,
+                               std::move(expires_at))
+                .append_header(restinio::http_field::content_type,
+                               content_type_by_file_extention(params["ext"]))
+                .set_body(std::move(sf))
+                .done();
+
+          } catch (const std::exception &) {
+            return req->create_response(restinio::status_not_found())
+                .append_header_date_field()
+                .connection_close()
+                .done();
+          }
+  });
+
   router->http_get(
       R"(/:path(.*)\.:ext(.*))", restinio::path2regex::options_t{}.strict(true),
       [server_root_dir](auto req, auto params) {
@@ -194,9 +224,11 @@ auto server_handler(const std::string &root_dir) {
 
         if (std::string::npos == path.find("..")) {
           // A nice path.
-
-          const auto file_path =
-              server_root_dir + std::string{path.data(), path.size()};
+          auto file_path = server_root_dir + std::string{path.data(), path.size()};
+          if( file_path.back() == '/')
+          {
+            file_path += "index.html";
+          }
 
           try {
             auto sf = restinio::sendfile(file_path);
@@ -273,7 +305,7 @@ struct app_args_t {
         Arg(result.m_root_dir, "root-dir")(
             fmt::format("server root dir (default: '{}')", result.m_root_dir)) |
         Arg(result.m_certs_dir, "certs-dir")(fmt::format(
-            "server certs dir (default: '{}')", result.m_root_dir)) |
+            "server certs dir (default: '{}')", result.m_certs_dir)) |
         Help(result.m_help);
 
     auto parse_result = cli.parse(Args(argc, argv));
@@ -296,34 +328,35 @@ int main(int argc, char const *argv[]) {
   try {
     const auto args = app_args_t::parse(argc, argv);
 
-    if (!args.m_help) {
-      using traits_t = restinio::single_thread_tls_traits_t<
-          restinio::asio_timer_manager_t,
-          restinio::single_threaded_ostream_logger_t, router_t>;
-
-      namespace asio_ns = restinio::asio_ns;
-
-      asio_ns::ssl::context tls_context{asio_ns::ssl::context::tls};
-      tls_context.set_options(asio_ns::ssl::context::default_workarounds |
-                              asio_ns::ssl::context::no_sslv2 |
-                              asio_ns::ssl::context::no_sslv3 |
-                              asio_ns::ssl::context::no_tlsv1 |
-                              asio_ns::ssl::context::single_dh_use);
-
-      tls_context.use_certificate_chain_file(args.m_certs_dir + "/server.pem");
-      tls_context.use_private_key_file(args.m_certs_dir + "/key.pem",
-                                       asio_ns::ssl::context::pem);
-      tls_context.use_tmp_dh_file(args.m_certs_dir + "/dh2048.pem");
-
-      restinio::run(restinio::on_thread_pool<traits_t>(args.m_pool_size)
-                        .address("localhost")
-                        .port(args.m_port)
-                        .request_handler(server_handler(args.m_root_dir))
-                        .read_next_http_message_timelimit(10s)
-                        .write_http_response_timelimit(1s)
-                        .handle_request_timeout(1s)
-                        .tls_context(std::move(tls_context)));
+    if (args.m_help) {
+      return 0;
     }
+
+    using traits_t = restinio::single_thread_tls_traits_t<
+        restinio::asio_timer_manager_t,
+        restinio::single_threaded_ostream_logger_t, router_t>;
+
+    namespace asio_ns = restinio::asio_ns;
+
+    asio_ns::ssl::context tls_context{asio_ns::ssl::context::tls};
+    tls_context.set_options(
+        asio_ns::ssl::context::default_workarounds |
+        asio_ns::ssl::context::no_sslv2 | asio_ns::ssl::context::no_sslv3 |
+        asio_ns::ssl::context::no_tlsv1 | asio_ns::ssl::context::single_dh_use);
+
+    tls_context.use_certificate_chain_file(args.m_certs_dir + "/server.pem");
+    tls_context.use_private_key_file(args.m_certs_dir + "/key.pem",
+                                     asio_ns::ssl::context::pem);
+    tls_context.use_tmp_dh_file(args.m_certs_dir + "/dh2048.pem");
+
+    restinio::run(restinio::on_thread_pool<traits_t>(args.m_pool_size)
+                      .address("localhost")
+                      .port(args.m_port)
+                      .request_handler(server_handler(args.m_root_dir))
+                      .read_next_http_message_timelimit(10s)
+                      .write_http_response_timelimit(1s)
+                      .handle_request_timeout(1s)
+                      .tls_context(std::move(tls_context)));
   } catch (const std::exception &ex) {
     std::cerr << "Error: " << ex.what() << std::endl;
     return 1;
