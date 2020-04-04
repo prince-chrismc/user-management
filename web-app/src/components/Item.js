@@ -1,16 +1,21 @@
 import React from 'react';
 import { Card } from 'semantic-ui-react';
 
+import ModalModalExample from './Module'
+
 const Item = () => {
   return (
-    <Card>
-      <Card.Content>
-        <Card.Header>Item</Card.Header>
-        <Card.Description>
-          Generic description
+    <div>
+      <ModalModalExample />
+      <Card>
+        <Card.Content>
+          <Card.Header>Item</Card.Header>
+          <Card.Description>
+            Generic description
         </Card.Description>
-      </Card.Content>
-    </Card>
+        </Card.Content>
+      </Card>
+    </div>
   );
 };
 
