@@ -14,6 +14,8 @@ const Profile = () => {
         />
         <Card.Header>Esau Silva</Card.Header>
         <Card.Description>
+          The original author of this react app...
+
           Full Stack Software Engineer and avid Brazilian Jiu-Jitsu
           practitioner.
         </Card.Description>

@@ -9,11 +9,14 @@ import Profile from './Profile';
 const Home = () => {
   return (
     <Layout>
-      <Grid stackable columns={2}>
+      <Grid stackable columns={3}>
         <Grid.Row>
           <Grid.Column>
             <Features />
             <Link to="/dynamic">Navigate to Dynamic Page</Link>
+          </Grid.Column>
+          <Grid.Column>
+            <Profile />
           </Grid.Column>
           <Grid.Column>
             <Profile />

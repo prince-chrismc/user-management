@@ -1,9 +1,9 @@
 {
-  "name": "react-starter-boilerplate-hmr",
+  "name": "React-From-Cpp",
   "version": "1.0.0",
-  "description": "React starter boilerplate with Hot Module Replacement, React 16 and Webpack 4",
+  "description": "React web application hosted from a C++ web server",
   "main": "index.js",
-  "author": "Esau Silva <@_esausilva>",
+  "author": "Chris Mc",
   "license": "MIT",
   "scripts": {
     "dev": "webpack-dev-server --env.env=dev",
@@ -45,13 +45,6 @@
     "webpack-cli": "^3.3.5",
     "webpack-dev-server": "^3.7.2",
     "webpack-merge": "^4.2.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/esausilva/react-starter-boilerplate-hmr.git"
-  },
-  "bugs": {
-    "url": "https://github.com/esausilva/react-starter-boilerplate-hmr/issues"
   },
   "keywords": [
     "react",
