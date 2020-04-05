@@ -16,7 +16,6 @@ const Home = () => {
             <Link to="/dynamic">Navigate to Dynamic Page</Link>
           </Grid.Column>
           <Grid.Column>
-            <Profile />
           </Grid.Column>
           <Grid.Column>
             <Profile />

@@ -5,17 +5,17 @@ import ModalModalExample from './Module'
 
 const Item = () => {
   return (
-    <div>
-      <ModalModalExample />
-      <Card>
-        <Card.Content>
-          <Card.Header>Item</Card.Header>
-          <Card.Description>
-            Generic description
+    <Card>
+      <Card.Content>
+        <Card.Header>Item</Card.Header>
+        <Card.Description>
+          Generic description
         </Card.Description>
-        </Card.Content>
-      </Card>
-    </div>
+        <Card.Description>
+          <ModalModalExample />
+        </Card.Description>
+      </Card.Content>
+    </Card>
   );
 };
 
