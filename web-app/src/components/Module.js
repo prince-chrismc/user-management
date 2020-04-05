@@ -1,19 +1,6 @@
 import React, { Component } from 'react'
 import { Button, Modal, Form } from 'semantic-ui-react'
 
-// const FormExampleForm = () => (
-//   <Form>
-//     <Form.Field>
-//       <label>First Name</label>
-//       <input placeholder='First Name' />
-//     </Form.Field>
-//     <Form.Field>
-//       <label>Last Name</label>
-//       <input placeholder='Last Name' />
-//     </Form.Field>
-//     <Button type='submit'>Submit</Button>
-//   </Form>
-// )
 class FormExampleCaptureValues extends Component {
   state = { name: '', email: '', submittedName: '', submittedEmail: '' }
 
@@ -47,8 +34,6 @@ class FormExampleCaptureValues extends Component {
             <Form.Button content='Submit' />
           </Form.Group>
         </Form>
-        <strong>onChange:</strong>
-        <pre>{JSON.stringify({ name, email }, null, 2)}</pre>
         <strong>onSubmit:</strong>
         <pre>{JSON.stringify({ submittedName, submittedEmail }, null, 2)}</pre>
       </div>
