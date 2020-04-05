@@ -1,52 +1,47 @@
 import React, { Component } from 'react'
 import { Button, Modal, Form } from 'semantic-ui-react'
 
-class FormExampleCaptureValues extends Component {
-  state = { name: '', email: '', submittedName: '', submittedEmail: '' }
+class FormEditNameAndEmail extends Component {
+  state = { name: this.props.name, email: this.props.email }
 
   handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
-  handleSubmit = () => {
+  render() {
     const { name, email } = this.state
 
-    this.setState({ submittedName: name, submittedEmail: email })
-  }
-
-  render() {
-    const { name, email, submittedName, submittedEmail } = this.state
-
     return (
-      <div>
-        <Form onSubmit={this.handleSubmit}>
-          <Form.Group>
-            <Form.Input
-              placeholder='Name'
-              name='name'
-              value={name}
-              onChange={this.handleChange}
-            />
-            <Form.Input
-              placeholder='Email'
-              name='email'
-              value={email}
-              onChange={this.handleChange}
-            />
-            <Form.Button content='Submit' />
-          </Form.Group>
-        </Form>
-        <strong>onSubmit:</strong>
-        <pre>{JSON.stringify({ submittedName, submittedEmail }, null, 2)}</pre>
-      </div>
+      <Form onSubmit={()=>{this.props.handleSubmit(this.state.name, this.state.email)}}>
+        <Form.Group>
+          <Form.Input
+            placeholder='Name'
+            name='name'
+            value={name}
+            onChange={this.handleChange}
+          />
+          <Form.Input
+            placeholder='Email'
+            name='email'
+            value={email}
+            onChange={this.handleChange}
+          />
+          <Form.Button content='Submit' />
+        </Form.Group>
+      </Form>
     )
   }
 }
 
-const ModalModalExample = () => (
+
+const ModalModalExample = (props) => (
   <Modal trigger={<Button>Edit</Button>}>
     <Modal.Header>Edit Settings</Modal.Header>
     <Modal.Content>
       <Modal.Description>
-        <FormExampleCaptureValues />
+        <FormEditNameAndEmail
+          name={props.name}
+          email={props.email}
+          handleSubmit={props.handler}
+        />
       </Modal.Description>
     </Modal.Content>
   </Modal>
