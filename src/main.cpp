@@ -193,7 +193,7 @@ auto server_handler(const std::string &root_dir) {
       const auto seperator = file_path.find_last_of('.');
       const auto ext = ( seperator == std::string::npos )
                            ? ""
-                           : file_path.substr(seperator + 1exit);
+                           : file_path.substr(seperator + 1);
       try {
         auto sf = restinio::sendfile(file_path);
         auto modified_at =
@@ -298,7 +298,7 @@ int main(int argc, char const *argv[]) {
     tls_context.use_tmp_dh_file(args.m_certs_dir + "/dh2048.pem");
 
     restinio::run(restinio::on_thread_pool<traits_t>(args.m_pool_size)
-                      .address("localhost")
+                      .address("0.0.0.0")
                       .port(args.m_port)
                       .request_handler(server_handler(args.m_root_dir))
                       .read_next_http_message_timelimit(10s)
