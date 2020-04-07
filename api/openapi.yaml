@@ -1,0 +1,149 @@
+openapi: "3.0.0"
+info:
+  title: Simple API overview
+  version: 1.0.0
+paths:
+  /:
+    get:
+      summary: List API versions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              examples: 
+                foo:
+                  value: {
+                    "v1.0/"
+                 }
+  /{version}:
+    get:
+      summary: List API endpoints
+      parameters: 
+      - name: version
+        in: path
+        required: true
+        description: Known API version
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              examples: 
+                foo:
+                  value: {
+                    "user/"
+                 }
+        '404':
+          description: Not Found
+  /{version}/users:
+    get:
+      summary: List of users
+      parameters: 
+      - name: version
+        in: path
+        required: true
+        description: Known API version
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              examples: 
+                foo:
+                  value: [
+                    {
+                      "id": 234,
+                      "name": "John Doe",
+                      "email": "john@example.com"
+                    },
+                    {
+                      "id": 89,
+                      "name": "Jane Doe",
+                      "email": "jane@example.com"
+                    }
+                  ]
+  /{version}/users/{id}:
+    get:
+      summary: Display user
+      parameters:
+      - name: version
+        in: path
+        required: true
+        description: Known API version
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        description: ID of the resoective user to display
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              examples: 
+                foo:
+                  value: {
+                      "id": 234,
+                      "name": "John Doe",
+                      "email": "john@example.com"
+                    }
+    patch:
+      summary: Edit a user
+      parameters:
+      - name: version
+        in: path
+        required: true
+        description: Known API version
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        description: ID of the resoective user to display
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              examples: 
+                name:
+                  value: {
+                      "name": "Jane Marry Doe"
+                    }
+                email:
+                  value: {
+                      "email": "john.doe@example.com"
+                    }
+                both:
+                  value: {
+                      "name": "Jane Marry Doe",
+                      "email": "jane.doe@example.com"
+                    }
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              examples: 
+                error:
+                  value: {
+                      "error": "bad schema"
+                    }
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              examples: 
+                error:
+                  value: {
+                      "error": "specified id does not exist"
+                    }
