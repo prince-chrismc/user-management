@@ -33,9 +33,9 @@ paths:
             application/json:
               examples: 
                 foo:
-                  value: {
+                  value: [
                     "user/"
-                 }
+                  ]
         '404':
           description: Not Found
   /{version}/users:
