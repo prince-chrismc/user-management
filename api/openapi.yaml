@@ -1,61 +1,91 @@
 openapi: "3.0.0"
 info:
-  title: Simple API overview
+  title: User Management API
   version: 1.0.0
+  description: >-
+    A Simple API for creating, editing, and deleting
+    users. The goal here is to offer minimal flexability
+    that is sufficient for demonstrating a backend server
+    or database integration.
+tags:
+  - name: metadata
+    description: Find out about the data sets
+  - name: search
+    description: Searching database of users
+  - name: edit
+    description: Edit database or users
+
+components:
+  parameters:
+    version:
+      name: version
+      in: path
+      required: true
+      description: Known API version
+      schema:
+        type: string
+      examples:
+        basic:
+          summary: Generic use case
+          value: "v1.0"
+    id:
+      name: id
+      in: path
+      required: true
+      description: ID of the resoective user to display
+      schema:
+        type: integer
+      examples:
+        basic:
+          summary: Generic use case
+          value: 15
+
 paths:
   /:
     get:
+      tags:
+        - metadata
       summary: List API versions
       responses:
         '200':
           description: OK
           content:
             application/json:
-              examples: 
-                foo:
-                  value: {
+              example: [
                     "v1.0/"
-                 }
+                 ]
   /{version}:
+    parameters:
+      - $ref: '#/components/parameters/version'
     get:
+      tags:
+        - metadata
       summary: List API endpoints
-      parameters: 
-      - name: version
-        in: path
-        required: true
-        description: Known API version
-        schema:
-          type: string
       responses:
         '200':
           description: OK
           content:
             application/json:
               examples: 
-                foo:
+                user:
                   value: [
                     "user/"
                   ]
         '404':
           description: Not Found
   /{version}/users:
+    parameters: 
+      - $ref: '#/components/parameters/version'
     get:
+      tags:
+        - search
       summary: List of users
-      parameters: 
-      - name: version
-        in: path
-        required: true
-        description: Known API version
-        schema:
-          type: string
       responses:
         '200':
           description: OK
           content:
             application/json:
-              examples: 
-                foo:
-                  value: [
+              example: [
                     {
                       "id": 234,
                       "name": "John Doe",
@@ -67,64 +97,58 @@ paths:
                       "email": "jane@example.com"
                     }
                   ]
-
     put:
-      description: Create a new user
+      tags:
+        - edit
+      summary: Create a new user
+      requestBody:
+        description: add a new user with given information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './schema/add.json'
+            example: {
+                  "name": "John Doe",
+                  "email": "john@example.com"
+                }
       responses:
         '201':
           description: Created
           content:
             application/json:
-                example:
-                  value: {
-                      "id": 234,
-                      "name": "John Doe",
-                      "email": "john@example.com"
-                    }
+              schema:
+                $ref: './schema/user.json'
+              example: {
+                    "id": 234,
+                    "name": "John Doe",
+                    "email": "john@example.com"
+                  }
 
   /{version}/users/{id}:
+    parameters:
+      - $ref: '#/components/parameters/version'
+      - $ref: '#/components/parameters/id'
     get:
+      tags:
+        - search
       summary: Display user
-      parameters:
-      - name: version
-        in: path
-        required: true
-        description: Known API version
-        schema:
-          type: string
-      - name: id
-        in: path
-        required: true
-        description: ID of the resoective user to display
-        schema:
-          type: integer
       responses:
         '200':
           description: OK
           content:
             application/json:
-              examples: 
-                foo:
-                  value: {
+              schema:
+                $ref: './schema/user.json'
+              example: {
                       "id": 234,
                       "name": "John Doe",
                       "email": "john@example.com"
                     }
     patch:
+      tags:
+        - edit
       summary: Edit a user
-      parameters:
-      - name: version
-        in: path
-        required: true
-        description: Known API version
-        schema:
-          type: string
-      - name: id
-        in: path
-        required: true
-        description: ID of the resoective user to display
-        schema:
-          type: integer
       requestBody:
         description: edit any number of settings for a given user
         required: true
@@ -132,24 +156,31 @@ paths:
           application/json:
             schema:
               $ref: './schema/edit.json'
+            examples: 
+              name:
+                value: {
+                    "name": "Jane Marry Doe"
+                  }
+              email:
+                value: {
+                    "email": "john.doe@example.com"
+                  }
+              both:
+                value: {
+                    "name": "Jane Marry Doe",
+                    "email": "jane.doe@example.com"
+                  }
       responses:
         '202':
           description: Accpted
           content:
             application/json:
-              examples: 
-                name:
-                  value: {
-                      "name": "Jane Marry Doe"
-                    }
-                email:
-                  value: {
-                      "email": "john.doe@example.com"
-                    }
-                both:
-                  value: {
-                      "name": "Jane Marry Doe",
-                      "email": "jane.doe@example.com"
+              schema:
+                $ref: './schema/user.json'
+              example: {
+                      "id": 234,
+                      "name": "John Doe",
+                      "email": "john@example.com"
                     }
         '400':
           description: Bad Request
@@ -169,3 +200,10 @@ paths:
                   value: {
                       "error": "specified id does not exist"
                     }
+    delete:
+      tags:
+        - edit
+      summary: Delete an exists user
+      responses:
+        '204':
+          description: No Content
