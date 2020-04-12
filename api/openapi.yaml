@@ -67,6 +67,21 @@ paths:
                       "email": "jane@example.com"
                     }
                   ]
+
+    put:
+      description: Create a new user
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+                example:
+                  value: {
+                      "id": 234,
+                      "name": "John Doe",
+                      "email": "john@example.com"
+                    }
+
   /{version}/users/{id}:
     get:
       summary: Display user
@@ -110,9 +125,16 @@ paths:
         description: ID of the resoective user to display
         schema:
           type: integer
+      requestBody:
+        description: edit any number of settings for a given user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './schema/edit.json'
       responses:
-        '200':
-          description: OK
+        '202':
+          description: Accpted
           content:
             application/json:
               examples: 

@@ -13,7 +13,7 @@
             "description": "the name given to a user.",
             "examples": [
                 "John Doe",
-              	"Jane Doe"
+                "Jane Doe"
             ]
         },
         "email": {
