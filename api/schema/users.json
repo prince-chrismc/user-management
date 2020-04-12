@@ -1,0 +1,10 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "users.json",
+    "type": "array",
+    "title": "The Users Schema",
+    "description": "The user schema is the schema that comprises the list of users.",
+    "items": {
+            "$ref": "user.json"
+    }
+}
