@@ -31,19 +31,6 @@ const config = {
           },
         ],
       },
-      {
-        test: /\.(woff(2)?|ttf|eot|svg|png)(\?v=\d+\.\d+\.\d+)?$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              modules: true,
-              name: '[name].[ext]',
-              sourceMap: true,
-            }
-          },
-        ]
-      }
     ],
   },
   plugins: [new webpack.HotModuleReplacementPlugin()],
