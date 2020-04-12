@@ -1,10 +1,10 @@
 import React from 'react';
 
-import CardPage from './Cards';
+import EditUsers from './EditUsers';
 
 const App = () => {
   return (
-    <CardPage />
+    <EditUsers />
   );
 };
 

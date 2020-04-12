@@ -32,8 +32,8 @@ class FormEditNameAndEmail extends Component {
 }
 
 
-const ModalModalExample = (props) => (
-  <Modal trigger={<Button>Edit</Button>} closeIcon>
+const EditModal = (props) => (
+  <Modal trigger={<Button content='Edit' icon='edit outline' labelPosition='left' />} closeIcon>
     <Modal.Header>Edit Settings</Modal.Header>
     <Modal.Content>
       <Modal.Description>
@@ -47,4 +47,4 @@ const ModalModalExample = (props) => (
   </Modal>
 )
 
-export default ModalModalExample
+export default EditModal
