@@ -24,7 +24,7 @@ class FormEditNameAndEmail extends Component {
             value={email}
             onChange={this.handleChange}
           />
-          <Form.Button content='Submit' />
+          <Form.Button color='green' icon='check' content='Save' inverted />
         </Form.Group>
       </Form>
     )
@@ -33,7 +33,7 @@ class FormEditNameAndEmail extends Component {
 
 
 const ModalModalExample = (props) => (
-  <Modal trigger={<Button>Edit</Button>}>
+  <Modal trigger={<Button>Edit</Button>} closeIcon>
     <Modal.Header>Edit Settings</Modal.Header>
     <Modal.Content>
       <Modal.Description>
