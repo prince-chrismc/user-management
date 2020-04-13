@@ -7,6 +7,7 @@ info:
     users. The goal here is to offer minimal flexability
     that is sufficient for demonstrating a backend server
     or database integration.
+
 tags:
   - name: metadata
     description: Find out about the data sets
@@ -24,10 +25,7 @@ components:
       description: Known API version
       schema:
         type: string
-      examples:
-        basic:
-          summary: Generic use case
-          value: "v1.0"
+      example: "v1.0"
     id:
       name: id
       in: path
@@ -35,10 +33,18 @@ components:
       description: ID of the resoective user to display
       schema:
         type: integer
-      examples:
-        basic:
-          summary: Generic use case
-          value: 15
+      example: 15
+  schemas:
+    User:
+      $ref: './schema/user.json'
+    Users:
+      $ref: './schema/users.json'
+    Add:
+      $ref: './schema/add.json'
+    Edit:
+      $ref: './schema/edit.json'
+    Error:
+      $ref: './schema/error.json'
 
 paths:
   /:
@@ -66,9 +72,7 @@ paths:
           description: OK
           content:
             application/json:
-              examples: 
-                user:
-                  value: [
+              example: [
                     "user/"
                   ]
         '404':
@@ -85,6 +89,8 @@ paths:
           description: OK
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
               example: [
                     {
                       "id": 234,
@@ -107,7 +113,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './schema/add.json'
+                $ref: '#/components/schemas/Add'
             example: {
                   "name": "John Doe",
                   "email": "john@example.com"
@@ -118,13 +124,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './schema/user.json'
+                $ref: '#/components/schemas/User'
               example: {
                     "id": 234,
                     "name": "John Doe",
                     "email": "john@example.com"
                   }
-
   /{version}/users/{id}:
     parameters:
       - $ref: '#/components/parameters/version'
@@ -139,7 +144,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './schema/user.json'
+                $ref: '#/components/schemas/User'
               example: {
                       "id": 234,
                       "name": "John Doe",
@@ -155,7 +160,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: './schema/edit.json'
+                $ref: '#/components/schemas/Edit'
             examples: 
               name:
                 value: {
@@ -176,7 +181,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './schema/user.json'
+                $ref: '#/components/schemas/User'
               example: {
                       "id": 234,
                       "name": "John Doe",
@@ -186,18 +191,18 @@ paths:
           description: Bad Request
           content:
             application/json:
-              examples: 
-                error:
-                  value: {
+              schema:
+                $ref: '#/components/schemas/Error'
+              example: {
                       "error": "bad schema"
                     }
         '404':
           description: Not Found
           content:
             application/json:
-              examples: 
-                error:
-                  value: {
+              schema:
+                $ref: '#/components/schemas/Error'
+              example: {
                       "error": "specified id does not exist"
                     }
     delete:

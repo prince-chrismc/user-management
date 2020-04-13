@@ -3,7 +3,7 @@
     "$id": "users.json",
     "type": "array",
     "title": "The Users Schema",
-    "description": "The user schema is the schema that comprises the list of users.",
+    "description": "The users schema is the schema that comprises the list of users.",
     "items": {
             "$ref": "user.json"
     }
