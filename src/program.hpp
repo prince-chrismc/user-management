@@ -1,5 +1,5 @@
 
-#include <set>
+#include <map>
 #include <stdexcept>
 #include <string>
 
@@ -10,16 +10,20 @@ struct user {
   std::string email;
 };
 
-struct by_id : std::binary_function<user, user, bool> {
-  bool operator()(const user &lhs, const user &rhs) { return lhs.id < rhs.id; }
-};
+struct user_list : std::map<int, user> {
+  user &get(int id) { return at(id); }
 
-struct user_list : std::set<user, by_id> {
-  const user &get(int id) {
-    auto retval = find({id});
-    if (retval == end())
-      throw std::runtime_error("requested user does not exist");
-    return *retval;
+  user &add(std::string name, std::string email) {
+    const auto id = end()->first + 1;
+    emplace(std::make_pair(id, user{id, std::move(name), std::move(email)}));
+    return get(id);
+  }
+
+  user remove(int id) {
+    const auto it = find(id);
+    const auto copy = it->second;
+    erase(it);
+    return copy;
   }
 };
 } // namespace user_management

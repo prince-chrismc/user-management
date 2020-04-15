@@ -24,6 +24,8 @@ SOFTWARE.
 
 */
 
+#include "program.hpp"
+
 #ifdef _WIN32
 #include <sdkddkver.h>
 #endif
@@ -159,7 +161,7 @@ const char *content_type_by_file_extention(const restinio::string_view_t &ext) {
   if (ext == "xul")
     return "application/vnd.mozilla.xul+xml";
   if (ext == "zip")
-    return "archive	application/zip";
+    return "application/zip";
   if (ext == "3gp")
     return "video/3gpp";
   if (ext == "3g2")
@@ -169,6 +171,9 @@ const char *content_type_by_file_extention(const restinio::string_view_t &ext) {
 
   return "application/text";
 }
+
+namespace rr = restinio::router;
+using router_t = rr::express_router_t<>;
 
 auto server_handler(const std::string &root_dir) {
   std::string server_root_dir;
@@ -181,52 +186,84 @@ auto server_handler(const std::string &root_dir) {
     server_root_dir = root_dir;
   }
 
-  return [server_root_dir](auto req) {
-    auto path = req->header().path();
+  auto router = std::make_unique<router_t>();
 
-    if (std::string::npos == path.find("..")) {
-      // A nice path.
-      auto file_path = server_root_dir + std::string{path.data(), path.size()};
-      if (file_path.back() == '/') {
-        file_path += "index.html";
-      }
-      const auto seperator = file_path.find_last_of('.');
-      const auto ext = ( seperator == std::string::npos )
-                           ? ""
-                           : file_path.substr(seperator + 1);
-      try {
-        auto sf = restinio::sendfile(file_path);
-        auto modified_at =
-            restinio::make_date_field_value(sf.meta().last_modified_at());
+  router->http_get("/", [](auto req, auto params) {
+    auto modified_at =
+        restinio::make_date_field_value(std::chrono::system_clock::now());
+    auto expires_at = restinio::make_date_field_value(
+        std::chrono::system_clock::now() + std::chrono::hours(24 * 7));
 
-        auto expires_at = restinio::make_date_field_value(
-            std::chrono::system_clock::now() + std::chrono::hours(24 * 7));
+    return req->create_response()
+        .append_header(restinio::http_field::server, "RESTinio")
+        .append_header_date_field()
+        .append_header(restinio::http_field::last_modified,
+                       std::move(modified_at))
+        .append_header(restinio::http_field::expires, std::move(expires_at))
+        .append_header(restinio::http_field::content_type,
+                       content_type_by_file_extention("html"))
+        .set_body(R"###(<html><head><title>React from C++</title></head><body>
+          <a href="web-app/">Link to the user front end...</a></body></html>)###")
+        .done();
+  });
 
-        return req->create_response()
-            .append_header(restinio::http_field::server, "RESTinio")
-            .append_header_date_field()
-            .append_header(restinio::http_field::last_modified,
-                           std::move(modified_at))
-            .append_header(restinio::http_field::expires, std::move(expires_at))
-            .append_header(restinio::http_field::content_type,
-                           content_type_by_file_extention(ext))
-            .set_body(std::move(sf))
-            .done();
+  router->http_get("/web-app/", [](auto req, auto params) {
+    return req->create_response(restinio::status_found())
+        .append_header_date_field()
+        .append_header(restinio::http_field::location, "/index.html")
+        .set_body(R"###(<html><head><title>React from C++</title></head><body>
+          <a href="web-app/">Link to the user front end...</a></body></html>)###")
+        .done();
+  });
 
-      } catch (const std::exception &) {
-        return req->create_response(restinio::status_not_found())
-            .append_header_date_field()
-            .connection_close()
-            .done();
-      }
-    } else {
-      // Bad path.
-      return req->create_response(restinio::status_forbidden())
-          .append_header_date_field()
-          .connection_close()
-          .done();
-    }
-  };
+  router->http_get(
+      R"(/:path(.*)\.:ext(.*))", restinio::path2regex::options_t{}.strict(true),
+      [server_root_dir](auto req, auto params) {
+        auto path = req->header().path();
+
+        if (std::string::npos == path.find("..")) {
+          // A nice path.
+          const auto file_path =
+              server_root_dir + std::string{path.data(), path.size()};
+          const auto seperator = file_path.find_last_of('.');
+          const auto ext = (seperator == std::string::npos)
+                               ? ""
+                               : file_path.substr(seperator + 1);
+          try {
+            auto sf = restinio::sendfile(file_path);
+            auto modified_at =
+                restinio::make_date_field_value(sf.meta().last_modified_at());
+
+            auto expires_at = restinio::make_date_field_value(
+                std::chrono::system_clock::now() + std::chrono::hours(24 * 7));
+
+            return req->create_response()
+                .append_header(restinio::http_field::server, "RESTinio")
+                .append_header_date_field()
+                .append_header(restinio::http_field::last_modified,
+                               std::move(modified_at))
+                .append_header(restinio::http_field::expires,
+                               std::move(expires_at))
+                .append_header(restinio::http_field::content_type,
+                               content_type_by_file_extention(ext))
+                .set_body(std::move(sf))
+                .done();
+
+          } catch (const std::exception &) {
+            return req->create_response(restinio::status_not_found())
+                .append_header_date_field()
+                .connection_close()
+                .done();
+          }
+        } else {
+          return req->create_response(restinio::status_forbidden())
+              .append_header_date_field()
+              .connection_close()
+              .done();
+        }
+      });
+
+  return router;
 }
 
 struct app_args_t {
@@ -282,7 +319,7 @@ int main(int argc, char const *argv[]) {
 
     using traits_t = restinio::single_thread_tls_traits_t<
         restinio::asio_timer_manager_t,
-        restinio::single_threaded_ostream_logger_t>;
+        restinio::single_threaded_ostream_logger_t, router_t>;
 
     namespace asio_ns = restinio::asio_ns;
 
@@ -298,7 +335,7 @@ int main(int argc, char const *argv[]) {
     tls_context.use_tmp_dh_file(args.m_certs_dir + "/dh2048.pem");
 
     restinio::run(restinio::on_thread_pool<traits_t>(args.m_pool_size)
-                      .address("0.0.0.0")
+                      .address(args.m_address)
                       .port(args.m_port)
                       .request_handler(server_handler(args.m_root_dir))
                       .read_next_http_message_timelimit(10s)
