@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include <string>
 
+#include <nlohmann/json-schema.hpp>
+
 namespace user_management {
 struct user {
   int id;
@@ -10,7 +12,8 @@ struct user {
   std::string email;
 };
 
-struct user_list : std::map<int, user> {
+class user_list : std::map<int, user> {
+public:
   user &get(int id) { return at(id); }
 
   user &add(std::string name, std::string email) {
@@ -25,5 +28,18 @@ struct user_list : std::map<int, user> {
     erase(it);
     return copy;
   }
+};
+
+class user_modifier {
+public:
+  user_modifier(user &user) : user_(user) {}
+
+  void apply(const nlohmann::json &data)
+  {
+    nlohmann::json_schema::json_validator validator;
+  }
+
+private:
+  user &user_;
 };
 } // namespace user_management
