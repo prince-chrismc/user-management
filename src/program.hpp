@@ -37,6 +37,7 @@ public:
   void apply(const nlohmann::json &data)
   {
     nlohmann::json_schema::json_validator validator;
+    validator.set_root_schema();
   }
 
 private:

@@ -6,6 +6,16 @@ find_package(restinio 0.6 REQUIRED)
 find_package(clara 1.1.5 REQUIRED)
 find_package(nlohmann_json_schema_validator 20190409 REQUIRED)
 
-add_executable(reactjs-from-cpp src/main.cpp)
+include("cmake/schema-pack.cmake")
 
-target_link_libraries(reactjs-from-cpp restinio::restinio clara::clara nlohmann_json_schema_validator::nlohmann_json_schema_validator)
+set(SCHEMA_LIST
+    "api/schema/add.json" "api/schema/edit.json" "api/schema/error.json"
+    "api/schema/user.json" "api/schema/users.json")
+pack_schemas("${SCHEMA_LIST}")
+
+add_executable(reactjs-from-cpp "src/main.cpp" "src/program.hpp"
+                                "${SCHEMAS_HEADER}")
+
+target_link_libraries(
+  reactjs-from-cpp restinio::restinio clara::clara
+  nlohmann_json_schema_validator::nlohmann_json_schema_validator)

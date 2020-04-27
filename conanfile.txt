@@ -1,7 +1,6 @@
 [requires]
 restinio/0.6.6@stiffstream/stable
 clara/1.1.5
-nlohmann_json/3.7.3
 json-schema-validator/20190409
 
 [generators]
