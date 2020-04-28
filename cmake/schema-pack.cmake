@@ -20,4 +20,5 @@ namespace api\n\
    file(APPEND "${SCHEMAS_HEADER}.tmp" "}\n")
 
    configure_file("${SCHEMAS_HEADER}.tmp" "${SCHEMAS_HEADER}" COPYONLY)
+   set(SCHEMAS_HEADER "${SCHEMAS_HEADER}" PARENT_SCOPE)
 endfunction(PACK_SCHEMAS)

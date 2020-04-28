@@ -4,6 +4,7 @@
 #include <string>
 
 #include <nlohmann/json-schema.hpp>
+#include "../build/schemas.hpp"
 
 namespace user_management {
 struct user {
