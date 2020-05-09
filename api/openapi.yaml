@@ -212,3 +212,12 @@ paths:
       responses:
         '204':
           description: No Content
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example: {
+                      "error": "specified id does not exist"
+                    }
