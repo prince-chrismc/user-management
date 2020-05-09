@@ -1,4 +1,4 @@
-# Hello-React-From-Cpp
+# Hello-React-From-Cpp ![C++ CI](https://github.com/prince-chrismc/Hello-React-From-Cpp/workflows/C++%20CI/badge.svg)
 
 A test repository for a C++ web application which servers a client side ReactJS frontend which communicates with the RESTful API of the application
 to manipulate data stored in memory.
