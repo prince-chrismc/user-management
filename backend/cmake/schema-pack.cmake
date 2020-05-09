@@ -13,7 +13,7 @@ namespace api\n\
    using json = nlohmann::json;\n")
 
   foreach(SCHEMA ${SCHEMAS})
-    string(REGEX REPLACE "api/schema/([^/]+).json" "\\1" VAR ${SCHEMA})
+    string(REGEX REPLACE "(.*)/([^/]+).json" "\\2" VAR ${SCHEMA})
     string(MAKE_C_IDENTIFIER "${VAR}" VAR)
     file(APPEND "${SCHEMAS_HEADER}.tmp"
          "   static json ${VAR} = R\"-auto-generated-(")
