@@ -11,11 +11,11 @@ include("cmake/schema-pack.cmake")
 set(SCHEMA_LIST
     "api/schema/add.json" "api/schema/edit.json" "api/schema/error.json"
     "api/schema/user.json" "api/schema/users.json")
-pack_schemas("${SCHEMA_LIST}")
+pack_schemas("${SCHEMA_LIST}" schemas)
 
 add_executable(reactjs-from-cpp "src/main.cpp" "src/program.hpp"
                                 "${SCHEMAS_HEADER}")
 
 target_link_libraries(
-  reactjs-from-cpp restinio::restinio clara::clara
+  reactjs-from-cpp schemas restinio::restinio clara::clara
   nlohmann_json_schema_validator::nlohmann_json_schema_validator)

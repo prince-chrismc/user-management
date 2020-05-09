@@ -1,10 +1,12 @@
+// MIT License
+
+#include "schemas.hpp"
+
+#include <nlohmann/json-schema.hpp>
 
 #include <map>
 #include <stdexcept>
 #include <string>
-
-#include <nlohmann/json-schema.hpp>
-#include "../build/schemas.hpp"
 
 namespace user_management {
 struct user {
@@ -35,10 +37,9 @@ class user_modifier {
 public:
   user_modifier(user &user) : user_(user) {}
 
-  void apply(const nlohmann::json &data)
-  {
+  void apply(const nlohmann::json &data) {
     nlohmann::json_schema::json_validator validator;
-    validator.set_root_schema();
+    validator.set_root_schema(api::add);
   }
 
 private:
