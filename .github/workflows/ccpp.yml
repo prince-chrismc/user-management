@@ -38,6 +38,7 @@ jobs:
 
     - name: configure
       run: |
+        cd backend
         mkdir build
         cd build
         conan install ..
@@ -45,12 +46,12 @@ jobs:
 
     - name: make
       run: |
-        cd build
+        cd backend/build
         make
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
       with:
          name: reactjs-from-cpp
-         path: build/reactjs-from-cpp
+         path: backend/build/reactjs-from-cpp
 

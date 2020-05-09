@@ -9,8 +9,8 @@ find_package(nlohmann_json_schema_validator 2.0.0 REQUIRED)
 include("cmake/schema-pack.cmake")
 
 set(SCHEMA_LIST
-    "api/schema/add.json" "api/schema/edit.json" "api/schema/error.json"
-    "api/schema/user.json" "api/schema/users.json")
+    "../api/schema/add.json" "../api/schema/edit.json" "../api/schema/error.json"
+    "../api/schema/user.json" "../api/schema/users.json")
 pack_schemas("${SCHEMA_LIST}" schemas)
 
 add_executable(reactjs-from-cpp "src/main.cpp" "src/program.hpp"
