@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.8)
 set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 find_package(restinio 0.6 REQUIRED)
 find_package(clara 1.1.5 REQUIRED)
-find_package(nlohmann_json_schema_validator 20190409 REQUIRED)
+find_package(nlohmann_json_schema_validator 2.0.0 REQUIRED)
 
 include("cmake/schema-pack.cmake")
 
