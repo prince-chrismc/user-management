@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: C++ CI
 
 on:
   push:
@@ -21,13 +21,24 @@ jobs:
       run: python -m pip install --upgrade pip
 
     - name: install conan
-      run: pip install conan
-    
+      run: |
+        pip install conan
+        conan remote add stiffstream https://api.bintray.com/conan/stiffstream/public
+
+    - name: conan custom setup
+      run: |
+        git clone --single-branch -b dd/json-schema-validation https://github.com/prince-chrismc/conan-center-index.git recipes/json-schema-validator/all
+        ls -la
+
     - name: install cmake
       uses: lukka/get-cmake@v3.17.1
 
     - name: configure
-      run: mkdir build && cd build && conan install .. && cmake ..
+      run: |
+        mkdir build
+        cd build
+        conan install ..
+        cmake ..
 
     - name: make
       run: make
