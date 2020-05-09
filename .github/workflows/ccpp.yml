@@ -8,12 +8,26 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
+
+    - name: install python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+
+    - name: install pip
+      run: python -m pip install --upgrade pip
+
+    - name: install conan
+      run: pip install conan
+    
+    - name: install cmake
+      uses: lukka/get-cmake@v3.17.1
+
     - name: configure
-      run: mkdir build && cd build && cmake ..
+      run: mkdir build && cd build && conan install .. && cmake ..
+
     - name: make
       run: make
