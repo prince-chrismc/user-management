@@ -1,22 +1,22 @@
 {
-   "$schema": "http://json-schema.org/draft-07/schema",
-   "$id": "error.json",
-   "type": "object",
-   "title": "The Error Schema",
-   "description": "The error schema is the schema that describes the structure of error messages",
-   "required": [
-       "error"
-   ],
-   "properties": {
-       "error": {
-           "$id": "#/properties/error",
-           "type": "string",
-           "title": "The Error Message",
-           "description": "the message to describe what went wrong.",
-           "examples": [
-               "The request data did not conform to schema",
-               "The request method is not allowed at this endpoint"
-           ]
-       }
-   }
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "error.json",
+    "type": "object",
+    "title": "Error",
+    "description": "The error schema is the schema that describes the structure of error messages",
+    "required": [
+        "error"
+    ],
+    "properties": {
+        "error": {
+            "$id": "#/properties/error",
+            "type": "string",
+            "title": "The Error Message",
+            "description": "the message to describe what went wrong.",
+            "examples": [
+                "The request data did not conform to schema",
+                "The request method is not allowed at this endpoint"
+            ]
+        }
+    }
 }

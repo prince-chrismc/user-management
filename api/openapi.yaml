@@ -1,20 +1,24 @@
 openapi: "3.0.0"
 info:
   title: User Management API
-  version: 1.0.0
+  version: "1"
   description: >-
     A Simple API for creating, editing, and deleting
     users. The goal here is to offer minimal flexability
     that is sufficient for demonstrating a backend server
     or database integration.
 
+servers:
+  - url: "{server}/v1"
+    variables:
+      server:
+        default: https://api.example.com
+
 tags:
-  - name: metadata
-    description: Find out about the data sets
-  - name: search
+  - name: Search
     description: Searching database of users
-  - name: edit
-    description: Edit database or users
+  - name: Edit
+    description: Edit user's entry in database
 
 components:
   parameters:
@@ -36,76 +40,43 @@ components:
       example: 15
   schemas:
     User:
-      $ref: './schema/user.json'
+      $ref: "./schema/user.json"
     Users:
-      $ref: './schema/users.json'
+      $ref: "./schema/users.json"
     Add:
-      $ref: './schema/add.json'
+      $ref: "./schema/add.json"
     Edit:
-      $ref: './schema/edit.json'
+      $ref: "./schema/edit.json"
     Error:
-      $ref: './schema/error.json'
+      $ref: "./schema/error.json"
 
 paths:
-  /:
-    get:
-      tags:
-        - metadata
-      summary: List API versions
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              example: [
-                    "v1.0/"
-                 ]
-  /{version}:
+  /users:
     parameters:
-      - $ref: '#/components/parameters/version'
+      - $ref: "#/components/parameters/version"
     get:
       tags:
-        - metadata
-      summary: List API endpoints
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              example: [
-                    "user/"
-                  ]
-        '404':
-          description: Not Found
-  /{version}/users:
-    parameters: 
-      - $ref: '#/components/parameters/version'
-    get:
-      tags:
-        - search
+        - Search
       summary: List of users
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Users'
-              example: [
-                    {
-                      "id": 234,
-                      "name": "John Doe",
-                      "email": "john@example.com"
-                    },
-                    {
-                      "id": 89,
-                      "name": "Jane Doe",
-                      "email": "jane@example.com"
-                    }
-                  ]
+                $ref: "#/components/schemas/Users"
+              example:
+                [
+                  {
+                    "id": 234,
+                    "name": "John Doe",
+                    "email": "john@example.com",
+                  },
+                  { "id": 89, "name": "Jane Doe", "email": "jane@example.com" },
+                ]
     put:
       tags:
-        - edit
+        - Edit
       summary: Create a new user
       requestBody:
         description: add a new user with given information
@@ -113,111 +84,94 @@ paths:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/Add'
-            example: {
-                  "name": "John Doe",
-                  "email": "john@example.com"
-                }
+              $ref: "#/components/schemas/Add"
+            example: { "name": "John Doe", "email": "john@example.com" }
       responses:
-        '201':
+        "201":
           description: Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-              example: {
-                    "id": 234,
-                    "name": "John Doe",
-                    "email": "john@example.com"
-                  }
-  /{version}/users/{id}:
+                $ref: "#/components/schemas/User"
+              example:
+                { "id": 234, "name": "John Doe", "email": "john@example.com" }
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example: { "error": "malformed JSON" }
+  /users/{id}:
     parameters:
-      - $ref: '#/components/parameters/version'
-      - $ref: '#/components/parameters/id'
+      - $ref: "#/components/parameters/version"
+      - $ref: "#/components/parameters/id"
     get:
       tags:
-        - search
+        - Search
       summary: Display user
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-              example: {
-                      "id": 234,
-                      "name": "John Doe",
-                      "email": "john@example.com"
-                    }
+                $ref: "#/components/schemas/User"
+              example:
+                { "id": 234, "name": "John Doe", "email": "john@example.com" }
     patch:
       tags:
-        - edit
-      summary: Edit a user
+        - Edit
+      summary: Edit an existing user
       requestBody:
         description: edit any number of settings for a given user
         required: true
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/Edit'
-            examples: 
+              $ref: "#/components/schemas/Edit"
+            examples:
               name:
-                value: {
-                    "name": "Jane Marry Doe"
-                  }
+                value: { "name": "Jane Marry Doe" }
               email:
-                value: {
-                    "email": "john.doe@example.com"
-                  }
+                value: { "email": "john.doe@example.com" }
               both:
-                value: {
-                    "name": "Jane Marry Doe",
-                    "email": "jane.doe@example.com"
-                  }
+                value:
+                  { "name": "Jane Marry Doe", "email": "jane.doe@example.com" }
       responses:
-        '202':
+        "202":
           description: Accpted
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-              example: {
-                      "id": 234,
-                      "name": "John Doe",
-                      "email": "john@example.com"
-                    }
-        '400':
+                $ref: "#/components/schemas/User"
+              example:
+                { "id": 234, "name": "John Doe", "email": "john@example.com" }
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-              example: {
-                      "error": "bad schema"
-                    }
-        '404':
+                $ref: "#/components/schemas/Error"
+              example: { "error": "bad schema" }
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-              example: {
-                      "error": "specified id does not exist"
-                    }
+                $ref: "#/components/schemas/Error"
+              example: { "error": "specified id does not exist" }
     delete:
       tags:
-        - edit
-      summary: Delete an exists user
+        - Edit
+      summary: Remove an existing user
       responses:
-        '204':
+        "204":
           description: No Content
-        '404':
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-              example: {
-                      "error": "specified id does not exist"
-                    }
+                $ref: "#/components/schemas/Error"
+              example: { "error": "specified id does not exist" }

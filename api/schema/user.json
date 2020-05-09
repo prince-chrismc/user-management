@@ -2,22 +2,15 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "user.json",
     "type": "object",
-    "title": "The User Schema",
+    "title": "User",
     "description": "The user schema is the schema that comprises the contents of a user.",
-    "required": [
-        "id",
-        "name",
-        "email"
-    ],
-    "properties": {
+    "definitions": {
         "id": {
             "$id": "#/properties/id",
             "type": "integer",
             "title": "The Id Schema",
             "description": "An index to access the user.",
-            "examples": [
-                123
-            ]
+            "example": 123
         },
         "name": {
             "$id": "#/properties/name",
@@ -26,17 +19,32 @@
             "description": "the name given to a user.",
             "examples": [
                 "John Doe",
-              	"Jane Doe"
+                "Jane Doe"
             ]
         },
         "email": {
             "$id": "#/properties/email",
             "type": "string",
+            "format": "email",
             "title": "The Email Schema",
             "description": "The means of contact for a given user.",
-            "examples": [
-                "test.user@example.com"
-            ]
+            "example": "test.user@example.com"
+        }
+    },
+    "required": [
+        "id",
+        "name",
+        "email"
+    ],
+    "properties": {
+        "id": {
+            "$ref": "#/definitions/id"
+        },
+        "name": {
+            "$ref": "#/definitions/name"
+        },
+        "email": {
+            "$ref": "#/definitions/email"
         }
     }
 }

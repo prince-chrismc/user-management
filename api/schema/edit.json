@@ -2,28 +2,15 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "edit.json",
     "type": "object",
-    "title": "The Edit Schema",
+    "title": "Edit",
     "description": "The edit schema is the schema that comprises the fields of a user which can be modified.",
     "required": [],
     "properties": {
         "name": {
-            "$id": "#/properties/name",
-            "type": "string",
-            "title": "The Name Schema",
-            "description": "the name given to a user.",
-            "examples": [
-                "John Doe",
-                "Jane Doe"
-            ]
+            "$ref": "user.json#/definitions/name"
         },
         "email": {
-            "$id": "#/properties/email",
-            "type": "string",
-            "title": "The Email Schema",
-            "description": "The means of contact for a given user.",
-            "examples": [
-                "test.user@example.com"
-            ]
+            "$ref": "user.json#/definitions/email"
         }
     },
     "minProperties": 1
