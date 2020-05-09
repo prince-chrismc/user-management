@@ -27,7 +27,7 @@ jobs:
 
     - name: conan custom setup
       run: |
-        git clone --single-branch -b dd/json-schema-validation https://github.com/prince-chrismc/conan-center-index.git recipes/json-schema-validator/all
+        git clone --single-branch -b add/json-schema-validation https://github.com/prince-chrismc/conan-center-index.git recipes/json-schema-validator/all
         ls -la
 
     - name: install cmake
