@@ -47,3 +47,10 @@ jobs:
       run: |
         cd build
         make
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+         name: reactjs-from-cpp
+         path: build/reactjs-from-cpp
+
