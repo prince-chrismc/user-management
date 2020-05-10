@@ -55,3 +55,15 @@ jobs:
          name: reactjs-from-cpp
          path: backend/build/reactjs-from-cpp
 
+    - name: coverage
+      run: |
+        sudo apt-get install lcov
+        cd backend/build
+        cmake .. -DBUILD_TESTS=ON -DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
+        make coverage
+
+    - name: Coveralls GitHub Action
+      uses: coverallsapp/github-action@v1.1.1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: backend/build/coverage.info
