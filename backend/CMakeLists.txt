@@ -2,13 +2,14 @@ project(reactjs-from-cpp)
 cmake_minimum_required(VERSION 3.8)
 
 option(BUILD_TESTS "build the tests for this application" OFF)
+option(RUN_TIDY "run clang-tidy" OFF)
 
-set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/cmake)
 find_package(restinio 0.6 REQUIRED)
 find_package(clara 1.1.5 REQUIRED)
 find_package(nlohmann_json_schema_validator 2.0.0 REQUIRED)
 
-include("cmake/schema-pack.cmake")
+include("schema-pack")
 
 set(SCHEMA_LIST
     "../api/schema/add.json" "../api/schema/edit.json" "../api/schema/error.json"
@@ -23,4 +24,8 @@ target_link_libraries(
 
 if(${BUILD_TESTS})
   add_subdirectory(test)
+endif()
+
+if(${RUN_TIDY})
+  include("clang-tidy")
 endif()
