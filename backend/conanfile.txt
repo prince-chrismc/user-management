@@ -2,6 +2,7 @@
 restinio/0.6.6@stiffstream/stable
 clara/1.1.5
 json-schema-validator/2.0.0
+catch2/2.12.1
 
 [generators]
 cmake_find_package
