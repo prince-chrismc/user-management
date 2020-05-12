@@ -4,4 +4,14 @@
 
 #include <catch2/catch.hpp>
 
-TEST_CASE("User") { CHECK(1 == 1); }
+using namespace user_management;
+
+TEST_CASE("User") { 
+    user expected{0, "John Doe", " john@example.com"}; 
+}
+
+TEST_CASE("Add")
+{
+    user_list list;
+    auto& user = list.add("John Doe", " john@example.com");
+}
