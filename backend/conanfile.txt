@@ -1,11 +1,11 @@
 [requires]
-restinio/0.6.7@stiffstream/stable
-clara/1.1.5
-json-schema-validator/2.0.0
-catch2/2.12.1
+restinio/0.6.8
+lyra/1.4.0
+json-schema-validator/2.1.0
+catch2/2.12.2
 
 [generators]
 cmake_find_package
 
 [options]
-restinio:use_openssl=true
+restinio:with_openssl=True

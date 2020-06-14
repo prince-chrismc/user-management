@@ -201,7 +201,7 @@ struct app_args_t {
   std::string m_certs_dir{"."};
 
   static app_args_t parse(int argc, const char *argv[]) {
-    using namespace clara;
+    using namespace lyra;
 
     app_args_t result;
 
