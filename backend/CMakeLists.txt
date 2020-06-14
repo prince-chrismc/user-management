@@ -6,7 +6,7 @@ option(RUN_TIDY "run clang-tidy" OFF)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/cmake)
 find_package(restinio 0.6.8 REQUIRED)
-find_package(lyra 1.5.0 REQUIRED)
+find_package(lyra 1.4.0 REQUIRED)
 find_package(nlohmann_json_schema_validator 2.1.0 REQUIRED)
 
 include("schema-pack")
@@ -19,7 +19,7 @@ pack_schemas("${SCHEMA_LIST}" schemas)
 add_executable(reactjs-from-cpp "src/main.cpp" "src/program.hpp")
 
 target_link_libraries(
-  reactjs-from-cpp schemas restinio::restinio clara::clara
+  reactjs-from-cpp schemas restinio::restinio lyra::lyra
   nlohmann_json_schema_validator::nlohmann_json_schema_validator)
 
 if(${BUILD_TESTS})

@@ -31,12 +31,12 @@ SOFTWARE.
 #endif
 
 #include <fmt/format.h>
-
-#include <clara.hpp>
-#include <iostream>
-#include <map>
+#include <lyra/lyra.hpp>
 #include <restinio/all.hpp>
 #include <restinio/tls.hpp>
+
+#include <iostream>
+#include <map>
 
 const char *content_type_by_file_extention(const restinio::string_view_t &ext) {
   // Incomplete list of mime types from here:
@@ -205,17 +205,17 @@ struct app_args_t {
 
     app_args_t result;
 
-    auto cli =
-        Opt(result.m_address,
+    auto cli = cli_parser() | 
+        opt(result.m_address,
             "address")["-a"]["--address"](fmt::format("address to listen (default: {})", result.m_address)) |
-        Opt(result.m_port, "port")["-p"]["--port"](fmt::format("port to listen (default: {})", result.m_port)) |
-        Opt(result.m_pool_size, "thread-pool size")["-n"]["--thread-pool-size"](
+        opt(result.m_port, "port")["-p"]["--port"](fmt::format("port to listen (default: {})", result.m_port)) |
+        opt(result.m_pool_size, "thread-pool size")["-n"]["--thread-pool-size"](
             fmt::format("The size of a thread pool to run server (default: {})", result.m_pool_size)) |
-        Arg(result.m_root_dir, "root-dir")(fmt::format("server root dir (default: '{}')", result.m_root_dir)) |
-        Arg(result.m_certs_dir, "certs-dir")(fmt::format("server certs dir (default: '{}')", result.m_certs_dir)) |
-        Help(result.m_help);
+        arg(result.m_root_dir, "root-dir")(fmt::format("server root dir (default: '{}')", result.m_root_dir)) |
+        arg(result.m_certs_dir, "certs-dir")(fmt::format("server certs dir (default: '{}')", result.m_certs_dir)) |
+        help(result.m_help);
 
-    auto parse_result = cli.parse(Args(argc, argv));
+    auto parse_result = cli.parse({argc, argv});
     if (!parse_result) {
       throw std::runtime_error{fmt::format("Invalid command-line arguments: {}", parse_result.errorMessage())};
     }
