@@ -5,9 +5,9 @@ option(BUILD_TESTS "build the tests for this application" OFF)
 option(RUN_TIDY "run clang-tidy" OFF)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/cmake)
-find_package(restinio 0.6 REQUIRED)
-find_package(clara 1.1.5 REQUIRED)
-find_package(nlohmann_json_schema_validator 2.0.0 REQUIRED)
+find_package(restinio 0.6.8 REQUIRED)
+find_package(lyra 1.5.0 REQUIRED)
+find_package(nlohmann_json_schema_validator 2.1.0 REQUIRED)
 
 include("schema-pack")
 
