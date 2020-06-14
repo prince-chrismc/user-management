@@ -23,18 +23,11 @@ jobs:
     - name: install conan
       run: |
         pip install conan
-        conan remote add stiffstream https://api.bintray.com/conan/stiffstream/public
         conan profile new default --detect
         conan profile update settings.compiler.libcxx=libstdc++11 default
 
-    - name: conan custom setup
-      run: |
-        git clone --single-branch --depth=1 -b add/json-schema-validation https://github.com/prince-chrismc/conan-center-index.git
-        cd conan-center-index/recipes/json-schema-validator/all
-        conan create . 2.0.0@
-
     - name: install cmake
-      uses: lukka/get-cmake@v3.17.1
+      uses: lukka/get-cmake@v3.17.2
 
     - name: configure
       run: |
