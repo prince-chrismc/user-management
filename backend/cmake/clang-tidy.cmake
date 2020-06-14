@@ -1,11 +1,18 @@
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE BOOL "" FORCE)
+function(SETUP_CLANG_TIDY)
+  set(CMAKE_EXPORT_COMPILE_COMMANDS
+      ON
+      CACHE BOOL "" FORCE)
 
-set(TIDY_RUNNER "${CMAKE_BINARY_DIR}/tidy/run-clang-tidy.py")
-if(NOT EXISTS ${TIDY_RUNNER})
-    set(RUNNER_URL "https://raw.githubusercontent.com/llvm/llvm-project/master/clang-tools-extra/clang-tidy/tool/run-clang-tidy.py")
+  set(TIDY_RUNNER "${CMAKE_BINARY_DIR}/tidy/run-clang-tidy.py")
+  if(NOT EXISTS ${TIDY_RUNNER})
+    set(RUNNER_URL
+        "https://raw.githubusercontent.com/llvm/llvm-project/master/clang-tools-extra/clang-tidy/tool/run-clang-tidy.py"
+    )
     file(DOWNLOAD ${RUNNER_URL} ${TIDY_RUNNER})
-endif()
+  endif()
 
-find_program(PYTHON_EXE NAMES "python3" "python")
+  find_program(PYTHON_EXE NAMES "python3" "python")
 
-#add_custom_target(tidy ALL COMMAND "${PYTHON_EXE} ${TIDY_RUNNER} -p ${CMAKE_BINARY_DIR}")
+  add_custom_target(tidy ALL COMMAND "${PYTHON_EXE}" "${TIDY_RUNNER}" "-p"
+                                     "${CMAKE_BINARY_DIR}" ${ARGV})
+endfunction()

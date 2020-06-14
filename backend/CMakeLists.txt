@@ -28,4 +28,5 @@ endif()
 
 if(${RUN_TIDY})
   include("clang-tidy")
+  setup_clang_tidy("src/main.cpp" "src/program.hpp")
 endif()
