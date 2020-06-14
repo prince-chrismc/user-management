@@ -217,7 +217,7 @@ struct app_args_t {
 
     auto parse_result = cli.parse({argc, argv});
     if (!parse_result) {
-      throw std::runtime_error{fmt::format("Invalid command-line arguments: {}", parse_result.errorMessage())};
+      throw std::runtime_error(fmt::format("Invalid command-line arguments: {}", parse_result.errorMessage()));
     }
 
     if (result.m_help) {
