@@ -205,7 +205,8 @@ struct app_args_t {
 
     app_args_t result;
 
-    auto cli = cli_parser() | 
+    auto cli =
+        cli_parser() |
         opt(result.m_address,
             "address")["-a"]["--address"](fmt::format("address to listen (default: {})", result.m_address)) |
         opt(result.m_port, "port")["-p"]["--port"](fmt::format("port to listen (default: {})", result.m_port)) |
