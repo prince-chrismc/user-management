@@ -1,11 +1,12 @@
 // MIT License
 
-#include <map>
+#include "schemas.hpp"
+
 #include <nlohmann/json-schema.hpp>
+
+#include <map>
 #include <stdexcept>
 #include <string>
-
-#include "schemas.hpp"
 
 namespace user_management {
 struct user {
@@ -32,13 +33,35 @@ class user_list : std::map<int, user> {
   }
 };
 
+namespace impl {
+void loader(const nlohmann::json_uri &uri, nlohmann::json &schema) {
+  if (uri.path() == "/user.json") {
+    schema = api::user;
+    return;
+  }
+  if (uri.path() == "/edit.json") {
+    schema = api::edit;
+    return;
+  }
+}
+}  // namespace impl
+
 class user_modifier {
  public:
   user_modifier(user &user) : user_(user) {}
 
   void apply(const nlohmann::json &data) {
-    nlohmann::json_schema::json_validator validator;
-    validator.set_root_schema(api::add);
+    nlohmann::json_schema::json_validator validator(impl::loader);
+    validator.set_root_schema(api::edit);
+    validator.validate(data);
+
+    if (data.find("name") != std::end(data)) {
+      user_.name = data["name"].get<std::string>();
+    }
+
+    if (data.find("email") != std::end(data)) {
+      user_.name = data["email"].get<std::string>();
+    }
   }
 
  private:
