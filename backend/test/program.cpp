@@ -13,7 +13,7 @@ TEST_CASE("User") {
   CHECK(user.email == "john@example.com");
 }
 
-TEST_CASE("Add") {
+TEST_CASE("List") {
   user_list list;
   auto& user = list.add("John Doe", "john@example.com");
   CHECK(user.id == 1);
@@ -29,4 +29,12 @@ TEST_CASE("Edit") {
 
   user_modifier(user).apply(R"##({"email": "jane@example.com"})##"_json);
   CHECK_THAT(user.email, Catch::Equals("jane@example.com"));
+}
+
+TEST_CASE("Add"){
+  user_list list;
+  auto& user = list_modifier(list).add(R"##({"name": "Jane Doe", "email": "jane@example.com"})##"_json);
+  CHECK(user.id == 1);
+  CHECK(user.name == "Jane Doe");
+  CHECK(user.email == "jane@example.com");
 }
