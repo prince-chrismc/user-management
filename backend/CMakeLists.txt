@@ -18,7 +18,11 @@ set(SCHEMA_LIST
     "../api/schema/users.json")
 pack_schemas("${SCHEMA_LIST}" schemas)
 
-add_executable(reactjs-from-cpp "src/main.cpp" "src/program.hpp")
+add_executable(
+  reactjs-from-cpp
+  "src/main.cpp" "src/program.hpp" "src/content_type_from_ext.hpp"
+  "src/content_type_from_ext.cpp" "src/web_app_handler.hpp"
+  "src/web_app_handler.cpp")
 
 target_link_libraries(
   reactjs-from-cpp schemas restinio::restinio lyra::lyra
