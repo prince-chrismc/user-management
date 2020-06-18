@@ -6,17 +6,27 @@
 
 using namespace user_management;
 
-TEST_CASE("User") { user expected{0, "John Doe", " john@example.com"}; }
+TEST_CASE("User") {
+  user user{0, "John Doe", "john@example.com"};
+  CHECK(user.id == 0);
+  CHECK(user.name == "John Doe");
+  CHECK(user.email == "john@example.com");
+}
 
 TEST_CASE("Add") {
   user_list list;
-  auto& user = list.add("John Doe", " john@example.com");
+  auto& user = list.add("John Doe", "john@example.com");
+  CHECK(user.id == 1);
+  CHECK(user.name == "John Doe");
+  CHECK(user.email == "john@example.com");
 }
 
 TEST_CASE("Edit") {
   user_list list;
   auto& user = list.add("John Doe", "j@example.com");
   user_modifier(user).apply(R"##({"name": "Jane Doe"})##"_json);
-
   CHECK_THAT(user.name, Catch::Equals("Jane Doe"));
+
+  user_modifier(user).apply(R"##({"email": "jane@example.com"})##"_json);
+  CHECK_THAT(user.email, Catch::Equals("jane@example.com"));
 }

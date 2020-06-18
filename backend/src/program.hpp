@@ -51,7 +51,7 @@ class user_modifier {
   user_modifier(user &user) : user_(user) {}
 
   void apply(const nlohmann::json &data) {
-    nlohmann::json_schema::json_validator validator(impl::loader);
+    nlohmann::json_schema::json_validator validator(impl::loader, nlohmann::json_schema::default_string_format_check);
     validator.set_root_schema(api::edit);
     validator.validate(data);
 
@@ -60,7 +60,7 @@ class user_modifier {
     }
 
     if (data.find("email") != std::end(data)) {
-      user_.name = data["email"].get<std::string>();
+      user_.email = data["email"].get<std::string>();
     }
   }
 
