@@ -31,10 +31,18 @@ TEST_CASE("Edit") {
   CHECK_THAT(user.email, Catch::Equals("jane@example.com"));
 }
 
-TEST_CASE("Add"){
+TEST_CASE("Add") {
   user_list list;
   auto& user = list_modifier(list).add(R"##({"name": "Jane Doe", "email": "jane@example.com"})##"_json);
   CHECK(user.id == 1);
   CHECK(user.name == "Jane Doe");
   CHECK(user.email == "jane@example.com");
+}
+
+TEST_CASE("Loader") {
+  nlohmann::json json;
+  impl::loader(nlohmann::json_uri{"/user.json"}, json);
+  CHECK(json == api::user);
+
+  CHECK_THROWS_AS(impl::loader(nlohmann::json_uri{"/unknown.json"}, json), std::logic_error);
 }
