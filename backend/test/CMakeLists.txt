@@ -25,6 +25,6 @@ if(${COVERAGE})
   target_compile_options(program-test PRIVATE -g -O0 -fprofile-arcs -ftest-coverage)
   target_link_libraries(program-test PRIVATE gcov)
 
-  set(COVERAGE_EXCLUDES "/usr/**" "/home/*/.conan/**" "**/test/**")
+  set(COVERAGE_EXCLUDES "/usr/**" "/home/*/.conan/**" "*test*")
   setup_target_for_coverage_lcov(NAME coverage EXECUTABLE ${CMAKE_CURRENT_BINARY_DIR}/program-test)
 endif()
