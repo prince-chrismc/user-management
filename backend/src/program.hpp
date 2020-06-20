@@ -39,14 +39,8 @@ void loader(const nlohmann::json_uri &uri, nlohmann::json &schema) {
     schema = api::user;
     return;
   }
-  if (uri.path() == "/add.json") {
-    schema = api::add;
-    return;
-  }
-  if (uri.path() == "/edit.json") {
-    schema = api::edit;
-    return;
-  }
+
+  throw std::logic_error("unkown schema");
 }
 }  // namespace impl
 
@@ -76,7 +70,7 @@ class list_modifier {
  public:
   list_modifier(user_list &list) : list_(list) {}
 
-  user& add(const nlohmann::json &data) {
+  user &add(const nlohmann::json &data) {
     nlohmann::json_schema::json_validator validator(impl::loader, nlohmann::json_schema::default_string_format_check);
     validator.set_root_schema(api::add);
     validator.validate(data);
