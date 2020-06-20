@@ -5450,6 +5450,11 @@ raw-body@2.4.0:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
+react-async@^10.0.1:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/react-async/-/react-async-10.0.1.tgz#575c083f808303d2f6ca52d11ec7554dbdbd9fcd"
+  integrity sha512-ORUz5ca0B57QgBIzEZM5SuhJ6xFjkvEEs0gylLNlWf06vuVcLZsjIw3wx58jJkZG38p+0nUAxRgFW2b7mnVZzA==
+
 react-delay-render@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/react-delay-render/-/react-delay-render-0.1.2.tgz#f771003044a3772e8ff11084577633e34f3e9a6f"

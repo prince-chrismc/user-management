@@ -1,8 +1,15 @@
 import React from 'react';
-import { Header, Card } from 'semantic-ui-react';
+import { Header, Card, Container } from 'semantic-ui-react';
+import { useAsync } from 'react-async';
+import regeneratorRuntime from "regenerator-runtime"; // required for async
 
 import Layout from './Layout';
 import User from './User';
+
+const loadUsers = async () =>
+  await fetch("https://jsonplaceholder.typicode.com/users")
+    .then(res => (res.ok ? res : Promise.reject(res)))
+    .then(res => res.json())
 
 const MakeCards = ({ users }) => (
   <Card.Group>
@@ -13,18 +20,38 @@ const MakeCards = ({ users }) => (
 );
 
 const EditUsers = () => {
-  var users = [
-    { id: 0, name: "John Doe", email: "john@example.com" },
-    { id: 1, name: "Jane Doe", email: "jane@example.com" },
-    { id: 2, name: "Jack Doe", email: "jack@example.com" }
-  ]
-
+  const { data, error, isLoading } = useAsync({ promiseFn: loadUsers })
+  if (isLoading)
   return (
     <Layout>
       <Header as="h2">Users Management Page</Header>
-      <MakeCards users={users} />
+      <Container>
+        <p>
+          Loading please wait...
+        </p>
+      </Container>
     </Layout>
   );
+
+  if (error)
+    return (
+      <Layout>
+        <Header as="h2">Users Management Page</Header>
+        <Container>
+          <p>
+            Something went wrong: {error.message}
+          </p>
+        </Container>
+      </Layout>
+    );
+
+  if (data)
+    return (
+      <Layout>
+        <Header as="h2">Users Management Page</Header>
+        <MakeCards users={data} />
+      </Layout>
+    );
 };
 
 export default EditUsers;

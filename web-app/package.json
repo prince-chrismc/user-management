@@ -15,6 +15,7 @@
   "dependencies": {
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
+    "react-async": "^10.0.1",
     "react-delay-render": "^0.1.2",
     "react-dom": "^16.8.6",
     "react-imported-component": "^5.5.3",
