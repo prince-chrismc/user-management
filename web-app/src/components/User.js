@@ -4,7 +4,7 @@ import { Card } from 'semantic-ui-react';
 import EditModal from './EditModal'
 
 class User extends Component {
-  state = { name: 'John Doe', email: 'john@example.com' }
+  state = { name: this.props.name, email: this.props.email }
 
   handleSubmit = (name, email) => {
     this.setState({ name: name, email: email })
