@@ -24,9 +24,9 @@ SOFTWARE.
 
 */
 
-#include "program.hpp"
-#include "web_app_handler.hpp"
-#include "content_type_from_ext.hpp"
+#include "um/user_management.hpp"
+#include "handlers/web_app_handler.hpp"
+#include "utility/content_type_from_ext.hpp"
 
 #ifdef _WIN32
 #include <sdkddkver.h>

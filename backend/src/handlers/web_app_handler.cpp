@@ -2,7 +2,7 @@
 
 #include "web_app_handler.hpp"
 
-#include "content_type_from_ext.hpp"
+#include "utility/content_type_from_ext.hpp"
 
 namespace handler {
 namespace web_app {
