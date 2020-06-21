@@ -33,12 +33,12 @@ SOFTWARE.
 #endif
 
 #include <fmt/format.h>
-#include <lyra/lyra.hpp>
-#include <restinio/all.hpp>
-#include <restinio/tls.hpp>
 
 #include <iostream>
+#include <lyra/lyra.hpp>
 #include <map>
+#include <restinio/all.hpp>
+#include <restinio/tls.hpp>
 
 using router_t = restinio::router::express_router_t<>;
 
@@ -111,18 +111,17 @@ int main(int argc, char const *argv[]) {
       return 0;
     }
 
-    using traits_t = restinio::single_thread_tls_traits_t<restinio::asio_timer_manager_t,
-                                                          restinio::single_threaded_ostream_logger_t, router_t>;
+    using traits_t = restinio::tls_traits_t<restinio::asio_timer_manager_t, restinio::null_logger_t, router_t>;
 
-    namespace asio_ns = restinio::asio_ns;
+    namespace asio = restinio::asio_ns;
 
-    asio_ns::ssl::context tls_context{asio_ns::ssl::context::tls};
-    tls_context.set_options(asio_ns::ssl::context::default_workarounds | asio_ns::ssl::context::no_sslv2 |
-                            asio_ns::ssl::context::no_sslv3 | asio_ns::ssl::context::no_tlsv1 |
-                            asio_ns::ssl::context::single_dh_use);
+    asio::ssl::context tls_context{asio::ssl::context::tls};
+    tls_context.set_options(asio::ssl::context::default_workarounds | asio::ssl::context::no_sslv2 |
+                            asio::ssl::context::no_sslv3 | asio::ssl::context::no_tlsv1 |
+                            asio::ssl::context::single_dh_use);
 
     tls_context.use_certificate_chain_file(args.m_certs_dir + "/server.pem");
-    tls_context.use_private_key_file(args.m_certs_dir + "/key.pem", asio_ns::ssl::context::pem);
+    tls_context.use_private_key_file(args.m_certs_dir + "/key.pem", asio::ssl::context::pem);
     tls_context.use_tmp_dh_file(args.m_certs_dir + "/dh2048.pem");
 
     restinio::run(restinio::on_thread_pool<traits_t>(args.m_pool_size)
