@@ -25,7 +25,16 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: |
+    
+    - name: Production Build
+      run: |
         cd web-app/
         yarn install
         yarn build
+        GZIP=-9 tar -zcf web-app-prod.tar.gz dist/
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: web-app-prod.tar.gz
+        path: web-app/web-app-prod.tar.gz
