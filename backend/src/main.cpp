@@ -24,9 +24,9 @@ SOFTWARE.
 
 */
 
-#include "um/user_management.hpp"
+#include "handlers/serve_files.hpp"
 #include "handlers/web_app_handler.hpp"
-#include "utility/content_type_from_ext.hpp"
+#include "um/user_management.hpp"
 
 #ifdef _WIN32
 #include <sdkddkver.h>
@@ -59,42 +59,7 @@ auto server_handler(const std::string &root_dir) {
   router->http_get("/web-app/", &handler::web_app::redirect);
 
   router->http_get(R"(/:path(.*)\.:ext(.*))", restinio::path2regex::options_t{}.strict(true),
-                   [server_root_dir](auto req, auto params) {
-                     auto path = req->header().path();
-
-                     if (std::string::npos == path.find("..")) {
-                       // A nice path.
-                       const auto file_path = server_root_dir + std::string{path.data(), path.size()};
-                       const auto seperator = file_path.find_last_of('.');
-                       const auto ext = (seperator == std::string::npos) ? "" : file_path.substr(seperator + 1);
-                       try {
-                         auto sf = restinio::sendfile(file_path);
-                         auto modified_at = restinio::make_date_field_value(sf.meta().last_modified_at());
-
-                         auto expires_at = restinio::make_date_field_value(std::chrono::system_clock::now() +
-                                                                           std::chrono::hours(24 * 7));
-
-                         return req->create_response()
-                             .append_header(restinio::http_field::server, "RESTinio")
-                             .append_header_date_field()
-                             .append_header(restinio::http_field::last_modified, std::move(modified_at))
-                             .append_header(restinio::http_field::expires, std::move(expires_at))
-                             .append_header(restinio::http_field::content_type, content_type_by_file_extention(ext))
-                             .set_body(std::move(sf))
-                             .done();
-                       } catch (const std::exception &) {
-                         return req->create_response(restinio::status_not_found())
-                             .append_header_date_field()
-                             .connection_close()
-                             .done();
-                       }
-                     } else {
-                       return req->create_response(restinio::status_forbidden())
-                           .append_header_date_field()
-                           .connection_close()
-                           .done();
-                     }
-                   });
+                   handler::serve_files::from_disk{server_root_dir});
 
   return router;
 }
