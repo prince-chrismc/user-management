@@ -27,7 +27,7 @@ if(${COVERAGE})
                                               -ftest-coverage)
   target_link_libraries(program-test PRIVATE gcov)
 
-  set(COVERAGE_EXCLUDES "/usr/**" "/home/*/.conan/**" "*test*")
+  set(COVERAGE_EXCLUDES "/usr/**" "/home/*/.conan/**" "*test*" "*build*")
   setup_target_for_coverage_lcov(NAME coverage EXECUTABLE
                                  ${CMAKE_CURRENT_BINARY_DIR}/program-test)
 endif()
