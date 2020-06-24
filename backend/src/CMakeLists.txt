@@ -4,6 +4,8 @@ find_package(lyra 1.4.0 REQUIRED)
 add_executable(
   reactjs-from-cpp
   "main.cpp"
+  "utility/app_args.hpp"
+  "utility/app_args.cpp"
   "utility/content_type_from_ext.hpp"
   "utility/content_type_from_ext.cpp"
   "handlers/web_app_handler.hpp"
