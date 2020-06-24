@@ -1,4 +1,4 @@
-function(SETUP_CLANG_TIDY)
+function(SETUP_CLANG_TIDY target)
   set(CMAKE_EXPORT_COMPILE_COMMANDS
       ON
       CACHE BOOL "" FORCE)
@@ -13,6 +13,9 @@ function(SETUP_CLANG_TIDY)
 
   find_program(PYTHON_EXE NAMES "python3" "python")
 
-  add_custom_target(tidy ALL COMMAND "${PYTHON_EXE}" "${TIDY_RUNNER}" "-p"
-                                     "${CMAKE_BINARY_DIR}" ${ARGV})
+  add_custom_target(
+    ${target} ALL
+    COMMAND
+      "${PYTHON_EXE}" "${TIDY_RUNNER}" "-fix" "-format" "-p"
+      "${CMAKE_BINARY_DIR}" ${ARGV})
 endfunction()

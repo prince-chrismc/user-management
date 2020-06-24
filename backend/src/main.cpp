@@ -39,6 +39,8 @@ SOFTWARE.
 #include <iostream>
 #include <map>
 
+using namespace std::chrono_literals; // NOLINT(google-build-using-namespace)
+
 using router_t = restinio::router::express_router_t<>;
 
 auto server_handler(const std::string &root_dir) {
@@ -63,8 +65,6 @@ auto server_handler(const std::string &root_dir) {
 }
 
 int main(int argc, char const *argv[]) {
-  using namespace std::chrono;
-
   try {
     const auto args = app_args_t::parse(argc, argv);
 

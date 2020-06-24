@@ -3,11 +3,11 @@
 #include "app_args.hpp"
 
 #include <fmt/format.h>
-
-#include <iostream>
 #include <lyra/lyra.hpp>
 
-using namespace lyra;
+#include <iostream>
+
+using namespace lyra; // NOLINT(google-build-using-namespace)
 
 app_args_t app_args_t::parse(int argc, const char *argv[]) {
   app_args_t result;

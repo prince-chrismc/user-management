@@ -18,3 +18,9 @@ target_include_directories(
                            $<INSTALL_INTERFACE:include>)
 target_link_libraries(reactjs-from-cpp user_management::user_management
                       restinio::restinio lyra::lyra)
+
+if(${RUN_TIDY})
+  include("clang-tidy")
+  get_target_property(APP_SOURCES reactjs-from-cpp SOURCES)
+  setup_clang_tidy(app_tidy ${APP_SOURCES})
+endif()

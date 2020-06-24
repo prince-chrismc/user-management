@@ -40,5 +40,5 @@ endif()
 
 if(${RUN_TIDY})
   include("clang-tidy")
-  setup_clang_tidy("include/um/user_management.hpp")
+  setup_clang_tidy(um_tidy "include/um/user_management.hpp")
 endif()

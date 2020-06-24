@@ -6,7 +6,8 @@
 
 namespace handler {
 namespace web_app {
-restinio::request_handling_status_t link(restinio::request_handle_t req, restinio::router::route_params_t params) {
+restinio::request_handling_status_t link(const restinio::request_handle_t& req,
+                                         restinio::router::route_params_t /*params*/) {
   static auto modified_at = restinio::make_date_field_value(std::chrono::system_clock::now());
   auto expires_at = restinio::make_date_field_value(std::chrono::system_clock::now() + std::chrono::hours(24 * 7));
 
@@ -21,7 +22,8 @@ restinio::request_handling_status_t link(restinio::request_handle_t req, restini
       .done();
 }
 
-restinio::request_handling_status_t redirect(restinio::request_handle_t req, restinio::router::route_params_t params) {
+restinio::request_handling_status_t redirect(const restinio::request_handle_t& req,
+                                             restinio::router::route_params_t /*params*/) {
   return req->create_response(restinio::status_found())
       .append_header_date_field()
       .append_header(restinio::http_field::location, "/index.html")
