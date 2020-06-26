@@ -1,0 +1,29 @@
+name: Documentation CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Render OpenAPI
+    - run: npx redoc-cli bundle api/openapi.yaml
+    - run: mkdir public 
+    - run: cp redoc-static.html public/
+   
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
+        force_orphan: true
