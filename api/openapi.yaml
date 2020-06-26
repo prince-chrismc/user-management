@@ -9,7 +9,7 @@ info:
     or database integration.
 
 servers:
-  - url: "{server}/v1"
+  - url: "{server}/um/v1"
     variables:
       server:
         default: https://api.example.com
@@ -22,14 +22,6 @@ tags:
 
 components:
   parameters:
-    version:
-      name: version
-      in: path
-      required: true
-      description: Known API version
-      schema:
-        type: string
-      example: "v1.0"
     id:
       name: id
       in: path
@@ -52,8 +44,6 @@ components:
 
 paths:
   /users:
-    parameters:
-      - $ref: "#/components/parameters/version"
     get:
       tags:
         - Search
@@ -104,7 +94,6 @@ paths:
               example: { "error": "malformed JSON" }
   /users/{id}:
     parameters:
-      - $ref: "#/components/parameters/version"
       - $ref: "#/components/parameters/id"
     get:
       tags:
