@@ -20,7 +20,7 @@ pack_schemas("${SCHEMA_LIST}" schemas)
 add_library(user_management INTERFACE)
 add_library(user_management::user_management ALIAS user_management)
 
-target_compile_features(user_management INTERFACE cxx_std_11)
+target_compile_features(user_management INTERFACE cxx_std_14)
 target_include_directories(
   user_management
   INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

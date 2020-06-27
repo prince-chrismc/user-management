@@ -4,7 +4,7 @@
 
 #include <nlohmann/json-schema.hpp>
 
-#include <map>
+#include <set>
 #include <stdexcept>
 #include <string>
 
@@ -15,23 +15,50 @@ struct user {
   std::string email;
 };
 
-class user_list : std::map<int, user> {
+void to_json(nlohmann::json &json, const user &user) {
+  json = nlohmann::json{{"id", user.id}, {"name", user.name}, {"email", user.email}};
+}
+
+namespace impl {
+struct user_key {
+  int id;
+};
+
+struct user_sort {
+  using is_transparent = user_key;
+
+  bool operator()(const user &lhs, const user &rhs) { return lhs.id < rhs.id; }
+  bool operator()(const user &user, const user_key &key) { return user.id < key.id; }
+  bool operator()(const user_key &key, const user &user) { return key.id < user.id; }
+  bool operator()(const user_key &lhs, const user_key &rhs) { return lhs.id < rhs.id; }
+};
+}  // namespace impl
+
+class user_list : std::set<user, impl::user_sort> {
  public:
-  user &get(int id) { return at(id); }
+  user &get(int id) {
+    for (auto it = this->begin(); it != this->end(); ++it)
+      if (it->id == id) return (*it);
+  }
 
   user &add(std::string name, std::string email) {
-    const auto id = end()->first + 1;
-    emplace(std::make_pair(id, user{id, std::move(name), std::move(email)}));
+    const auto id = crbegin()->id + 1;
+    emplace(user{id, std::move(name), std::move(email)});
     return get(id);
   }
 
   user remove(int id) {
-    const auto it = find(id);
-    const auto copy = it->second;
+    const auto it = find(impl::user_key{id});
+    const auto copy = *it;
     erase(it);
     return copy;
   }
 };
+
+void to_json(nlohmann::json &json, const user_list &list) {
+  json = nlohmann::json::array();
+  for (const auto &user : list) json.push_back(nlohmann::json(user));
+}
 
 namespace impl {
 void loader(const nlohmann::json_uri &uri, nlohmann::json &schema) {
