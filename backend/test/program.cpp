@@ -1,8 +1,10 @@
 // MIT License
 
-#include "um/user_management.hpp"
-
+#include <algorithm>
 #include <catch2/catch.hpp>
+#include <vector>
+
+#include "um/user_management.hpp"
 
 using namespace user_management;
 
@@ -11,6 +13,11 @@ TEST_CASE("User") {
   CHECK(user.id == 0);
   CHECK(user.name == "John Doe");
   CHECK(user.email == "john@example.com");
+
+  CHECK_THAT(nlohmann::json(user).dump(), Catch::StartsWith("{") && Catch::Contains("0") &&
+                                              Catch::Contains("John Doe") && Catch::Contains("john@example.com") &&
+                                              Catch::EndsWith("}"));
+  CHECK(nlohmann::json(user).dump() == R"##({"email":"john@example.com","id":0,"name":"John Doe"})##");
 }
 
 TEST_CASE("List") {
@@ -19,6 +26,11 @@ TEST_CASE("List") {
   CHECK(user.id == 1);
   CHECK(user.name == "John Doe");
   CHECK(user.email == "john@example.com");
+
+  CHECK_THAT(nlohmann::json(list).dump(), Catch::StartsWith("[{") && Catch::Contains("1") &&
+                                              Catch::Contains("John Doe") && Catch::Contains("john@example.com") &&
+                                              Catch::EndsWith("}]"));
+  CHECK(nlohmann::json(list).dump() == R"##([{"email":"john@example.com","id":1,"name":"John Doe"}])##");
 }
 
 TEST_CASE("Edit") {

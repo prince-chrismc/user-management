@@ -1,12 +1,11 @@
 // MIT License
 
-#include "schemas.hpp"
-
-#include <nlohmann/json-schema.hpp>
-
 #include <map>
+#include <nlohmann/json-schema.hpp>
 #include <stdexcept>
 #include <string>
+
+#include "schemas.hpp"
 
 namespace user_management {
 struct user {
@@ -15,8 +14,15 @@ struct user {
   std::string email;
 };
 
+void to_json(nlohmann::json &json, const user &user) {
+  json = nlohmann::json::object({{"id", user.id}, {"name", user.name}, {"email", user.email}});
+}
+
 class user_list : std::map<int, user> {
  public:
+  using std::map<int, user>::begin;
+  using std::map<int, user>::end;
+
   user &get(int id) { return at(id); }
 
   user &add(std::string name, std::string email) {
@@ -33,6 +39,11 @@ class user_list : std::map<int, user> {
   }
 };
 
+void to_json(nlohmann::json &json, const user_list &list) {
+  json = nlohmann::json::array();
+  for (const auto &id_user : list) json.push_back(nlohmann::json(id_user.second));
+}
+
 namespace impl {
 void loader(const nlohmann::json_uri &uri, nlohmann::json &schema) {
   if (uri.path() == "/user.json") {
@@ -45,6 +56,8 @@ void loader(const nlohmann::json_uri &uri, nlohmann::json &schema) {
 }  // namespace impl
 
 class user_modifier {
+  user &user_;
+
  public:
   user_modifier(user &user) : user_(user) {}
 
@@ -61,12 +74,11 @@ class user_modifier {
       user_.email = data["email"].get<std::string>();
     }
   }
-
- private:
-  user &user_;
 };
 
 class list_modifier {
+  user_list &list_;
+
  public:
   list_modifier(user_list &list) : list_(list) {}
 
@@ -77,8 +89,5 @@ class list_modifier {
 
     return list_.add(data["name"].get<std::string>(), data["email"].get<std::string>());
   }
-
- private:
-  user_list &list_;
 };
 }  // namespace user_management
