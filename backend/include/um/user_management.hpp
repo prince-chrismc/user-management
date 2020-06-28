@@ -1,9 +1,10 @@
 // MIT License
 
 #include <map>
-#include <nlohmann/json-schema.hpp>
 #include <stdexcept>
 #include <string>
+
+#include <nlohmann/json-schema.hpp>
 
 #include "schemas.hpp"
 
@@ -14,7 +15,7 @@ struct user {
   std::string email;
 };
 
-void to_json(nlohmann::json &json, const user &user) {
+inline void to_json(nlohmann::json &json, const user &user) {
   json = nlohmann::json::object({{"id", user.id}, {"name", user.name}, {"email", user.email}});
 }
 
@@ -39,13 +40,13 @@ class user_list : std::map<int, user> {
   }
 };
 
-void to_json(nlohmann::json &json, const user_list &list) {
+inline void to_json(nlohmann::json &json, const user_list &list) {
   json = nlohmann::json::array();
   for (const auto &id_user : list) json.push_back(nlohmann::json(id_user.second));
 }
 
 namespace impl {
-void loader(const nlohmann::json_uri &uri, nlohmann::json &schema) {
+inline void loader(const nlohmann::json_uri &uri, nlohmann::json &schema) {
   if (uri.path() == "/user.json") {
     schema = api::user;
     return;

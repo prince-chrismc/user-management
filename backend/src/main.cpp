@@ -26,7 +26,7 @@ SOFTWARE.
 
 #include "handlers/serve_files.hpp"
 #include "handlers/web_app_handler.hpp"
-#include "um/user_management.hpp"
+#include "handlers/user_database.hpp"
 #include "utility/app_args.hpp"
 
 #ifdef _WIN32
@@ -43,7 +43,7 @@ using namespace std::chrono_literals; // NOLINT(google-build-using-namespace)
 
 using router_t = restinio::router::express_router_t<>;
 
-auto server_handler(const std::string &root_dir) {
+auto server_handler(const std::string &root_dir, user_management::user_list& list) {
   std::string server_root_dir;
 
   if (root_dir.empty()) {
@@ -60,6 +60,13 @@ auto server_handler(const std::string &root_dir) {
   router->http_get("/web-app/", &handler::web_app::redirect);
   router->http_get(R"(/:path(.*)\.:ext(.*))", restinio::path2regex::options_t{}.strict(true),
                    handler::serve_files::from_disk{server_root_dir});
+
+  router->http_get("/um/v1/users", handler::user::get_list{list});
+  router->http_get(R"(/um/v1/users/:id(\d+))", handler::user::get_user{list});
+
+  router->http_post("/um/v1/users", handler::user::add{list});
+  router->http_get(R"(/um/v1/users/:id(\d+))", handler::user::remove{list});
+  router->http_get(R"(/um/v1/users/:id(\d+))", handler::user::edit{list});
 
   return router;
 }
@@ -85,10 +92,12 @@ int main(int argc, char const *argv[]) {
     tls_context.use_private_key_file(args.certs_dir + "/key.pem", asio::ssl::context::pem);
     tls_context.use_tmp_dh_file(args.certs_dir + "/dh2048.pem");
 
+    user_management::user_list list;
+
     restinio::run(restinio::on_thread_pool<traits_t>(args.pool_size)
                       .address(args.address)
                       .port(args.port)
-                      .request_handler(server_handler(args.root_dir))
+                      .request_handler(server_handler(args.root_dir, list))
                       .read_next_http_message_timelimit(10s)
                       .write_http_response_timelimit(1s)
                       .handle_request_timeout(1s)

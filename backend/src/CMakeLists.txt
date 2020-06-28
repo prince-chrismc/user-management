@@ -11,7 +11,9 @@ add_executable(
   "handlers/web_app_handler.hpp"
   "handlers/web_app_handler.cpp"
   "handlers/serve_files.hpp"
-  "handlers/serve_files.cpp")
+  "handlers/serve_files.cpp"
+  "handlers/user_database.hpp"
+  "handlers/user_database.cpp")
 
 target_include_directories(
   reactjs-from-cpp PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
