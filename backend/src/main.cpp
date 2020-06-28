@@ -65,8 +65,11 @@ auto server_handler(const std::string &root_dir, user_management::user_list& lis
   router->http_get(R"(/um/v1/users/:id(\d+))", handler::user::get_user{list});
 
   router->http_post("/um/v1/users", handler::user::add{list});
-  router->http_get(R"(/um/v1/users/:id(\d+))", handler::user::remove{list});
-  router->http_get(R"(/um/v1/users/:id(\d+))", handler::user::edit{list});
+  router->http_delete(R"(/um/v1/users/:id(\d+))", handler::user::remove{list});
+  router->add_handler(restinio::http_method_patch(), R"(/um/v1/users/:id(\d+))", handler::user::edit{list});
+
+  router->add_handler(restinio::http_method_options(), "/um/v1/users", &handler::user::preflight::list);
+  router->add_handler(restinio::http_method_options(), R"(/um/v1/users/:id(\d+))", &handler::user::preflight::user);
 
   return router;
 }

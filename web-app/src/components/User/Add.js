@@ -15,8 +15,12 @@ class AddUser extends Component {
 
   render() {
     return (
-      <Card>
-        <Card.Content>
+      <Card color='green'>
+      <Card.Content>
+        <Card.Header>Create New User</Card.Header>
+        <Card.Meta>Someone new in the organization? Click below to add them to the database!</Card.Meta>
+      </Card.Content>
+      <Card.Content extra>
           <Modal trigger={<Button content='Add' icon='user outline' labelPosition='left' color='green'/>} closeIcon>
             <Modal.Header>Add New User</Modal.Header>
             <Modal.Content>

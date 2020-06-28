@@ -13,7 +13,7 @@ class User extends Component {
   render() {
     const { name, email } = this.state
     return (
-      <Card>
+      <Card color='grey'>
         <Card.Content>
           <Card.Header>
             {name}
@@ -23,7 +23,7 @@ class User extends Component {
           </Card.Meta>
         </Card.Content>
         <Card.Content extra>
-          <Modal trigger={<Button content='Edit' icon='edit outline' labelPosition='left' />} closeIcon>
+          <Modal trigger={<Button content='Edit' icon='edit outline' labelPosition='left' floated='left' />} closeIcon>
             <Modal.Header>Edit Settings</Modal.Header>
             <Modal.Content>
               <Modal.Description>
@@ -35,6 +35,7 @@ class User extends Component {
               </Modal.Description>
             </Modal.Content>
           </Modal>
+          <Button color='red' content='Delete' icon='user cancel' labelPosition='right' floated='right' />
         </Card.Content>
       </Card>
     )
