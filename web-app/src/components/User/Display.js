@@ -1,35 +1,7 @@
 import React, { Component } from 'react';
-import { Card, Button, Modal, Form } from 'semantic-ui-react'
+import { Card, Button, Modal } from 'semantic-ui-react'
 
-class FormEditNameAndEmail extends Component {
-  state = { name: this.props.name, email: this.props.email }
-
-  handleChange = (e, { name, value }) => this.setState({ [name]: value })
-
-  render() {
-    const { name, email } = this.state
-
-    return (
-      <Form onSubmit={() => { this.props.handleSubmit(this.state.name, this.state.email) }}>
-        <Form.Group>
-          <Form.Input
-            placeholder='Name'
-            name='name'
-            value={name}
-            onChange={this.handleChange}
-          />
-          <Form.Input
-            placeholder='Email'
-            name='email'
-            value={email}
-            onChange={this.handleChange}
-          />
-          <Form.Button color='green' icon='check' content='Save' inverted />
-        </Form.Group>
-      </Form>
-    )
-  }
-}
+import FormEditNameAndEmail from './Edit'
 
 class User extends Component {
   state = { name: this.props.name, email: this.props.email }
