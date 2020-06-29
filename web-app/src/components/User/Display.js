@@ -10,6 +10,14 @@ class User extends Component {
     this.setState({ name: name, email: email })
   }
 
+  handleDelete = () => {
+    const requestOptions = {
+      method: 'DELETE',
+    };
+    fetch('https://localhost:8080/um/v1/users/1', requestOptions)
+      .then(res => (res.ok ? res : Promise.reject(res)))
+  }
+
   render() {
     const { name, email } = this.state
     return (
@@ -35,7 +43,7 @@ class User extends Component {
               </Modal.Description>
             </Modal.Content>
           </Modal>
-          <Button color='red' content='Delete' icon='user cancel' labelPosition='right' floated='right' />
+          <Button color='red' content='Delete' icon='user cancel' labelPosition='right' floated='right' onClick={this.handleDelete}/>
         </Card.Content>
       </Card>
     )
