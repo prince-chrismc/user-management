@@ -30,7 +30,7 @@ restinio::request_handling_status_t from_disk::operator()(const restinio::reques
           .append_header(restinio::http_field::content_type, content_type_by_file_extention(ext))
           .set_body(std::move(sf))
           .done();
-    } catch (const std::exception &) {
+    } catch (const std::exception&) {
       return req->create_response(restinio::status_not_found()).append_header_date_field().connection_close().done();
     }
   } else {

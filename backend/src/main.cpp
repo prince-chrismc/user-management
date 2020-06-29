@@ -25,8 +25,8 @@ SOFTWARE.
 */
 
 #include "handlers/serve_files.hpp"
-#include "handlers/web_app_handler.hpp"
 #include "handlers/user_database.hpp"
+#include "handlers/web_app_handler.hpp"
 #include "utility/app_args.hpp"
 
 #ifdef _WIN32
@@ -39,11 +39,11 @@ SOFTWARE.
 #include <iostream>
 #include <map>
 
-using namespace std::chrono_literals; // NOLINT(google-build-using-namespace)
+using namespace std::chrono_literals;  // NOLINT(google-build-using-namespace)
 
 using router_t = restinio::router::express_router_t<>;
 
-auto server_handler(const std::string &root_dir, user_management::user_list& list) {
+auto server_handler(const std::string &root_dir, user_management::user_list &list) {
   std::string server_root_dir;
 
   if (root_dir.empty()) {

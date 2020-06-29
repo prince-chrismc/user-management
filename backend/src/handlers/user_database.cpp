@@ -7,7 +7,7 @@
 namespace handler {
 namespace user {
 restinio::request_handling_status_t add::operator()(const restinio::request_handle_t &req,
-                                                    restinio::router::route_params_t params) {
+                                                    restinio::router::route_params_t /*params*/) {
   const auto new_user = user_management::list_modifier(list_).add(nlohmann::json::parse(req->body()));
 
   return req->create_response()
@@ -48,7 +48,7 @@ restinio::request_handling_status_t get_user::operator()(const restinio::request
 }
 
 restinio::request_handling_status_t get_list::operator()(const restinio::request_handle_t &req,
-                                                         restinio::router::route_params_t params) {
+                                                         restinio::router::route_params_t /*params*/) {
   return req->create_response()
       .append_header(restinio::http_field::access_control_allow_origin, "*")
       .append_header(restinio::http_field::content_type, "application/json")
@@ -58,7 +58,7 @@ restinio::request_handling_status_t get_list::operator()(const restinio::request
 
 namespace preflight {
 restinio::request_handling_status_t list(const restinio::request_handle_t &req,
-                                         restinio::router::route_params_t params) {
+                                         restinio::router::route_params_t /*params*/) {
   return req->create_response(restinio::status_no_content())
       .append_header(restinio::http_field::access_control_allow_origin, "*")
       .append_header(restinio::http_field::access_control_allow_methods, "GET, POST")
@@ -67,13 +67,14 @@ restinio::request_handling_status_t list(const restinio::request_handle_t &req,
       .done();
 }
 restinio::request_handling_status_t user(const restinio::request_handle_t &req,
-                                         restinio::router::route_params_t params) {
+                                         restinio::router::route_params_t /*params*/) {
   return req->create_response(restinio::status_no_content())
       .append_header(restinio::http_field::access_control_allow_origin, "*")
       .append_header(restinio::http_field::access_control_allow_methods, "GET, PATCH, DELETE")
       .append_header(restinio::http_field::access_control_allow_headers, "Content-Type")
       .append_header(restinio::http_field::access_control_max_age, "86400")
-      .done();}
+      .done();
+}
 }  // namespace preflight
 }  // namespace user
 }  // namespace handler
