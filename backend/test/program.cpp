@@ -1,10 +1,11 @@
 // MIT License
 
-#include <algorithm>
-#include <catch2/catch.hpp>
-#include <vector>
-
 #include "um/user_management.hpp"
+
+#include <catch2/catch.hpp>
+
+#include <algorithm>
+#include <vector>
 
 using namespace user_management;
 
