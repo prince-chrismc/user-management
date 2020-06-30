@@ -8,13 +8,21 @@ namespace handler {
 namespace user {
 restinio::request_handling_status_t add::operator()(const restinio::request_handle_t &req,
                                                     restinio::router::route_params_t /*params*/) {
-  const auto new_user = user_management::list_modifier(list_).add(nlohmann::json::parse(req->body()));
+  try {
+    const auto new_user = user_management::list_modifier(list_).add(nlohmann::json::parse(req->body()));
 
-  return req->create_response()
-      .append_header(restinio::http_field::access_control_allow_origin, "*")
-      .append_header(restinio::http_field::content_type, "application/json")
-      .set_body(nlohmann::json(new_user).dump())
-      .done();
+    return req->create_response()
+        .append_header(restinio::http_field::access_control_allow_origin, "*")
+        .append_header(restinio::http_field::content_type, "application/json")
+        .set_body(nlohmann::json(new_user).dump())
+        .done();
+  } catch (const std::exception &e) {
+    return req->create_response(restinio::status_bad_request())
+        .append_header(restinio::http_field::access_control_allow_origin, "*")
+        .append_header(restinio::http_field::content_type, "application/json")
+        .set_body(nlohmann::json({{"error", e.what()}}).dump())
+        .done();
+  }
 }
 
 restinio::request_handling_status_t remove::operator()(const restinio::request_handle_t &req,

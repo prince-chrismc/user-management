@@ -26,27 +26,33 @@ TEST_CASE("User Endpoints") {
   other_work_thread_for_server_t<http_server_t> other_thread{http_server};
   other_thread.run();
 
-  const std::string get_list{
-      "GET /um/v1/users HTTP/1.0\r\n"
-      "From: unit-test\r\n"
-      "User-Agent: unit-test\r\n"
-      "Connection: close\r\n"
-      "\r\n"};
+  SECTION("GET") {
+    const std::string get_list{
+        "GET /um/v1/users HTTP/1.0\r\n"
+        "From: unit-test\r\n"
+        "User-Agent: unit-test\r\n"
+        "Connection: close\r\n"
+        "\r\n"};
 
-  std::string response;
-  REQUIRE_NOTHROW(response = do_request(get_list));
-  CHECK_THAT(response, Catch::Contains(nlohmann::json(list).dump()));
+    std::string response;
+    REQUIRE_NOTHROW(response = do_request(get_list));
+    CHECK_THAT(response, Catch::Contains(nlohmann::json(list).dump()));
+  }
 
-  const std::string post_list{
-      "POST /um/v1/users HTTP/1.0\r\n"
-      "From: unit-test\r\n"
-      "User-Agent: unit-test\r\n"
-      "Content-Type: application/json\r\n"
-      "Connection: close\r\n"
-      "\r\n"
-      R"##({"name": "Jane Doe", "email": "jane@example.com"})##"};
+  SECTION("POST") {
+    const std::string post_list{
+        "POST /um/v1/users HTTP/1.0\r\n"
+        "From: unit-test\r\n"
+        "User-Agent: unit-test\r\n"
+        "Content-Type: application/json\r\n"
+        "Content-Length: 49\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+        R"##({"name": "Jane Doe", "email": "jane@example.com"})##"};
 
-  REQUIRE_NOTHROW(response = do_request(post_list));
-  CHECK_THAT(response,
-             Catch::Contains(nlohmann::json(user_management::user{1, "Jane Doe", "jane@example.com"}).dump()));
+    std::string response;
+    REQUIRE_NOTHROW(response = do_request(post_list));
+    CHECK_THAT(response,
+               Catch::Contains(nlohmann::json(user_management::user{2, "Jane Doe", "jane@example.com"}).dump()));
+  }
 }
