@@ -1,5 +1,5 @@
 import React from 'react';
-import { Header, Card, Container } from 'semantic-ui-react';
+import { Message, Icon, Header, Card, Container } from 'semantic-ui-react';
 import { useAsync } from 'react-async';
 import regeneratorRuntime from "regenerator-runtime"; // required for async
 
@@ -36,15 +36,26 @@ const EditUsers = () => {
 
   if (isLoading)
     return (
-      <MakePlaceholders/>
+      <Container>
+        <Message icon>
+          <Icon name='circle notched' loading />
+          <Message.Content>
+            <Message.Header>Just one second</Message.Header>
+            We are fetching that content for you.
+          </Message.Content>
+        </Message>
+        <MakePlaceholders />
+      </Container>
     );
 
   if (error)
     return (
       <Container>
-        <p>
-          Something went wrong: {error.message}
-        </p>
+        <Message negative>
+          <Message.Header>Oh no! Something went wrong. Please Submit an issue to our support team.</Message.Header>
+          <p>{error.message}</p>
+        </Message>
+        <MakePlaceholders />
       </Container>
     );
 
