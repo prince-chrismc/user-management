@@ -1,11 +1,10 @@
 // MIT License
 
-#include "um/user_management.hpp"
-
-#include <catch2/catch.hpp>
-
 #include <algorithm>
+#include <catch2/catch.hpp>
 #include <vector>
+
+#include "um/user_management.hpp"
 
 namespace Catch {
 template <>
@@ -28,6 +27,14 @@ TEST_CASE("User") {
   CHECK(user >= user);
   CHECK_FALSE(user > user);
   CHECK_FALSE(user < user);
+
+  user_management::user other{1, "Jane Doe", "jane@example.com"};
+  CHECK_FALSE(user == other);
+  CHECK(user != other);
+  CHECK(user <= other);
+  CHECK_FALSE(user >= other);
+  CHECK_FALSE(user > other);
+  CHECK(user < other);
 
   CHECK_THAT(nlohmann::json(user).dump(), Catch::StartsWith("{") && Catch::Contains("0") &&
                                               Catch::Contains("John Doe") && Catch::Contains("john@example.com") &&
