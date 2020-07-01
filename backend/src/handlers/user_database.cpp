@@ -27,7 +27,7 @@ restinio::request_handling_status_t add::operator()(const restinio::request_hand
 
 restinio::request_handling_status_t remove::operator()(const restinio::request_handle_t &req,
                                                        restinio::router::route_params_t params) {
-  list_.remove(restinio::cast_to<int>(params["index"]));
+  list_.remove(restinio::cast_to<int>(params["id"]));
   return req->create_response(restinio::status_no_content())
       .append_header(restinio::http_field::access_control_allow_origin, "*")
       .done();
@@ -35,7 +35,7 @@ restinio::request_handling_status_t remove::operator()(const restinio::request_h
 
 restinio::request_handling_status_t edit::operator()(const restinio::request_handle_t &req,
                                                      restinio::router::route_params_t params) {
-  auto &user = list_.get(restinio::cast_to<int>(params["index"]));
+  auto &user = list_.get(restinio::cast_to<int>(params["id"]));
   user_management::user_modifier(user).apply(nlohmann::json::parse(req->body()));
 
   return req->create_response()
@@ -47,7 +47,7 @@ restinio::request_handling_status_t edit::operator()(const restinio::request_han
 
 restinio::request_handling_status_t get_user::operator()(const restinio::request_handle_t &req,
                                                          restinio::router::route_params_t params) {
-  const auto user = list_.get(restinio::cast_to<int>(params["index"]));
+  const auto user = list_.get(restinio::cast_to<int>(params["id"]));
   return req->create_response()
       .append_header(restinio::http_field::access_control_allow_origin, "*")
       .append_header(restinio::http_field::content_type, "application/json")

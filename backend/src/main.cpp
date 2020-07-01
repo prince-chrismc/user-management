@@ -61,15 +61,15 @@ auto server_handler(const std::string &root_dir, user_management::user_list &lis
   router->http_get(R"(/:path(.*)\.:ext(.*))", restinio::path2regex::options_t{}.strict(true),
                    handler::serve_files::from_disk{server_root_dir});
 
-  router->http_get("/um/v1/users", handler::user::get_list{list});
-  router->http_get(R"(/um/v1/users/:id(\d+))", handler::user::get_user{list});
+  router->http_get(handler::user::route::list, handler::user::get_list{list});
+  router->http_get(handler::user::route::user, handler::user::get_user{list});
 
-  router->http_post("/um/v1/users", handler::user::add{list});
-  router->http_delete(R"(/um/v1/users/:id(\d+))", handler::user::remove{list});
-  router->add_handler(restinio::http_method_patch(), R"(/um/v1/users/:id(\d+))", handler::user::edit{list});
+  router->http_post(handler::user::route::list, handler::user::add{list});
+  router->http_delete(handler::user::route::user, handler::user::remove{list});
+  router->add_handler(restinio::http_method_patch(), handler::user::route::user, handler::user::edit{list});
 
-  router->add_handler(restinio::http_method_options(), "/um/v1/users", &handler::user::preflight::list);
-  router->add_handler(restinio::http_method_options(), R"(/um/v1/users/:id(\d+))", &handler::user::preflight::user);
+  router->add_handler(restinio::http_method_options(), handler::user::route::list, &handler::user::preflight::list);
+  router->add_handler(restinio::http_method_options(), handler::user::route::user, &handler::user::preflight::user);
 
   return router;
 }
