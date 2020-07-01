@@ -7,6 +7,13 @@
 #include <algorithm>
 #include <vector>
 
+namespace Catch {
+template <>
+struct StringMaker<user_management::user> {
+  static std::string convert(user_management::user const& value) { return nlohmann::json(value).dump(); }
+};
+}  // namespace Catch
+
 using namespace user_management;
 
 TEST_CASE("User") {
@@ -14,6 +21,13 @@ TEST_CASE("User") {
   CHECK(user.id == 0);
   CHECK(user.name == "John Doe");
   CHECK(user.email == "john@example.com");
+
+  CHECK(user == user);
+  CHECK_FALSE(user != user);
+  CHECK(user <= user);
+  CHECK(user >= user);
+  CHECK_FALSE(user > user);
+  CHECK_FALSE(user < user);
 
   CHECK_THAT(nlohmann::json(user).dump(), Catch::StartsWith("{") && Catch::Contains("0") &&
                                               Catch::Contains("John Doe") && Catch::Contains("john@example.com") &&
@@ -50,6 +64,16 @@ TEST_CASE("Add") {
   CHECK(user.id == 1);
   CHECK(user.name == "Jane Doe");
   CHECK(user.email == "jane@example.com");
+}
+
+TEST_CASE("Remove") {
+  user_list list;
+  auto& user = list_modifier(list).add(R"##({"name": "Jane Doe", "email": "jane@example.com"})##"_json);
+  CHECKED_IF(user.id == 1) {
+    CHECK(list.get(1) == user);
+    CHECK(list.remove(1) == user_management::user{1, "Jane Doe", "jane@example.com"});
+    CHECK_THROWS(list.get(1));
+  }
 }
 
 TEST_CASE("Loader") {

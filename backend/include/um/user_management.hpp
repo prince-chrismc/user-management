@@ -15,6 +15,23 @@ struct user {
   std::string email;
 };
 
+inline bool operator==(const user &lhs, const user &rhs) {
+  std::tie(lhs.id, lhs.name, lhs.email) == std::tie(rhs.id, rhs.name, rhs.email);
+}
+inline bool operator!=(const user &lhs, const user &rhs) { return !(lhs == rhs); }
+inline bool operator<(const user &lhs, const user &rhs) {
+  std::tie(lhs.id, lhs.name, lhs.email) < std::tie(rhs.id, rhs.name, rhs.email);
+}
+inline bool operator>(const user &lhs, const user &rhs) {
+  std::tie(lhs.id, lhs.name, lhs.email) > std::tie(rhs.id, rhs.name, rhs.email);
+}
+inline bool operator<=(const user &lhs, const user &rhs) {
+  std::tie(lhs.id, lhs.name, lhs.email) <= std::tie(rhs.id, rhs.name, rhs.email);
+}
+inline bool operator>=(const user &lhs, const user &rhs) {
+  std::tie(lhs.id, lhs.name, lhs.email) >= std::tie(rhs.id, rhs.name, rhs.email);
+}
+
 inline void to_json(nlohmann::json &json, const user &user) {
   json = nlohmann::json::object({{"id", user.id}, {"name", user.name}, {"email", user.email}});
 }
