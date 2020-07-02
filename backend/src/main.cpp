@@ -26,7 +26,7 @@ SOFTWARE.
 
 #include "handlers/serve_files.hpp"
 #include "handlers/user_database.hpp"
-#include "handlers/web_app_handler.hpp"
+#include "handlers/web_app.hpp"
 #include "utility/app_args.hpp"
 
 #ifdef _WIN32

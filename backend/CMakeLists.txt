@@ -4,6 +4,11 @@ cmake_minimum_required(VERSION 3.8)
 option(BUILD_WEB_SERVER "build the web server for this application" ON)
 option(BUILD_TESTS "build the tests for this application" OFF)
 option(RUN_TIDY "run clang-tidy" OFF)
+option(COVERAGE "Enable code coverage testing" OFF)
+
+if(${COVERAGE})
+  cmake_policy(SET CMP0079 NEW)
+endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_BINARY_DIR}
                       ${CMAKE_SOURCE_DIR}/cmake)
