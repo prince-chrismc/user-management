@@ -53,7 +53,7 @@ jobs:
         sudo apt-get install lcov
         cd backend/build
         cmake .. -DBUILD_TESTS=ON -DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
-        make program-test coverage
+        make user_tests coverage
 
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v1.1.1
