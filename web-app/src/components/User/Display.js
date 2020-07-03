@@ -4,17 +4,24 @@ import { Card, Button, Modal } from 'semantic-ui-react'
 import FormEditNameAndEmail from './Edit'
 
 class User extends Component {
-  state = { name: this.props.name, email: this.props.email }
+  state = { id: this.props.id, name: this.props.name, email: this.props.email }
 
   handleSubmit = (name, email) => {
     this.setState({ name: name, email: email })
+    const requestOptions = {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, email: email })
+    };
+    fetch('https://localhost:8080/um/v1/users/' + this.state.id, requestOptions)
+      .then(res => (res.ok ? res : Promise.reject(res)))
   }
 
   handleDelete = () => {
     const requestOptions = {
       method: 'DELETE',
     };
-    fetch('https://localhost:8080/um/v1/users/1', requestOptions)
+    fetch('https://localhost:8080/um/v1/users/' + this.state.id, requestOptions)
       .then(res => (res.ok ? res : Promise.reject(res)))
   }
 
@@ -43,7 +50,7 @@ class User extends Component {
               </Modal.Description>
             </Modal.Content>
           </Modal>
-          <Button color='red' content='Delete' icon='user cancel' labelPosition='right' floated='right' onClick={this.handleDelete}/>
+          <Button color='red' content='Delete' icon='user cancel' labelPosition='right' floated='right' onClick={this.handleDelete} />
         </Card.Content>
       </Card>
     )

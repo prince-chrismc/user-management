@@ -16,7 +16,7 @@ const loadUsers = async () =>
 const MakeCards = ({ users }) => (
   <Card.Group>
     {users.map(user => (
-      <User name={user.name} email={user.email} />
+      <User id={user.id} name={user.name} email={user.email} />
     ))}
     <AddUser />
   </Card.Group>
@@ -24,7 +24,7 @@ const MakeCards = ({ users }) => (
 
 const MakePlaceholders = () => (
   <Card.Group>
-    {[...Array(3).keys()].map(x => (
+    {[...Array(4).keys()].map(x => (
       <UserPlaceholder />
 
     ))}
