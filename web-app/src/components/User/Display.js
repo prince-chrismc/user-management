@@ -1,12 +1,20 @@
 import React, { Component } from 'react';
-import { Card, Button, Modal } from 'semantic-ui-react'
+import { Message, Card, Button, Modal } from 'semantic-ui-react'
 
 import FormEditNameAndEmail from './Edit'
+import OptionalMessage from '../dialogs/OptionalMessage'
 
 class User extends Component {
-  state = { id: this.props.id, name: this.props.name, email: this.props.email }
+  state = { id: this.props.id, name: this.props.name, email: this.props.email, showError: true, errMsg: "" }
+
+  toggleError = () => {
+    this.setState((prevState) => {
+      return { showError: !prevState.showError, errMsg: 'Unknown error! Please contant our support team.' }
+    })
+  };
 
   handleSubmit = (name, email) => {
+    this.toggleError()
     this.setState({ name: name, email: email })
     const requestOptions = {
       method: 'PATCH',
@@ -42,6 +50,12 @@ class User extends Component {
             <Modal.Header>Edit Settings</Modal.Header>
             <Modal.Content>
               <Modal.Description>
+                <OptionalMessage isVisible={this.state.showError}>
+                  <Message negative
+                    header='Oh no! Something went horribly wrong'
+                    content={this.state.errMsg}
+                  />
+                </OptionalMessage>
                 <FormEditNameAndEmail
                   name={this.state.name}
                   email={this.state.email}
