@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { Card, Button, Modal } from 'semantic-ui-react'
+import { Card } from 'semantic-ui-react'
 
+import PopupModal from '../dialogs/UserModal'
 import FormEditNameAndEmail from './Edit'
 
 class AddUser extends Component {
-  state = { open: false }
-  open = () => this.setState({ open: true })
-  close = () => this.setState({ open: false })
+  constructor(props) {
+    super(props);
+    this.child = React.createRef();
+  }
 
   handleSubmit = (name, email) => {
     const requestOptions = {
@@ -16,12 +18,10 @@ class AddUser extends Component {
     };
     fetch('https://localhost:8080/um/v1/users', requestOptions)
       .then(res => (res.ok ? res : Promise.reject(res)))
-      .then(this.close())
+      .then(this.child.current.close())
   }
 
   render() {
-    const { open } = this.state
-
     return (
       <Card color='green'>
         <Card.Content>
@@ -29,24 +29,16 @@ class AddUser extends Component {
           <Card.Meta>Someone new in the organization? Click below to add them to the database!</Card.Meta>
         </Card.Content>
         <Card.Content extra>
-          <Button content='Add' icon='user outline' labelPosition='left' color='green' onClick={this.open} />
-          <Modal
-            open={open}
-            onClose={this.close}
-            closeIcon>
-            <Modal.Header>Add New User</Modal.Header>
-            <Modal.Content>
-              <Modal.Description>
-                <FormEditNameAndEmail
-                  name="John Doe"
-                  email="john@example.com"
-                  handleSubmit={this.handleSubmit}
-                />
-              </Modal.Description>
-            </Modal.Content>
-          </Modal>
+          <PopupModal content='Add' icon='user outline' labelPosition='left' color='green'
+            header='Add New User' ref={this.child}>
+            <FormEditNameAndEmail
+              name="John Doe"
+              email="john@example.com"
+              handleSubmit={this.handleSubmit}
+            />
+          </PopupModal>
         </Card.Content>
-      </Card>
+      </Card >
     )
   }
 }

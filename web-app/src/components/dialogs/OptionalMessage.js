@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Message } from 'semantic-ui-react'
 
 const withErrorHandling = ({ showError, message }) => {
    return (

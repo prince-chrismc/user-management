@@ -16,8 +16,8 @@ const UserPlaceholder = () => (
             </Placeholder>
         </Card.Content>
         <Card.Content extra>
-            <Button content='Edit' icon='edit outline' labelPosition='left' floated='left' disabled='true' />
-            <Button color='red' content='Delete' icon='user cancel' labelPosition='right' floated='right' disabled='true' />
+            <Button content='Edit' icon='edit outline' labelPosition='left' floated='left' disabled />
+            <Button color='red' content='Delete' icon='user cancel' labelPosition='right' floated='right' disabled />
         </Card.Content>
     </Card>
 )

@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
-import { Message, Card, Button, Modal } from 'semantic-ui-react'
+import { Message, Card, Button } from 'semantic-ui-react'
 
 import FormEditNameAndEmail from './Edit'
 import OptionalMessage from '../dialogs/OptionalMessage'
+import PopupModal from '../dialogs/UserModal'
 
 class User extends Component {
-  state = { id: this.props.id, name: this.props.name, email: this.props.email, showError: true, errMsg: "" }
+  constructor(props) {
+    super(props);
+    this.child = React.createRef();
+    this.state = { id: this.props.id, name: this.props.name, email: this.props.email, showError: false, errMsg: "" }
+  }
 
   toggleError = () => {
     this.setState((prevState) => {
@@ -23,6 +28,7 @@ class User extends Component {
     };
     fetch('https://localhost:8080/um/v1/users/' + this.state.id, requestOptions)
       .then(res => (res.ok ? res : Promise.reject(res)))
+      .then(this.child.current.close())
   }
 
   handleDelete = () => {
@@ -46,24 +52,20 @@ class User extends Component {
           </Card.Meta>
         </Card.Content>
         <Card.Content extra>
-          <Modal trigger={<Button content='Edit' icon='edit outline' labelPosition='left' floated='left' />} closeIcon>
-            <Modal.Header>Edit Settings</Modal.Header>
-            <Modal.Content>
-              <Modal.Description>
-                <OptionalMessage isVisible={this.state.showError}>
-                  <Message negative
-                    header='Oh no! Something went horribly wrong'
-                    content={this.state.errMsg}
-                  />
-                </OptionalMessage>
-                <FormEditNameAndEmail
-                  name={this.state.name}
-                  email={this.state.email}
-                  handleSubmit={this.handleSubmit}
-                />
-              </Modal.Description>
-            </Modal.Content>
-          </Modal>
+          <PopupModal content='Edit' icon='edit outline' labelPosition='left' floated='left'
+            header='Edit Settings' ref={this.child}>
+            <OptionalMessage isVisible={this.state.showError}>
+              <Message negative
+                header='Oh no! Something went horribly wrong'
+                content={this.state.errMsg}
+              />
+            </OptionalMessage>
+            <FormEditNameAndEmail
+              name={this.state.name}
+              email={this.state.email}
+              handleSubmit={this.handleSubmit}
+            />
+          </PopupModal>
           <Button color='red' content='Delete' icon='user cancel' labelPosition='right' floated='right' onClick={this.handleDelete} />
         </Card.Content>
       </Card>
