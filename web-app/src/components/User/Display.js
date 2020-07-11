@@ -9,26 +9,36 @@ class User extends Component {
   constructor(props) {
     super(props);
     this.child = React.createRef();
-    this.state = { id: this.props.id, name: this.props.name, email: this.props.email, showError: false, errMsg: "" }
+    this.state = { id: this.props.id, name: this.props.name, email: this.props.email, showError: false, errMsg: "", showOkay: false }
   }
 
-  toggleError = () => {
+  toggleError = (err) => {
     this.setState((prevState) => {
-      return { showError: !prevState.showError, errMsg: 'Unknown error! Please contant our support team.' }
+      return { showError: !prevState.showError, errMsg: err }
     })
   };
 
-  handleSubmit = (name, email) => {
-    this.toggleError()
+  toggleSuccess = (name, email) => {
+    this.setState((prevState) => {
+      return { showOkay: !prevState.showOkay }
+    })
     this.setState({ name: name, email: email })
+    console.log("toggleSuccess")
+  };
+
+  handleSubmit = (name, email) => {
     const requestOptions = {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: name, email: email })
     };
+
     fetch('https://localhost:8080/um/v1/users/' + this.state.id, requestOptions)
       .then(res => (res.ok ? res : Promise.reject(res)))
-      .then(this.child.current.close())
+      .then(res => res.json())
+      .then(data => this.toggleSuccess(data.name, data.email))
+      .then(console.log("done"))
+      .catch((err) => this.toggleError(err))
   }
 
   handleDelete = () => {
@@ -58,6 +68,12 @@ class User extends Component {
               <Message negative
                 header='Oh no! Something went horribly wrong'
                 content={this.state.errMsg}
+              />
+            </OptionalMessage>
+            <OptionalMessage isVisible={this.state.showOkay}>
+              <Message positive
+                header='Success! The operation completed without anny issue'
+                content='The user was successfully modified'
               />
             </OptionalMessage>
             <FormEditNameAndEmail
