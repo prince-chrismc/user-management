@@ -2,23 +2,19 @@ import React, { Component } from 'react';
 
 const withErrorHandling = ({ showError, message }) => {
    return (
-      <div>
+      <span>
          {showError && message}
-      </div>
+      </span>
    );
 };
 
-const DivWithErrorHandling = withErrorHandling
+const SpanWithErrorHandling = withErrorHandling
 
 class OptionalMessage extends Component {
-   state = { isVisible: this.props.isVisible }
-
    render() {
-      const { isVisible } = this.state
-
       return (
-         <DivWithErrorHandling
-            showError={isVisible}
+         <SpanWithErrorHandling
+            showError={this.props.isVisible}
             message={this.props.children} />
       );
    }
