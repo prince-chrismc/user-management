@@ -7,5 +7,4 @@ if(NOT EXISTS ${UNIT_TEST_HELPER})
 endif()
 
 add_library(unit_test_helper INTERFACE)
-target_include_directories(unit_test_helper
-                           INTERFACE "${CMAKE_BINARY_DIR}/utility")
+target_include_directories(unit_test_helper INTERFACE "${CMAKE_BINARY_DIR}/utility")
