@@ -19,11 +19,7 @@ class User extends Component {
   };
 
   toggleSuccess = (name, email) => {
-    this.setState((prevState) => {
-      return { showOkay: !prevState.showOkay }
-    })
-    this.setState({ name: name, email: email })
-    console.log("toggleSuccess")
+    this.setState({ name: name, email: email, showOkay: true })
   };
 
   handleSubmit = (name, email) => {
@@ -36,7 +32,7 @@ class User extends Component {
     fetch('https://localhost:8080/um/v1/users/' + this.state.id, requestOptions)
       .then(res => (res.ok ? res : Promise.reject(res)))
       .then(res => res.json())
-      .then(data => this.toggleSuccess(data.name, data.email))
+      .then((data) => {this.toggleSuccess(data.name, data.email)})
       .then(console.log("done"))
       .catch((err) => this.toggleError(err))
   }
