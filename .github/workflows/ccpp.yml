@@ -45,8 +45,8 @@ jobs:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
       with:
-         name: reactjs-from-cpp
-         path: backend/build/reactjs-from-cpp
+         name: user_database_app
+         path: backend/build/src/user_database_app
 
     - name: coverage
       run: |

@@ -17,7 +17,7 @@ restinio::request_handling_status_t link(const restinio::request_handle_t& req,
       .append_header(restinio::http_field::last_modified, std::move(modified_at))
       .append_header(restinio::http_field::expires, std::move(expires_at))
       .append_header(restinio::http_field::content_type, content_type_by_file_extention("html"))
-      .set_body(R"###(<html><head><title>React from C++</title></head><body>
+      .set_body(R"###(<html><head><title>User Management</title></head><body>
           <a href="web-app/">Link to the user front end...</a></body></html>)###")
       .done();
 }

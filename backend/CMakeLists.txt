@@ -1,4 +1,4 @@
-project(reactjs-from-cpp)
+project(user-management)
 cmake_minimum_required(VERSION 3.8)
 
 option(BUILD_WEB_SERVER "build the web server for this application" ON)
