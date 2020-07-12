@@ -19,4 +19,7 @@ if(${RUN_TIDY})
   include("clang-tidy")
   setup_clang_tidy(handlers_tidy "user_database.hpp" "user_database.cpp" "serve_files.hpp" "serve_files.cpp"
                    "web_app.hpp" "web_app.cpp")
+
+  include("cmake-format")
+  setup_cmake_format(handlers "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
 endif()

@@ -38,4 +38,7 @@ endif()
 if(${RUN_TIDY})
   include("clang-tidy")
   setup_clang_tidy(um_tidy "include/um/user_management.hpp")
+
+  include("cmake-format")
+  setup_cmake_format(main "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
 endif()

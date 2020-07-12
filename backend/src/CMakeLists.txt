@@ -8,4 +8,7 @@ if(${RUN_TIDY})
   include("clang-tidy")
   get_target_property(APP_SOURCES user_database_app SOURCES)
   setup_clang_tidy(app_tidy ${APP_SOURCES})
+
+  include("cmake-format")
+  setup_cmake_format(src "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
 endif()
