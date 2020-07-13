@@ -11,7 +11,7 @@ const Layout = ({ children }) => {
         <Grid columns={2}>
           <Grid.Row>
             <Grid.Column>
-              React From C++
+              Users Management
             </Grid.Column>
             <Grid.Column>
               <span className={pullRight}>

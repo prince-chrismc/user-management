@@ -64,7 +64,6 @@ const EditUsers = () => {
 const App = () => {
   return (
     <Layout>
-      <Header as="h2">Users Management Page</Header>
       <EditUsers />
     </Layout>
   );
