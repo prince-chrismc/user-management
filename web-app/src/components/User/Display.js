@@ -8,7 +8,6 @@ import PopupModal from '../dialogs/UserModal'
 class User extends Component {
   constructor(props) {
     super(props);
-    this.child = React.createRef();
     this.state = { id: this.props.id, name: this.props.name, email: this.props.email, showError: false, errMsg: "", showOkay: false }
   }
 
@@ -22,6 +21,10 @@ class User extends Component {
     this.setState({ name: name, email: email, showOkay: true })
   };
 
+  clearMessages = () => {
+    this.setState({ showError: false, showOkay: false })
+  }
+
   handleSubmit = (name, email) => {
     const requestOptions = {
       method: 'PATCH',
@@ -32,8 +35,7 @@ class User extends Component {
     fetch('https://localhost:8080/um/v1/users/' + this.state.id, requestOptions)
       .then(res => (res.ok ? res : Promise.reject(res)))
       .then(res => res.json())
-      .then((data) => {this.toggleSuccess(data.name, data.email)})
-      .then(console.log("done"))
+      .then((data) => { this.toggleSuccess(data.name, data.email) })
       .catch((err) => this.toggleError(err))
   }
 
@@ -59,7 +61,7 @@ class User extends Component {
         </Card.Content>
         <Card.Content extra>
           <PopupModal content='Edit' icon='edit outline' labelPosition='left' floated='left'
-            header='Edit Settings' ref={this.child}>
+            header='Edit Settings' onClose={this.clearMessages}>
             <OptionalMessage isVisible={this.state.showError}>
               <Message negative
                 header='Oh no! Something went horribly wrong'
