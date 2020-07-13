@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
+import { Container } from 'semantic-ui-react';
 
 const withErrorHandling = ({ showError, message }) => {
    return (
-      <span>
+      <Container>
          {showError && message}
-      </span>
+      </Container>
    );
 };
 
-const SpanWithErrorHandling = withErrorHandling
+const ContainerWithErrorHandling = withErrorHandling
 
 class OptionalMessage extends Component {
    render() {
       return (
-         <SpanWithErrorHandling
+         <ContainerWithErrorHandling
             showError={this.props.isVisible}
             message={this.props.children} />
       );

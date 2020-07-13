@@ -5,20 +5,16 @@ import regeneratorRuntime from "regenerator-runtime"; // required for async
 
 import Layout from './Layout';
 import User from './User/Display';
-import AddUser from './User/Add';
+import AddCard from './User/Add';
 import UserPlaceholder from './User/Loading';
-
-const loadUsers = async () =>
-  await fetch("https://localhost:8080/um/v1/users")
-    .then(res => (res.ok ? res : Promise.reject(res)))
-    .then(res => res.json())
+import { LoadUsers } from './endpoints/List'
 
 const MakeCards = ({ users }) => (
   <Card.Group>
     {users.map(user => (
       <User id={user.id} name={user.name} email={user.email} />
     ))}
-    <AddUser />
+    <AddCard />
   </Card.Group>
 );
 
@@ -32,7 +28,7 @@ const MakePlaceholders = () => (
 );
 
 const EditUsers = () => {
-  const { data, error, isLoading } = useAsync({ promiseFn: loadUsers })
+  const { data, error, isLoading } = useAsync({ promiseFn: LoadUsers })
 
   if (isLoading)
     return (

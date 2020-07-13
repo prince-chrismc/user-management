@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
-import { Message, Card, Button } from 'semantic-ui-react'
+import { Message, Card, Button, Container } from 'semantic-ui-react'
 
 import FormEditNameAndEmail from './Edit'
 import OptionalMessage from '../dialogs/OptionalMessage'
 import PopupModal from '../dialogs/UserModal'
+import { EditUser, DeleteUser } from '../endpoints/User'
 
 class User extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { id: this.props.id, name: this.props.name, email: this.props.email, showError: false, errMsg: "", showOkay: false }
-  }
+  state = { id: this.props.id, name: this.props.name, email: this.props.email, showError: false, errMsg: "", showOkay: false }
 
   toggleError = (err) => {
     this.setState((prevState) => {
-      return { showError: !prevState.showError, errMsg: err }
+      return { showError: !prevState.showError, errMsg: [err] }
     })
   };
 
@@ -26,25 +24,15 @@ class User extends Component {
   }
 
   handleSubmit = (name, email) => {
-    const requestOptions = {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name, email: email })
-    };
-
-    fetch('https://localhost:8080/um/v1/users/' + this.state.id, requestOptions)
-      .then(res => (res.ok ? res : Promise.reject(res)))
-      .then(res => res.json())
+    EditUser(this.state.id, name, email)
       .then((data) => { this.toggleSuccess(data.name, data.email) })
       .catch((err) => this.toggleError(err))
   }
 
   handleDelete = () => {
-    const requestOptions = {
-      method: 'DELETE',
-    };
-    fetch('https://localhost:8080/um/v1/users/' + this.state.id, requestOptions)
-      .then(res => (res.ok ? res : Promise.reject(res)))
+    DeleteUser(this.state.id,)
+      .then((data) => { this.toggleSuccess(data.name, data.email) })
+      .catch((err) => this.toggleError(err))
   }
 
   render() {
@@ -70,13 +58,13 @@ class User extends Component {
             </OptionalMessage>
             <OptionalMessage isVisible={this.state.showOkay}>
               <Message positive
-                header='Success! The operation completed without anny issue'
+                header='Success! The operation completed without any issue'
                 content='The user was successfully modified'
               />
             </OptionalMessage>
             <FormEditNameAndEmail
-              name={this.state.name}
-              email={this.state.email}
+              name={name}
+              email={email}
               handleSubmit={this.handleSubmit}
             />
           </PopupModal>
