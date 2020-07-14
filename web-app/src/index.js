@@ -5,13 +5,14 @@ import App from './components/App';
 
 import './index.css';
 
-const render = Component =>
+const render = Component => {
   ReactDOM.render(
     <AppContainer>
       <Component />
     </AppContainer>,
     document.getElementById('root')
   );
+};
 
 render(App);
 if (module.hot) module.hot.accept('./components/App', () => render(App));

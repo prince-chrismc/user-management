@@ -1,35 +1,35 @@
 import React, { Component } from 'react';
-import { Message, Card } from 'semantic-ui-react'
+import { Message, Card } from 'semantic-ui-react';
 
-import PopupModal from '../dialogs/UserModal'
-import OptionalMessage from '../dialogs/OptionalMessage'
-import FormEditNameAndEmail from './Edit'
-import { AddUser } from '../endpoints/List'
+import PopupModal from '../dialogs/UserModal';
+import OptionalMessage from '../dialogs/OptionalMessage';
+import FormEditNameAndEmail from './Edit';
+import { AddUser } from '../endpoints/List';
 
 class AddCard extends Component {
-  state = { showError: false, errMsg: "", showOkay: false }
+  state = { showError: false, errMsg: '', showOkay: false }
 
   toggleError = (err) => {
     this.setState((prevState) => {
-      return { showError: !prevState.showError, errMsg: [err] }
-    })
+      return { showError: !prevState.showError, errMsg: [err] };
+    });
   };
 
   toggleSuccess = () => {
-    this.setState({ showOkay: true })
+    this.setState({ showOkay: true });
   };
 
   handleSubmit = (name, email) => {
     AddUser(name, email)
-      .then(() => { this.toggleSuccess() })
-      .catch((err) => this.toggleError(err))
+      .then(() => { this.toggleSuccess(); })
+      .catch((err) => this.toggleError(err));
   }
 
   clearMessages = () => {
-    this.setState({ showError: false, showOkay: false })
+    this.setState({ showError: false, showOkay: false });
   }
 
-  render() {
+  render () {
     return (
       <Card color='green'>
         <Card.Content>
@@ -59,7 +59,7 @@ class AddCard extends Component {
           </PopupModal>
         </Card.Content>
       </Card >
-    )
+    );
   }
 }
 

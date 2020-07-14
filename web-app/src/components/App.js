@@ -1,13 +1,13 @@
 import React from 'react';
-import { Message, Icon, Header, Card, Container } from 'semantic-ui-react';
+import { Message, Icon, Card, Container } from 'semantic-ui-react';
 import { useAsync } from 'react-async';
-import regeneratorRuntime from "regenerator-runtime"; // required for async
+import regeneratorRuntime from 'regenerator-runtime'; // required for async
 
 import Layout from './Layout';
 import User from './User/Display';
 import AddCard from './User/Add';
 import UserPlaceholder from './User/Loading';
-import { LoadUsers } from './endpoints/List'
+import { LoadUsers } from './endpoints/List';
 
 const MakeCards = ({ users }) => (
   <Card.Group>
@@ -22,15 +22,14 @@ const MakePlaceholders = () => (
   <Card.Group>
     {[...Array(4).keys()].map(x => (
       <UserPlaceholder />
-
     ))}
   </Card.Group>
 );
 
 const EditUsers = () => {
-  const { data, error, isLoading } = useAsync({ promiseFn: LoadUsers })
+  const { data, error, isLoading } = useAsync({ promiseFn: LoadUsers });
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <Container>
         <Message icon>
@@ -43,8 +42,9 @@ const EditUsers = () => {
         <MakePlaceholders />
       </Container>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
       <Container>
         <Message negative>
@@ -54,11 +54,13 @@ const EditUsers = () => {
         <MakePlaceholders />
       </Container>
     );
+  }
 
-  if (data)
+  if (data) {
     return (
       <MakeCards users={data} />
     );
+  }
 };
 
 const App = () => {
