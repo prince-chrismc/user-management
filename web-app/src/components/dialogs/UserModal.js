@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import { Button, Modal } from 'semantic-ui-react';
+import React, { Component } from 'react'
+import { Button, Modal } from 'semantic-ui-react'
 
 class PopupModal extends Component {
    state = { open: false }
    open = () => this.setState({ open: true })
    close = () => {
-     this.props.onClose();
-     this.setState({ open: false });
+     this.props.onClose()
+     this.setState({ open: false })
    }
 
    render () {
-     const { open } = this.state;
+     const { open } = this.state
 
      return (
        <span>
@@ -28,8 +28,8 @@ class PopupModal extends Component {
            </Modal.Content>
          </Modal>
        </span>
-     );
+     )
    }
 }
 
-export default PopupModal;
+export default PopupModal

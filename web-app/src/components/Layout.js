@@ -1,8 +1,8 @@
-import React from 'react';
-import Clock from 'react-live-clock';
-import { Header, Container, Divider, Icon, Grid } from 'semantic-ui-react';
+import React from 'react'
+import Clock from 'react-live-clock'
+import { Header, Container, Divider, Icon, Grid } from 'semantic-ui-react'
 
-import { pullRight, h1 } from './layout.css';
+import { pullRight, h1 } from './layout.css'
 
 const Layout = ({ children }) => {
   return (
@@ -27,7 +27,7 @@ const Layout = ({ children }) => {
         Made with <Icon name="heart" color="red" /> by Chris Mc
       </p>
     </Container>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout

@@ -1,13 +1,13 @@
-import React from 'react';
-import { Message, Icon, Card, Container } from 'semantic-ui-react';
-import { useAsync } from 'react-async';
-import regeneratorRuntime from 'regenerator-runtime'; // required for async
+import React from 'react'
+import { Message, Icon, Card, Container } from 'semantic-ui-react'
+import { useAsync } from 'react-async'
+import regeneratorRuntime from 'regenerator-runtime' // required for async
 
-import Layout from './Layout';
-import User from './User/Display';
-import AddCard from './User/Add';
-import UserPlaceholder from './User/Loading';
-import { LoadUsers } from './endpoints/List';
+import Layout from './Layout'
+import User from './User/Display'
+import AddCard from './User/Add'
+import UserPlaceholder from './User/Loading'
+import { LoadUsers } from './endpoints/List'
 
 const MakeCards = ({ users }) => (
   <Card.Group>
@@ -16,7 +16,7 @@ const MakeCards = ({ users }) => (
     ))}
     <AddCard />
   </Card.Group>
-);
+)
 
 const MakePlaceholders = () => (
   <Card.Group>
@@ -24,10 +24,10 @@ const MakePlaceholders = () => (
       <UserPlaceholder />
     ))}
   </Card.Group>
-);
+)
 
 const EditUsers = () => {
-  const { data, error, isLoading } = useAsync({ promiseFn: LoadUsers });
+  const { data, error, isLoading } = useAsync({ promiseFn: LoadUsers })
 
   if (isLoading) {
     return (
@@ -41,7 +41,7 @@ const EditUsers = () => {
         </Message>
         <MakePlaceholders />
       </Container>
-    );
+    )
   }
 
   if (error) {
@@ -53,22 +53,22 @@ const EditUsers = () => {
         </Message>
         <MakePlaceholders />
       </Container>
-    );
+    )
   }
 
   if (data) {
     return (
       <MakeCards users={data} />
-    );
+    )
   }
-};
+}
 
 const App = () => {
   return (
     <Layout>
       <EditUsers />
     </Layout>
-  );
-};
+  )
+}
 
-export default App;
+export default App

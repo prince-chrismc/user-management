@@ -1,5 +1,5 @@
-import React from 'react';
-import { Card, Button, Placeholder } from 'semantic-ui-react';
+import React from 'react'
+import { Card, Button, Placeholder } from 'semantic-ui-react'
 
 const UserPlaceholder = () => (
   <Card color='orange'>
@@ -20,6 +20,6 @@ const UserPlaceholder = () => (
       <Button color='red' content='Delete' icon='user cancel' labelPosition='right' floated='right' disabled />
     </Card.Content>
   </Card>
-);
+)
 
-export default UserPlaceholder;
+export default UserPlaceholder

@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Form } from 'semantic-ui-react';
+import React, { Component } from 'react'
+import { Form } from 'semantic-ui-react'
 
 class FormEditNameAndEmail extends Component {
   state = { name: this.props.name, email: this.props.email }
@@ -7,10 +7,10 @@ class FormEditNameAndEmail extends Component {
   handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
   render () {
-    const { name, email } = this.state;
+    const { name, email } = this.state
 
     return (
-      <Form onSubmit={() => { this.props.handleSubmit(this.state.name, this.state.email); }}>
+      <Form onSubmit={() => { this.props.handleSubmit(this.state.name, this.state.email) }}>
         <Form.Group>
           <Form.Input
             placeholder='Name'
@@ -27,8 +27,8 @@ class FormEditNameAndEmail extends Component {
           <Form.Button color='green' icon='check' content='Save' inverted />
         </Form.Group>
       </Form>
-    );
+    )
   }
 }
 
-export default FormEditNameAndEmail;
+export default FormEditNameAndEmail
