@@ -1,24 +1,15 @@
-import React, { Component } from 'react'
-import { Container } from 'semantic-ui-react'
+import React from 'react'
 
-const withErrorHandling = ({ showError, message }) => {
-  return (
-    <Container>
-      {showError && message}
-    </Container>
-  )
-}
-
-const ContainerWithErrorHandling = withErrorHandling
-
-class OptionalMessage extends Component {
-  render () {
+const OptionalMessage = ({ isVisible, children }) => {
+  if (isVisible) {
     return (
-      <ContainerWithErrorHandling
-        showError={this.props.isVisible}
-        message={this.props.children} />
+      <>
+        {children}
+      </>
     )
   }
+
+  return (null)
 }
 
 export default OptionalMessage

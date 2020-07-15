@@ -4,9 +4,9 @@ import { useAsync } from 'react-async'
 import regeneratorRuntime from 'regenerator-runtime' // required for async
 
 import Layout from './Layout'
-import User from './User/Display'
-import AddCard from './User/Add'
-import UserPlaceholder from './User/Loading'
+import User from './cards/Display'
+import AddCard from './cards/Add'
+import UserPlaceholder from './cards/Loading'
 import { LoadUsers } from './endpoints/List'
 
 const MakeCards = ({ users }) => (
