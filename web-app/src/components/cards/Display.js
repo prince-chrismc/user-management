@@ -7,10 +7,6 @@ import RemoveUser from '../user/Delete'
 class User extends Component {
   state = { id: this.props.id, name: this.props.name, email: this.props.email }
 
-  onDelete = () => {
-    this.setState({ name: '', email: '' })
-  }
-
   onChange = (name, email) => {
     this.setState({ name: name, email: email })
   };
@@ -31,7 +27,7 @@ class User extends Component {
           <Button.Group widths='2'>
             <ModifyUser id={id} name={name} email={email} onChange={this.onChange} />
             <Button.Or />
-            <RemoveUser id={id} name={name} email={email} onDetele={this.onDelete} />
+            <RemoveUser id={id} name={name} email={email} onDetele={() => this.props.onDelete(id)} />
           </Button.Group>
         </Card.Content>
       </Card>

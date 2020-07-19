@@ -16,13 +16,17 @@ class MakeCards extends Component {
     this.setState({ users: this.state.users.concat(user) })
   }
 
-  render () {
+  onDelete = (id) => {
+    this.setState(prevState => ({ users: prevState.users.filter(user => user.id == id) }));
+  }
+
+  render() {
     return (
       <Card.Group>
         {this.state.users.map(user => (
-          <User id={user.id} name={user.name} email={user.email} />
+          <User id={user.id} name={user.name} email={user.email} onDelete={this.onDelete} />
         ))}
-        <AddCard onAdd={this.onAdd}/>
+        <AddCard onAdd={this.onAdd} />
       </Card.Group>
     )
   }
