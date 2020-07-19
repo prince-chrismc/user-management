@@ -21,6 +21,7 @@ class CreateUser extends Component {
 
   handleSubmit = (name, email) => {
     AddUser(name, email)
+      .then((data) => { this.props.onAdd(data) })
       .then(() => { this.toggleSuccess() })
       .catch((err) => this.toggleError(err))
   }
@@ -29,7 +30,7 @@ class CreateUser extends Component {
     this.setState({ showError: false, showOkay: false })
   }
 
-  render () {
+  render() {
     return (
       <PopupModal content='Add' icon='user outline' labelPosition='left' color='green'
         header='Add New User' onClose={this.clearMessages}>

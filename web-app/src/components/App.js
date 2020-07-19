@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { Message, Icon, Card, Container } from 'semantic-ui-react'
 import { useAsync } from 'react-async'
 import regeneratorRuntime from 'regenerator-runtime' // required for async
@@ -9,14 +9,25 @@ import AddCard from './cards/Add'
 import UserPlaceholder from './cards/Loading'
 import { LoadUsers } from './endpoints/List'
 
-const MakeCards = ({ users }) => (
-  <Card.Group>
-    {users.map(user => (
-      <User id={user.id} name={user.name} email={user.email} />
-    ))}
-    <AddCard />
-  </Card.Group>
-)
+
+class MakeCards extends Component {
+  state = { users: this.props.users }
+
+  onAdd = (user) => {
+    this.setState({users: this.state.users.concat(user)})
+  }
+
+  render() {
+    return (
+      <Card.Group>
+        {this.state.users.map(user => (
+          <User id={user.id} name={user.name} email={user.email} />
+        ))}
+        <AddCard onAdd={this.onAdd}/>
+      </Card.Group>
+    )
+  }
+}
 
 const MakePlaceholders = () => (
   <Card.Group>
@@ -31,7 +42,7 @@ const EditUsers = () => {
 
   if (isLoading) {
     return (
-      <Container>
+      <>
         <Message icon>
           <Icon name='circle notched' loading />
           <Message.Content>
@@ -40,19 +51,19 @@ const EditUsers = () => {
           </Message.Content>
         </Message>
         <MakePlaceholders />
-      </Container>
+      </>
     )
   }
 
   if (error) {
     return (
-      <Container>
+      <>
         <Message negative>
           <Message.Header>Oh no! Something went wrong. Please Submit an issue to our support team.</Message.Header>
           <p>{error.message}</p>
         </Message>
         <MakePlaceholders />
-      </Container>
+      </>
     )
   }
 
