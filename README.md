@@ -10,3 +10,9 @@ to manipulate data stored in memory.
 <p align="center">
   <img src="https://github.com/prince-chrismc/user-management/blob/master/docs/Hello-React-From-Cpp-Diagram.png?raw=true">
 </p>
+
+## Small Demonstration
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/prince-chrismc/user-management/master/docs/Screencast-2020-07-18-230754.gif">
+</p>
