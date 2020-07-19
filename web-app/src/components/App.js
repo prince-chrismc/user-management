@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Message, Icon, Card, Container } from 'semantic-ui-react'
+import { Message, Icon, Card } from 'semantic-ui-react'
 import { useAsync } from 'react-async'
 import regeneratorRuntime from 'regenerator-runtime' // required for async
 
@@ -9,15 +9,14 @@ import AddCard from './cards/Add'
 import UserPlaceholder from './cards/Loading'
 import { LoadUsers } from './endpoints/List'
 
-
 class MakeCards extends Component {
   state = { users: this.props.users }
 
   onAdd = (user) => {
-    this.setState({users: this.state.users.concat(user)})
+    this.setState({ users: this.state.users.concat(user) })
   }
 
-  render() {
+  render () {
     return (
       <Card.Group>
         {this.state.users.map(user => (

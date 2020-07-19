@@ -15,7 +15,7 @@ class User extends Component {
     this.setState({ name: name, email: email })
   };
 
-  render() {
+  render () {
     const { id, name, email } = this.state
     return (
       <Card color='grey'>

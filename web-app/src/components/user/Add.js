@@ -30,7 +30,7 @@ class CreateUser extends Component {
     this.setState({ showError: false, showOkay: false })
   }
 
-  render() {
+  render () {
     return (
       <PopupModal content='Add' icon='user outline' labelPosition='left' color='green'
         header='Add New User' onClose={this.clearMessages}>

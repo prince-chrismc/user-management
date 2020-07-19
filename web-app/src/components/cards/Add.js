@@ -4,7 +4,7 @@ import { Card, Button } from 'semantic-ui-react'
 
 import CreateUser from '../user/Add'
 
-const AddCard = ({onAdd}) => (
+const AddCard = ({ onAdd }) => (
   <Card color='green'>
     <Card.Content>
       <Card.Header>Create New User</Card.Header>
