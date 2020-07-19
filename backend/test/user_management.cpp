@@ -1,10 +1,10 @@
 // MIT License
 
-#include <algorithm>
-#include <catch2/catch.hpp>
-#include <vector>
-
 #include "um/user_management.hpp"
+
+#include <catch2/catch.hpp>
+
+#include <algorithm>
 
 namespace Catch {
 template <>
@@ -39,7 +39,7 @@ TEST_CASE("User") {
   CHECK_THAT(nlohmann::json(user).dump(), Catch::StartsWith("{") && Catch::Contains("0") &&
                                               Catch::Contains("John Doe") && Catch::Contains("john@example.com") &&
                                               Catch::EndsWith("}"));
-  CHECK(nlohmann::json(user).dump() == R"##({"email":"john@example.com","id":0,"name":"John Doe"})##");
+  CHECK(nlohmann::json(user) == R"##({"email":"john@example.com","id":0,"name":"John Doe"})##"_json);
 }
 
 TEST_CASE("List") {
@@ -52,7 +52,7 @@ TEST_CASE("List") {
   CHECK_THAT(nlohmann::json(list).dump(), Catch::StartsWith("[{") && Catch::Contains("1") &&
                                               Catch::Contains("John Doe") && Catch::Contains("john@example.com") &&
                                               Catch::EndsWith("}]"));
-  CHECK(nlohmann::json(list).dump() == R"##([{"email":"john@example.com","id":1,"name":"John Doe"}])##");
+  CHECK(nlohmann::json(list) == R"##([{"email":"john@example.com","id":1,"name":"John Doe"}])##"_json);
 }
 
 TEST_CASE("Edit") {
@@ -81,6 +81,8 @@ TEST_CASE("Remove") {
     CHECK(list.remove(1) == user_management::user{1, "Jane Doe", "jane@example.com"});
     CHECK_THROWS(list.get(1));
   }
+  const auto size = std::count_if(list.begin(), list.end(), [](auto) { return true; });
+  CHECK(size == 0);
 }
 
 TEST_CASE("Loader") {

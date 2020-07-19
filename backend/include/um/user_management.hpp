@@ -10,7 +10,7 @@
 
 namespace user_management {
 struct user {
-  int id;
+  size_t id;
   std::string name;
   std::string email;
 };
@@ -36,20 +36,21 @@ inline void to_json(nlohmann::json &json, const user &user) {
   json = nlohmann::json::object({{"id", user.id}, {"name", user.name}, {"email", user.email}});
 }
 
-class user_list : std::map<int, user> {
+class user_list : std::map<size_t, user> {
+  size_t index = 0;
  public:
-  using std::map<int, user>::begin;
-  using std::map<int, user>::end;
+  using std::map<size_t, user>::begin;
+  using std::map<size_t, user>::end;
 
-  user &get(int id) { return at(id); }
+  user &get(size_t id) { return at(id); }
 
   user &add(std::string name, std::string email) {
-    const auto id = end()->first + 1;
+    const auto id = ++index;
     emplace(std::make_pair(id, user{id, std::move(name), std::move(email)}));
     return get(id);
   }
 
-  user remove(int id) {
+  user remove(size_t id) {
     const auto it = find(id);
     const auto copy = it->second;
     erase(it);

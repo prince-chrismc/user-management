@@ -1,8 +1,7 @@
-find_package(restinio 0.6.8 REQUIRED)
-find_package(Catch2 1.12.1 REQUIRED)
+find_package(Catch2 2.13.0 REQUIRED)
 
 include("unit-test-helper")
-add_executable(user_tests "main.cpp" "program.cpp" "user_database.cpp")
+add_executable(user_tests "main.cpp" "user_management.cpp" "user_database.cpp")
 target_link_libraries(user_tests PRIVATE user_database unit_test_helper Catch2::Catch2)
 
 if(${COVERAGE})
