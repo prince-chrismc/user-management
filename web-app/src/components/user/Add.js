@@ -11,7 +11,7 @@ class CreateUser extends Component {
 
   toggleError = (err) => {
     this.setState((prevState) => {
-      return { showError: !prevState.showError, errMsg: [err] }
+      return { showError: !prevState.showError, errMsg: '' + err }
     })
   };
 
