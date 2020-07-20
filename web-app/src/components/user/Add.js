@@ -30,27 +30,26 @@ class CreateUser extends Component {
     this.setState({ showError: false, showOkay: false })
   }
 
-  render () {
+  render() {
     return (
       <PopupModal content='Add' icon='user outline' labelPosition='left' color='green'
         header='Add New User' onClose={this.clearMessages}>
-        <OptionalMessage isVisible={this.state.showError}>
-          <Message negative
-            header='Oh no! Something went horribly wrong'
-            content={this.state.errMsg}
-          />
-        </OptionalMessage>
-        <OptionalMessage isVisible={this.state.showOkay}>
-          <Message positive
-            header='Success! The operation completed without any issue'
-            content='The user was successfully modified'
-          />
-        </OptionalMessage>
         <FormEditNameAndEmail
           name="John Doe"
           email="john@example.com"
           handleSubmit={this.handleSubmit}
-        />
+          error={this.state.showError}
+          success={this.state.showOkay}
+        >
+          <Message error
+            header='Oh no! Something went horribly wrong'
+            content={this.state.errMsg}
+          />
+          <Message success
+            header='Success! The operation completed without any issue'
+            content='The user was successfully modified'
+          />
+        </FormEditNameAndEmail>
       </PopupModal>
     )
   }
