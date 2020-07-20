@@ -17,7 +17,7 @@ class MakeCards extends Component {
   }
 
   onDelete = (id) => {
-    this.setState(prevState => ({ users: prevState.users.filter(user => user.id == id) }));
+    this.setState(prevState => ({ users: prevState.users.filter((user) => { return user.id !== id }) }));
   }
 
   render() {
