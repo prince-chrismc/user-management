@@ -20,6 +20,12 @@ jobs:
     - name: install pip
       run: python -m pip install --upgrade pip
 
+    - name: cache conan data
+      uses: actions/cache@v2
+      with:
+        path: ~/.conan/data
+        key: ${{ runner.os }}-${{ hashFiles('**/conanfile.txt') }}
+
     - name: install conan
       run: |
         pip install conan
