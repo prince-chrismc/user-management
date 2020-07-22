@@ -45,7 +45,8 @@ jobs:
         name: web-app-prod.tar.gz
         path: web-app/web-app-prod.tar.gz
         
-  test: 
+  test:
+    needs: [build]
     runs-on: ubuntu-latest       
 
     strategy:
@@ -74,6 +75,7 @@ jobs:
         yarn test
         
   deploy: 
+    needs: [test]
     runs-on: ubuntu-latest
 
     strategy:
