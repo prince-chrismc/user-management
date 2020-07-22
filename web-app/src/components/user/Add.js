@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Message } from 'semantic-ui-react'
 
 import PopupModal from '../dialogs/UserModal'
-import OptionalMessage from '../dialogs/OptionalMessage'
 import FormEditNameAndEmail from '../dialogs/EditForm'
 import { AddUser } from '../endpoints/List'
 
@@ -30,7 +29,7 @@ class CreateUser extends Component {
     this.setState({ showError: false, showOkay: false })
   }
 
-  render() {
+  render () {
     return (
       <PopupModal content='Add' icon='user outline' labelPosition='left' color='green'
         header='Add New User' onClose={this.clearMessages}>

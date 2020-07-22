@@ -17,10 +17,10 @@ class MakeCards extends Component {
   }
 
   onDelete = (id) => {
-    this.setState(prevState => ({ users: prevState.users.filter((user) => { return user.id !== id }) }));
+    this.setState(prevState => ({ users: prevState.users.filter((user) => { return user.id !== id }) }))
   }
 
-  render() {
+  render () {
     return (
       <Card.Group>
         {this.state.users.map(user => (

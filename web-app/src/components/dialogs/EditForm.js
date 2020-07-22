@@ -6,13 +6,13 @@ class FormEditNameAndEmail extends Component {
 
   handleChange = (e, { name, value }) => this.setState({ [name]: value })
 
-  render() {
+  render () {
     const { name, email } = this.state
 
     return (
       <Form onSubmit={() => { this.props.handleSubmit(this.state.name, this.state.email) }}
         success={this.props.success}
-        eroor={this.props.error}
+        error={this.props.error}
       >
         {this.props.children}
         <Form.Group>

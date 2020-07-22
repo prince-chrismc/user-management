@@ -29,7 +29,7 @@ class ModifyUser extends Component {
       .catch((err) => this.toggleError(err))
   }
 
-  render() {
+  render () {
     const { name, email } = this.state
     return (
       <PopupModal content='Edit' icon='edit outline' labelPosition='left' floated='left'
