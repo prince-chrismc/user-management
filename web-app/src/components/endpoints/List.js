@@ -1,3 +1,5 @@
+import regeneratorRuntime from 'regenerator-runtime' // required for async
+
 export const LoadUsers = async () =>
   await fetch('https://localhost:8080/um/v1/users')
     .then(res => (res.ok ? res : Promise.reject(res)))

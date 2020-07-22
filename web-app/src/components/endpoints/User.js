@@ -1,3 +1,5 @@
+import regeneratorRuntime from 'regenerator-runtime' // required for async
+
 export const EditUser = async (id, name, email) => {
   const requestOptions = {
     method: 'PATCH',

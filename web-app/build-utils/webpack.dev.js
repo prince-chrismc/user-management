@@ -1,5 +1,4 @@
 const commonPaths = require('./common-paths');
-
 const webpack = require('webpack');
 
 const port = process.env.PORT || 3000;

@@ -7,13 +7,25 @@ Originally created by: [@esausilva](https://github.com/esausilva)
 Install dependencies
 
 ```
-$ yarn
+$ yarn install
 ```
 
 Run development server
 
 ```
 $ yarn dev
+```
+
+Run tests
+
+```
+$ yarn test
+```
+
+Run ESlint
+
+```
+$ yarn lint
 ```
 
 ### Building
