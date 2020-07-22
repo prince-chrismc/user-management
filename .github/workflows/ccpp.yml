@@ -66,3 +66,4 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: backend/build/coverage.info
+        flag-name: cpp-backend-unit-test
