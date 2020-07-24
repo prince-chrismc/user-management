@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/prince-chrismc/user-management/badge.svg?branch=master)](https://coveralls.io/github/prince-chrismc/user-management?branch=master)
 [![Docs](https://img.shields.io/badge/API%20Documentation-master-blue)](https://prince-chrismc.github.io/user-management/)
 
-An open-source application delivering a responsive user management application.
+An open-source application delivering a responsive user management experience.
 
 ## Small Demonstration
 
