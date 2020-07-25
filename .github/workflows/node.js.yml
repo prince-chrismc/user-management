@@ -89,6 +89,20 @@ jobs:
         node-version: [ 14.x ]
 
     steps:
+    - uses: actions/checkout@v2
+      
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Cache multiple paths
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+        key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+
     - name: Coverage
       run: |
         cd web-app/
@@ -124,7 +138,7 @@ jobs:
         path: |
           **/node_modules
         key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    
+
     - name: Production Build
       run: |
         cd web-app/
