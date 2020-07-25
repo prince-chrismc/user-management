@@ -1,9 +1,9 @@
-# User Management
+# User Management [![Docs](https://img.shields.io/badge/API%20Documentation-master-blue)](https://prince-chrismc.github.io/user-management/)
 
-[![C++ CI](https://github.com/prince-chrismc/user-management/workflows/C++%20CI/badge.svg)](https://github.com/prince-chrismc/user-management/actions?query=workflow%3A%22C%2B%2B+CI%22)
-[![Node.js CI](https://github.com/prince-chrismc/user-management/workflows/Node.js%20CI/badge.svg)](https://github.com/prince-chrismc/user-management/actions?query=workflow%3A%22Node.js+CI%22)
-[![Coverage Status](https://coveralls.io/repos/github/prince-chrismc/user-management/badge.svg?branch=master)](https://coveralls.io/github/prince-chrismc/user-management?branch=master)
-[![Docs](https://img.shields.io/badge/API%20Documentation-master-blue)](https://prince-chrismc.github.io/user-management/)
+| Component | Build | Coverage |
+| --- | --- | --- |
+| Back-end | [![C++ CI](https://github.com/prince-chrismc/user-management/workflows/C++%20CI/badge.svg)](https://github.com/prince-chrismc/user-management/actions?query=workflow%3A%22C%2B%2B+CI%22)| [![Coverage Status](https://coveralls.io/repos/github/prince-chrismc/user-management/badge.svg?branch=master)](https://coveralls.io/github/prince-chrismc/user-management?branch=master) |
+| Front-end | [![Node.js CI](https://github.com/prince-chrismc/user-management/workflows/Node.js%20CI/badge.svg)](https://github.com/prince-chrismc/user-management/actions?query=workflow%3A%22Node.js+CI%22) | [![codecov](https://codecov.io/gh/prince-chrismc/user-management/branch/master/graph/badge.svg)](https://codecov.io/gh/prince-chrismc/user-management) |
 
 An open-source application delivering a responsive user management experience.
 
