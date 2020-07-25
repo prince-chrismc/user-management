@@ -37,7 +37,7 @@ jobs:
         path: |
           **/node_modules
         key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    
+
     - name: Production Build
       run: |
         cd web-app/
@@ -50,10 +50,10 @@ jobs:
       with:
         name: web-app-prod.tar.gz
         path: web-app/web-app-prod.tar.gz
-        
+
   test:
     needs: [build]
-    runs-on: ubuntu-latest       
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -79,7 +79,43 @@ jobs:
         cd web-app/
         yarn install
         yarn test
-        
+
+  coverage: 
+    needs: [test]
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 14.x ]
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Cache multiple paths
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+        key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+
+    - name: Coverage
+      run: |
+        cd web-app/
+        yarn install
+        yarn coverage
+
+    - name: CodeCov GitHub Action
+      uses: codecov/codecov-action@v1
+      with:
+        file: web-app/coverage/lcov.info
+        name: react-frontend-unit-test-${{ matrix.node-version }}
+        fail_ci_if_error: true
+
   deploy: 
     needs: [test]
     runs-on: ubuntu-latest
@@ -102,7 +138,7 @@ jobs:
         path: |
           **/node_modules
         key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    
+
     - name: Production Build
       run: |
         cd web-app/
