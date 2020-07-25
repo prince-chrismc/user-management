@@ -91,6 +91,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: web-app/coverage/lcov.info
+        base-path: web-app
         flag-name: react-frontend-unit-test-${{ matrix.node-version }}
         parallel: true
         
