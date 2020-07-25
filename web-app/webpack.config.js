@@ -1,6 +1,7 @@
 const buildValidations = require('./build-utils/build-validations');
-const commonConfig = require('./build-utils/webpack.common');
+const commonConfig = require('./build-utils/webpack.common.js');
 
+const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
 
 const addons = (/* string | string[] */ addonsArg) => {
@@ -19,7 +20,14 @@ module.exports = env => {
   const mergedConfig = webpackMerge(
     commonConfig,
     envConfig,
-    ...addons(env.addons)
+    ...addons(env.addons),
+    {
+      plugins: [
+        new webpack.DefinePlugin({
+          'process.env.API_URL': JSON.stringify(`${env.API_URL}`)
+        })
+      ]
+    }
   );
 
   return mergedConfig;

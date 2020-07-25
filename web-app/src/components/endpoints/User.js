@@ -7,7 +7,7 @@ export const EditUser = async (id, name, email) => {
     body: JSON.stringify({ name: name, email: email })
   }
 
-  return await fetch('https://localhost:8080/um/v1/users/' + id, requestOptions)
+  return await fetch(process.env.API_URL + '/um/v1/users/' + id, requestOptions)
     .then(res => (res.ok ? res : Promise.reject(res)))
     .then(res => res.json())
 }
@@ -16,6 +16,6 @@ export const DeleteUser = async (id) => {
   const requestOptions = {
     method: 'DELETE'
   }
-  return await fetch('https://localhost:8080/um/v1/users/' + id, requestOptions)
+  return await fetch(process.env.API_URL + '/um/v1/users/' + id, requestOptions)
     .then(res => (res.ok ? res : Promise.reject(res)))
 }

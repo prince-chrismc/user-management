@@ -6,10 +6,10 @@
   "author": "Chris Mc",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack-dev-server --env.env=dev",
+    "dev": "webpack-dev-server --env.env=dev --env.API_URL=https://localhost:8080",
     "dev:bundleanalyzer": "yarn dev -- --env.addons=bundleanalyzer",
     "prebuild": "rimraf dist",
-    "build": "cross-env NODE_ENV=production webpack -p --env.env=prod",
+    "build": "cross-env NODE_ENV=production webpack -p --env.env=prod --env.API_URL=https://ec2-3-14-64-10.us-east-2.compute.amazonaws.com/",
     "build:bundleanalyzer": "yarn build -- --env.addons=bundleanalyzer",
     "lint": "eslint --fix src/*.js src/components/*.js src/components/**/*.js",
     "test": "NODE_ENV=dev jest",
