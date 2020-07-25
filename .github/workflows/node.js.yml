@@ -81,19 +81,28 @@ jobs:
         yarn test
         
     - name: Coverage
-      if: ${{ matrix.node-version }} == '14.x'
       run: |
         cd web-app/
         yarn install
         yarn coverage
 
     - name: Coveralls GitHub Action
-      if: ${{ matrix.node-version }} == '14.x'
       uses: coverallsapp/github-action@v1.1.1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: web-app/coverage/lcov.info
-        flag-name: react-frontend-unit-test
+        flag-name: react-frontend-unit-test-${{ matrix.node-version }}
+        parallel: true
+        
+  coverage: 
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@v1.1.1
+      with:
+        github-token: ${{ secrets.github_token }}
+        parallel-finished: true
 
   deploy: 
     needs: [test]
