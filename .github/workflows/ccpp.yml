@@ -73,5 +73,3 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: backend/build/coverage.info
         flag-name: cpp-backend-unit-test
-        parallel: true
-        parallel-finished: true

@@ -94,6 +94,16 @@ jobs:
         base-path: web-app
         flag-name: react-frontend-unit-test-${{ matrix.node-version }}
         parallel: true
+        
+  coverage: 
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@v1.1.1
+      with:
+        github-token: ${{ secrets.github_token }}
+        parallel-finished: true
 
   deploy: 
     needs: [test]
