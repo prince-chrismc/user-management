@@ -13,7 +13,7 @@
     "build:bundleanalyzer": "yarn build -- --env.addons=bundleanalyzer",
     "lint": "eslint --fix src/*.js src/components/*.js src/components/**/*.js",
     "test": "NODE_ENV=dev jest",
-    "coverge": "jest --coverage"
+    "coverage": "jest --coverage"
   },
   "dependencies": {
     "prop-types": "^15.7.2",
