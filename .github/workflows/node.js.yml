@@ -37,7 +37,7 @@ jobs:
         path: |
           **/node_modules
         key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    
+
     - name: Production Build
       run: |
         cd web-app/
@@ -50,10 +50,10 @@ jobs:
       with:
         name: web-app-prod.tar.gz
         path: web-app/web-app-prod.tar.gz
-        
+
   test:
     needs: [build]
-    runs-on: ubuntu-latest       
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -79,31 +79,28 @@ jobs:
         cd web-app/
         yarn install
         yarn test
-        
+
+  coverage: 
+    needs: [test]
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 14.x ]
+
+    steps:
     - name: Coverage
       run: |
         cd web-app/
         yarn install
         yarn coverage
 
-    - name: Coveralls GitHub Action
-      uses: coverallsapp/github-action@v1.1.1
+    - name: CodeCov GitHub Action
+    - uses: codecov/codecov-action@v1
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: web-app/coverage/lcov.info
-        base-path: web-app
-        flag-name: react-frontend-unit-test-${{ matrix.node-version }}
-        parallel: true
-        
-  coverage: 
-    needs: [test]
-    runs-on: ubuntu-latest
-    steps:
-    - name: Coveralls Finished
-      uses: coverallsapp/github-action@v1.1.1
-      with:
-        github-token: ${{ secrets.github_token }}
-        parallel-finished: true
+        file: web-app/coverage/lcov.info
+        name: react-frontend-unit-test-${{ matrix.node-version }}
+        fail_ci_if_error: true
 
   deploy: 
     needs: [test]
