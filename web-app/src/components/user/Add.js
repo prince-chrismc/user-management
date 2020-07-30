@@ -14,14 +14,14 @@ class CreateUser extends Component {
     })
   };
 
-  toggleSuccess = () => {
+  toggleSuccess = (id, name, email) => {
     this.setState({ showOkay: true })
+    this.props.onAdd(id, name, email)
   };
 
   handleSubmit = (name, email) => {
     AddUser(name, email)
-      .then((data) => { this.props.onAdd(data) })
-      .then(() => { this.toggleSuccess() })
+      .then((data) => this.toggleSuccess(data.id, data.name, data.email))
       .catch((err) => this.toggleError(err))
   }
 

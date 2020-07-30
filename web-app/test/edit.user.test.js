@@ -4,7 +4,7 @@ import '@testing-library/jest-dom/extend-expect'
 import waitForExpect from 'wait-for-expect'
 import userEvent from '@testing-library/user-event'
 
-import ModifyUser from '../src/components/user/Edit' // to override API calls to backend
+import ModifyUser from '../src/components/user/Edit'
 
 jest.mock('../src/components/endpoints/User')
 
@@ -37,8 +37,14 @@ test('default data on submit', () => {
 
   waitForExpect(() => {
     expect(mockCallback.mock.calls.length).toBe(1)
-    expect(mockCallback.mock.calls[0][0]).toBe('Jenny Doe')
-    expect(mockCallback.mock.calls[0][0]).toBe('jenny@example.com')
+  })
+  waitForExpect(() => {
+    expect(mockCallback.mock.calls[0][0]).toBe('John Doe')
+  })
+  waitForExpect(() => {
+    expect(mockCallback.mock.calls[0][1]).toBe('john@example.com')
+  })
+  waitForExpect(() => {
     expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
   })
 })
@@ -58,7 +64,11 @@ test('new data on submit', () => {
 
   waitForExpect(() => {
     expect(mockCallback.mock.calls.length).toBe(1)
+  })
+  waitForExpect(() => {
     expect(mockCallback.mock.calls[0][0]).toBe('John Doe')
-    expect(mockCallback.mock.calls[0][0]).toBe('john@example.com')
+  })
+  waitForExpect(() => {
+    expect(mockCallback.mock.calls[0][1]).toBe('john@example.com')
   })
 })
