@@ -10,7 +10,7 @@ jest.mock('../src/components/endpoints/User')
 
 test('renders', () => {
   render(<ModifyUser id="0" name="Jenny Doe" email="jenny@example.com"
-    onChange={(name, email) => { }} />)
+    onChange={(name, email) => { expect(true).toBe(false) }} />)
 
   fireEvent.click(screen.getByText('Edit'))
   waitFor(() => screen.getByRole('button', { name: 'Save' }))
