@@ -1,27 +1,13 @@
-import React from "react";
-import { render, unmountComponentAtNode } from "react-dom";
-import { act } from "react-dom/test-utils";
+import React from 'react'
+import { render } from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
 
 import User from '../src/components/cards/Display'
 
-let container = null;
-beforeEach(() => {
-   // setup a DOM element as a render target
-   container = document.createElement("div");
-   document.body.appendChild(container);
-});
-
-afterEach(() => {
-   // cleanup on exiting
-   unmountComponentAtNode(container);
-   container.remove();
-   container = null;
-});
-
-it("renders", () => {
-   act(() => {
-      render(<User id="0" name="Jenny Doe" email="jenny@example.com"/>, container);
-   });
-   expect(container.textContent).toContain("Jenny Doe");
-   expect(container.textContent).toContain("jenny@example.com");
-});
+it('renders', () => {
+  const { getByText, getByRole } = render(<User id="0" name="Jenny Doe" email="jenny@example.com" />)
+  expect(getByText('Jenny Doe')).toBeInTheDocument()
+  expect(getByText('jenny@example.com')).toBeInTheDocument()
+  expect(getByRole('button', { name: 'Edit' })).toHaveTextContent('Edit')
+  expect(getByRole('button', { name: 'Delete' })).toHaveTextContent('Delete')
+})
