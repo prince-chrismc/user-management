@@ -2,15 +2,15 @@ import React from 'react'
 import { render, fireEvent, waitFor, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import waitForExpect from 'wait-for-expect'
-import userEvent from '@testing-library/user-event' // to override API calls to backend
+import userEvent from '@testing-library/user-event'
 
-import User from '../src/components/cards/Display'
-import ModifyUser from '../src/components/user/Edit'
+import ModifyUser from '../src/components/user/Edit' // to override API calls to backend
 
 jest.mock('../src/components/endpoints/User')
 
 test('renders', () => {
-  render(<User id="0" name="Jenny Doe" email="jenny@example.com" />)
+  render(<ModifyUser id="0" name="Jenny Doe" email="jenny@example.com"
+    onChange={(name, email) => { }} />)
 
   fireEvent.click(screen.getByText('Edit'))
   waitFor(() => screen.getByRole('button', { name: 'Save' }))
