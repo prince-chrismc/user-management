@@ -16,7 +16,7 @@ class RemoveUser extends Component {
 
   toggleSuccess = () => {
     this.setState({ showOkay: true })
-    this.props.onDetele()
+    this.props.onDelete()
   };
 
   clearMessages = () => {
@@ -25,11 +25,11 @@ class RemoveUser extends Component {
 
   handleDelete = () => {
     DeleteUser(this.state.id)
-      .then(() => { this.toggleSuccess() })
-      .catch((err) => this.toggleError(err))
+      .then(() => this.toggleSuccess())
+      .catch((err) => console.log(err))
   }
 
-  render () {
+  render() {
     return (
       <PopupModal color='red' content='Delete' icon='user cancel' labelPosition='right' floated='right'
         header='Delete User' onClose={this.clearMessages}>

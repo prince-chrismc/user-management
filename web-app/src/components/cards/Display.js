@@ -27,7 +27,7 @@ class User extends Component {
           <Button.Group widths='2'>
             <ModifyUser id={id} name={name} email={email} onChange={this.onChange} />
             <Button.Or />
-            <RemoveUser id={id} name={name} email={email} onDetele={() => this.props.onDelete(id)} />
+            <RemoveUser id={id} name={name} email={email} onDelete={() => this.props.onDelete(id)} />
           </Button.Group>
         </Card.Content>
       </Card>
