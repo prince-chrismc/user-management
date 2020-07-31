@@ -1,8 +1,13 @@
 // MIT License
+// Copyright (c) 2020 Chris Mc
+
+#ifndef UM_USER_MANAGEMENT_HPP_
+#define UM_USER_MANAGEMENT_HPP_
 
 #include <map>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 #include <nlohmann/json-schema.hpp>
 
@@ -38,6 +43,7 @@ inline void to_json(nlohmann::json &json, const user &user) {
 
 class user_list : std::map<size_t, user> {
   size_t index = 0;
+
  public:
   using std::map<size_t, user>::begin;
   using std::map<size_t, user>::end;
@@ -78,7 +84,7 @@ class user_modifier {
   user &user_;
 
  public:
-  user_modifier(user &user) : user_(user) {}
+  explicit user_modifier(user &user) : user_(user) {}
 
   void apply(const nlohmann::json &data) {
     nlohmann::json_schema::json_validator validator(impl::loader, nlohmann::json_schema::default_string_format_check);
@@ -99,7 +105,7 @@ class list_modifier {
   user_list &list_;
 
  public:
-  list_modifier(user_list &list) : list_(list) {}
+  explicit list_modifier(user_list &list) : list_(list) {}
 
   user &add(const nlohmann::json &data) {
     nlohmann::json_schema::json_validator validator(impl::loader, nlohmann::json_schema::default_string_format_check);
@@ -110,3 +116,5 @@ class list_modifier {
   }
 };
 }  // namespace user_management
+
+#endif  // UM_USER_MANAGEMENT_HPP_
