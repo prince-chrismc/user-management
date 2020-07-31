@@ -25,5 +25,6 @@ namespace api\n\
   configure_file("${SCHEMAS_HEADER}.tmp" "${SCHEMAS_HEADER}" COPYONLY)
   add_library(${LIB} "${SCHEMAS_HEADER}")
   target_include_directories(${LIB} PUBLIC "${CMAKE_BINARY_DIR}/api")
+  target_link_libraries(${LIB} nlohmann_json::nlohmann_json)
   set_target_properties(${LIB} PROPERTIES LINKER_LANGUAGE CXX)
 endfunction(PACK_SCHEMAS)
