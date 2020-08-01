@@ -8,6 +8,7 @@ export const EditUser = async (id, name, email) => {
 
 export const DeleteUser = async (id) => {
   return new Promise((resolve, reject) => {
+    console.log('mock')
     resolve()
   });
 }
