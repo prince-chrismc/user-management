@@ -9,7 +9,7 @@ import RemoveUser from '../src/components/user/Delete'
 jest.mock('../src/components/endpoints/User')
 
 test('renders', () => {
-  const { getByRole, queryByRole } = render(
+  const { getByRole, queryByRole, queryByText } = render(
     <RemoveUser id="0" name="Jenny Doe" email="jenny@example.com"
       onDelete={() => { expect(true).toBe(false) }} />)
 
@@ -18,7 +18,7 @@ test('renders', () => {
 
   expect(queryByRole('button', { name: 'Confirm' })).toBeInTheDocument()
 
-  userEvent.type(queryByRole('button', { name: 'Confirm' }), '{esc}')
+  userEvent.type(queryByText('dangerous!', { exact: false }), '{esc}')
 
   expect(queryByRole('button', { name: 'Confirm' })).not.toBeInTheDocument()
 })
