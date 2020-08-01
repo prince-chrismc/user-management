@@ -26,7 +26,7 @@ class RemoveUser extends Component {
   handleDelete = () => {
     DeleteUser(this.state.id)
       .then(() => this.toggleSuccess())
-      .catch((err) => console.log(err))
+      .catch((err) => this.toggleError(err))
   }
 
   render () {
