@@ -35,4 +35,6 @@ test('default data on submit', () => {
   waitForExpect(() => {
     expect(mockCallback.mock.calls.length).toBe(1)
   })
+
+  expect(getByText('Success!', { exact: false })).toBeInTheDocument()
 })

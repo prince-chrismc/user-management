@@ -23,6 +23,7 @@ test('renders', () => {
   expect(screen.queryByPlaceholderText('Name')).not.toBeInTheDocument()
   expect(screen.queryByPlaceholderText('Email')).not.toBeInTheDocument()
   expect(screen.queryByRole('button', { name: 'Save' })).not.toBeInTheDocument()
+  expect(screen.queryByText('Success!', { exact: false })).not.toBeInTheDocument()
 })
 
 test('default data on submit', () => {
@@ -47,11 +48,13 @@ test('default data on submit', () => {
   waitForExpect(() => {
     expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
   })
+
+  expect(screen.getByText('Success!', { exact: false })).toBeInTheDocument()
 })
 
 test('new data on submit', () => {
   const mockCallback = jest.fn((id, name, email) => { })
-  const { getByPlaceholderText, getByRole } = render(<CreateUser onAdd={mockCallback} />)
+  const { getByPlaceholderText, getByRole, getByText } = render(<CreateUser onAdd={mockCallback} />)
 
   userEvent.click(screen.getByText('Add'))
   waitFor(() => getByRole('button', { name: 'Save' }))
@@ -73,4 +76,6 @@ test('new data on submit', () => {
   waitForExpect(() => {
     expect(mockCallback.mock.calls[0][2]).toBe('jenny@example.com')
   })
+
+  expect(getByText('Success!', { exact: false })).toBeInTheDocument()
 })

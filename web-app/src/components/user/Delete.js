@@ -29,7 +29,7 @@ class RemoveUser extends Component {
       .catch((err) => console.log(err))
   }
 
-  render() {
+  render () {
     return (
       <PopupModal color='red' content='Delete' icon='user cancel' labelPosition='right' floated='right'
         header='Delete User' onClose={this.clearMessages}>
