@@ -31,9 +31,9 @@ test('default data on submit', async () => {
   const { getByText, getByRole } = render(<ModifyUser id="72" name="Jenny Doe" email="jenny@example.com"
     onChange={mockCallback} />)
 
-  fireEvent.click(screen.getByText('Edit'))
+  userEvent.click(getByText('Edit'))
   waitFor(() => getByRole('button', { name: 'Save' }))
-  fireEvent.click(getByRole('button', { name: 'Save' }))
+  userEvent.click(getByRole('button', { name: 'Save' }))
 
   await waitForExpect(() => {
     expect(mockCallback).toHaveBeenCalledWith('Jenny Doe', 'jenny@example.com')
@@ -47,7 +47,7 @@ test('new data on submit', async () => {
   const { getByPlaceholderText, getByRole } = render(<ModifyUser id="73" name="Jenny Doe" email="jenny@example.com"
     onChange={mockCallback} />)
 
-  fireEvent.click(screen.getByText('Edit'))
+  userEvent.click(screen.getByText('Edit'))
   waitFor(() => getByRole('button', { name: 'Save' }))
 
   fireEvent.change(getByPlaceholderText('Name'), { target: { value: 'John Doe' } })
