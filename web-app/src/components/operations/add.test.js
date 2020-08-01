@@ -26,33 +26,24 @@ test('renders', () => {
   expect(screen.queryByText('Success!', { exact: false })).not.toBeInTheDocument()
 })
 
-test('default data on submit', () => {
+test('default data on submit', async () => {
   const mockCallback = jest.fn((id, name, email) => { })
   const { getByRole } = render(<CreateUser onAdd={mockCallback} />)
 
   userEvent.click(getByRole('button', { name: 'Add' }))
   waitFor(() => getByRole('button', { name: 'Save' }))
+  userEvent.click(getByRole('button', { name: 'Save' }))
+  expect(mockCallback).not.toHaveBeenCalled()
 
-  waitForExpect(() => {
-    expect(mockCallback.mock.calls.length).toBe(1)
-  })
-  waitForExpect(() => {
-    expect(mockCallback.mock.calls[0][0]).toBe(9)
-  })
-  waitForExpect(() => {
-    expect(mockCallback.mock.calls[0][1]).toBe('John Doe')
-  })
-  waitForExpect(() => {
-    expect(mockCallback.mock.calls[0][2]).toBe('john@example.com')
-  })
-  waitForExpect(() => {
+  await waitForExpect(() => {
+    expect(mockCallback).toHaveBeenCalledWith(9, 'John Doe', 'john@example.com')
     expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
-  })
-
-  expect(screen.getByText('Success!', { exact: false })).toBeInTheDocument()
+    expect(screen.getByText('Success!', { exact: false })).toBeInTheDocument()
+  }
+  , 700)
 })
 
-test('new data on submit', () => {
+test('new data on submit', async () => {
   const mockCallback = jest.fn((id, name, email) => { })
   const { getByPlaceholderText, getByRole, getByText } = render(<CreateUser onAdd={mockCallback} />)
 
@@ -61,21 +52,15 @@ test('new data on submit', () => {
 
   fireEvent.change(getByPlaceholderText('Name'), { target: { value: 'Jenny Doe' } })
   fireEvent.change(getByPlaceholderText('Email'), { target: { value: 'jenny@example.com' } })
-
   userEvent.click(getByRole('button', { name: 'Save' }))
+  expect(mockCallback).not.toHaveBeenCalled()
 
-  waitForExpect(() => {
-    expect(mockCallback.mock.calls.length).toBe(1)
-  })
-  waitForExpect(() => {
-    expect(mockCallback.mock.calls[0][0]).toBe(9)
-  })
-  waitForExpect(() => {
-    expect(mockCallback.mock.calls[0][1]).toBe('Jenny Doe')
-  })
-  waitForExpect(() => {
-    expect(mockCallback.mock.calls[0][2]).toBe('jenny@example.com')
-  })
+  await new Promise(resolve => setTimeout(resolve, 100))
+
+  expect(mockCallback.mock.calls.length).toBe(1)
+  expect(mockCallback.mock.calls[0][0]).toBe(9)
+  expect(mockCallback.mock.calls[0][1]).toBe('Jenny Doe')
+  expect(mockCallback.mock.calls[0][2]).toBe('jenny@example.com')
 
   expect(getByText('Success!', { exact: false })).toBeInTheDocument()
 })
