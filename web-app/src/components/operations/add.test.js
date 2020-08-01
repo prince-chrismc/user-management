@@ -4,9 +4,9 @@ import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom/extend-expect'
 import waitForExpect from 'wait-for-expect'
 
-import CreateUser from '../src/components/user/Add'
+import CreateUser from './Add'
 
-jest.mock('../src/components/endpoints/List')
+jest.mock('../endpoints/List')
 
 test('renders', () => {
   render(<CreateUser onAdd={(id, name, email) => { expect(true).toBe(false) }} />)

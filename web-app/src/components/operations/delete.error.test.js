@@ -4,9 +4,9 @@ import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom/extend-expect'
 import regeneratorRuntime from 'regenerator-runtime' // required for async
 
-import RemoveUser from '../src/components/user/Delete'
+import RemoveUser from './Delete'
 
-jest.mock('../src/components/endpoints/User', () => {
+jest.mock('../endpoints/User', () => {
   return {
     EditUser: jest.fn((id, name, email) => { }),
     DeleteUser: jest.fn((id) => {

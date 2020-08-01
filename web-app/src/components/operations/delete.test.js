@@ -4,9 +4,9 @@ import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom/extend-expect'
 import waitForExpect from 'wait-for-expect' // TODO: remove - unreliable
 
-import RemoveUser from '../src/components/user/Delete'
+import RemoveUser from './Delete'
 
-jest.mock('../src/components/endpoints/User')
+jest.mock('../endpoints/User')
 
 afterEach(() => {
   jest.clearAllMocks()

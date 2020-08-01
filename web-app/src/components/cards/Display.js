@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Card, Button } from 'semantic-ui-react'
 
-import ModifyUser from '../user/Edit'
-import RemoveUser from '../user/Delete'
+import ModifyUser from '../operations/Edit'
+import RemoveUser from '../operations/Delete'
 
 class User extends Component {
   state = { id: this.props.id, name: this.props.name, email: this.props.email }

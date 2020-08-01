@@ -4,9 +4,9 @@ import '@testing-library/jest-dom/extend-expect'
 import waitForExpect from 'wait-for-expect'
 import userEvent from '@testing-library/user-event'
 
-import ModifyUser from '../src/components/user/Edit'
+import ModifyUser from './Edit'
 
-jest.mock('../src/components/endpoints/User')
+jest.mock('../endpoints/User')
 
 test('renders', () => {
   render(<ModifyUser id="0" name="Jenny Doe" email="jenny@example.com"
