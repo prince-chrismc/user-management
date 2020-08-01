@@ -10,8 +10,7 @@ jest.mock('../src/components/endpoints/User')
 
 test('renders', () => {
   const { getByRole, queryByRole, queryByText } = render(
-    <RemoveUser id="0" name="Jenny Doe" email="jenny@example.com"
-      onDelete={() => { expect(true).toBe(false) }} />)
+    <RemoveUser id="0" name="Jenny Doe" email="jenny@example.com" onDelete={() => expect(true).toBe(false) } />)
 
   userEvent.click(getByRole('button', { name: 'Delete' }))
   waitFor(() => getByRole('button', { name: 'Confirm' }))
@@ -24,9 +23,9 @@ test('renders', () => {
 })
 
 test('default data on submit', () => {
-  const mockCallback = jest.fn(() => { })
-  const { getByText, getByRole } = render(<RemoveUser id="0" name="Jenny Doe" email="jenny@example.com"
-    onDelete={mockCallback} />)
+  const mockCallback = jest.fn()
+  const { getByText, getByRole } = render(
+    <RemoveUser id="0" name="Jenny Doe" email="jenny@example.com" onDelete={mockCallback} />)
 
   userEvent.click(getByText('Delete'))
   waitFor(() => getByRole('button', { name: 'Confirm' }))
@@ -42,8 +41,7 @@ test('default data on submit', () => {
 test('handles errors', () => {
   DeleteUser.mockImplementation((id) => { throw new Error('mock network error') });
   const { getByRole, queryByRole, queryByText } = render(
-    <RemoveUser id="0" name="Jenny Doe" email="jenny@example.com"
-      onDelete={() => { expect(true).toBe(false) }} />)
+    <RemoveUser id="0" name="Jenny Doe" email="jenny@example.com" onDelete={() => expect(true).toBe(false) } />)
 
   userEvent.click(getByRole('button', { name: 'Delete' }))
   waitFor(() => getByRole('button', { name: 'Confirm' }))
