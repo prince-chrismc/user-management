@@ -24,6 +24,7 @@ class RemoveUser extends Component {
   }
 
   handleDelete = () => {
+    console.log('delete confirmed')
     DeleteUser(this.state.id)
       .then(() => this.toggleSuccess())
       .catch((err) => this.toggleError(err))

@@ -2,35 +2,18 @@ import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom/extend-expect'
-import waitForExpect from 'wait-for-expect'
 
 import RemoveUser from '../src/components/user/Delete'
 
-afterEach(() => {
-  jest.clearAllMocks();
-});
-
-test('handles errors', () => {
-  jest.doMock('../src/components/endpoints/User', () => {
-    return {
-      EditUser: jest.fn((id, name, email) => {}),
-      DeleteUser: jest.fn((id) => { 
-        console.log('throwing')
-        throw new Error('mock network error') }),
-    }
-  })
-
-
+test('handles errors', async () => {
+  const mockCallback = jest.fn()
   const { getByRole, getByText } = render(
-    <RemoveUser id="0" name="Jenny Doe" email="jenny@example.com" onDelete={() => expect(true).toBe(false)} />)
+    <RemoveUser id="0" name="Jenny Doe" email="jenny@example.com" onDelete={mockCallback} />)
 
   userEvent.click(getByRole('button', { name: 'Delete' }))
   waitFor(() => getByRole('button', { name: 'Confirm' }))
+  userEvent.click(getByRole('button', { name: 'Confirm' }))
 
-  waitForExpect(() => {
-    expect(getByText('Oh no!', { exact: false })).toHaveTextContent('mock network error')
-  })
-  waitForExpect(() => {
-    expect(mockCallback).not.toHaveBeenCalled()
-  })
+  // await expect(getByText('mock network error')).toBeInTheDocument()
+  await expect(mockCallback).not.toHaveBeenCalled()
 })
