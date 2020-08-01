@@ -39,8 +39,7 @@ test('default data on submit', async () => {
     expect(mockCallback).toHaveBeenCalledWith(9, 'John Doe', 'john@example.com')
     expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
     expect(screen.getByText('Success!', { exact: false })).toBeInTheDocument()
-  }
-  , 700)
+  }, 700)
 })
 
 test('new data on submit', async () => {
@@ -55,12 +54,9 @@ test('new data on submit', async () => {
   userEvent.click(getByRole('button', { name: 'Save' }))
   expect(mockCallback).not.toHaveBeenCalled()
 
-  await new Promise(resolve => setTimeout(resolve, 100))
-
-  expect(mockCallback.mock.calls.length).toBe(1)
-  expect(mockCallback.mock.calls[0][0]).toBe(9)
-  expect(mockCallback.mock.calls[0][1]).toBe('Jenny Doe')
-  expect(mockCallback.mock.calls[0][2]).toBe('jenny@example.com')
-
-  expect(getByText('Success!', { exact: false })).toBeInTheDocument()
+  await waitForExpect(() => {
+    expect(mockCallback).toHaveBeenCalledWith(9, 'Jenny Doe', 'jenny@example.com')
+    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
+    expect(screen.getByText('Success!', { exact: false })).toBeInTheDocument()
+  }, 700)
 })

@@ -26,32 +26,25 @@ test('renders', () => {
   expect(screen.queryByRole('button', { name: 'Save' })).not.toBeInTheDocument()
 })
 
-test('default data on submit', () => {
+test('default data on submit', async () => {
   const mockCallback = jest.fn((name, email) => { })
-  const { getByText, getByRole } = render(<ModifyUser id="0" name="Jenny Doe" email="jenny@example.com"
+  const { getByText, getByRole } = render(<ModifyUser id="72" name="Jenny Doe" email="jenny@example.com"
     onChange={mockCallback} />)
 
   fireEvent.click(screen.getByText('Edit'))
   waitFor(() => getByRole('button', { name: 'Save' }))
   fireEvent.click(getByRole('button', { name: 'Save' }))
 
-  waitForExpect(() => {
-    expect(mockCallback.mock.calls.length).toBe(1)
-  })
-  waitForExpect(() => {
-    expect(mockCallback.mock.calls[0][0]).toBe('John Doe')
-  })
-  waitForExpect(() => {
-    expect(mockCallback.mock.calls[0][1]).toBe('john@example.com')
-  })
-  waitForExpect(() => {
+  await waitForExpect(() => {
+    expect(mockCallback).toHaveBeenCalledWith('Jenny Doe', 'jenny@example.com')
     expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
-  })
+    expect(screen.getByText('Success!', { exact: false })).toBeInTheDocument()
+  }, 700)
 })
 
-test('new data on submit', () => {
+test('new data on submit', async () => {
   const mockCallback = jest.fn((name, email) => { })
-  const { getByPlaceholderText, getByRole } = render(<ModifyUser id="0" name="Jenny Doe" email="jenny@example.com"
+  const { getByPlaceholderText, getByRole } = render(<ModifyUser id="73" name="Jenny Doe" email="jenny@example.com"
     onChange={mockCallback} />)
 
   fireEvent.click(screen.getByText('Edit'))
@@ -59,16 +52,12 @@ test('new data on submit', () => {
 
   fireEvent.change(getByPlaceholderText('Name'), { target: { value: 'John Doe' } })
   fireEvent.change(getByPlaceholderText('Email'), { target: { value: 'john@example.com' } })
+  userEvent.click(getByRole('button', { name: 'Save' }))
+  expect(mockCallback).not.toHaveBeenCalled()
 
-  fireEvent.click(getByRole('button', { name: 'Save' }))
-
-  waitForExpect(() => {
-    expect(mockCallback.mock.calls.length).toBe(1)
-  })
-  waitForExpect(() => {
-    expect(mockCallback.mock.calls[0][0]).toBe('John Doe')
-  })
-  waitForExpect(() => {
-    expect(mockCallback.mock.calls[0][1]).toBe('john@example.com')
-  })
+  await waitForExpect(() => {
+    expect(mockCallback).toHaveBeenCalledWith('John Doe', 'john@example.com')
+    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
+    expect(screen.getByText('Success!', { exact: false })).toBeInTheDocument()
+  }, 700)
 })
