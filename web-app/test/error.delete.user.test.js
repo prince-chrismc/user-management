@@ -2,7 +2,6 @@ import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom/extend-expect'
-// import "isomorphic-fetch"
 import regeneratorRuntime from 'regenerator-runtime' // required for async
 
 import RemoveUser from '../src/components/user/Delete'
@@ -18,11 +17,10 @@ jest.mock('../src/components/endpoints/User', () => {
 })
 
 afterEach(() => {
-  jest.clearAllMocks();
-});
+  jest.clearAllMocks()
+})
 
 test('handles errors', async () => {
-
   const mockCallback = jest.fn()
   const { getByRole, getByText } = render(
     <RemoveUser id="0" name="Jenny Doe" email="jenny@example.com" onDelete={mockCallback} />)
@@ -31,7 +29,7 @@ test('handles errors', async () => {
   waitFor(() => getByRole('button', { name: 'Confirm' }))
   userEvent.click(getByRole('button', { name: 'Confirm' }))
 
-  await new Promise(resolve => setTimeout(resolve, 100));
+  await new Promise(resolve => setTimeout(resolve, 100))
 
   expect(getByText('Error: mock network error')).toBeInTheDocument()
   expect(mockCallback).not.toHaveBeenCalled()

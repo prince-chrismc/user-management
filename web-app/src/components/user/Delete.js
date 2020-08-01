@@ -16,7 +16,6 @@ class RemoveUser extends Component {
 
   toggleSuccess = () => {
     this.setState({ showOkay: true })
-    console.log('notifying delete')
     this.props.onDelete()
   };
 
@@ -25,7 +24,6 @@ class RemoveUser extends Component {
   }
 
   handleDelete = () => {
-    console.log('delete confirmed')
     DeleteUser(this.state.id)
       .then(() => this.toggleSuccess())
       .catch((err) => this.toggleError(err))

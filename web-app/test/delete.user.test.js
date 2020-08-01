@@ -9,8 +9,8 @@ import RemoveUser from '../src/components/user/Delete'
 jest.mock('../src/components/endpoints/User')
 
 afterEach(() => {
-  jest.clearAllMocks();
-});
+  jest.clearAllMocks()
+})
 
 test('renders', () => {
   const { getByRole, queryByRole, queryByText } = render(
@@ -41,28 +41,3 @@ test('default data on submit', () => {
 
   expect(getByText('Success!', { exact: false })).toBeInTheDocument()
 })
-
-// jest.useFakeTimers();
-
-// test('handles errors', async () => {
-//   const mockCallback = jest.fn()
-//   const { getByRole, getByText } = render(
-//     <RemoveUser id="0" name="Jenny Doe" email="jenny@example.com" onDelete={mockCallback} />)
-
-//   userEvent.click(getByRole('button', { name: 'Delete' }))
-//   waitFor(() => getByRole('button', { name: 'Confirm' }))
-//   userEvent.click(getByRole('button', { name: 'Confirm' }))
-
-//   // Fast-forward until all timers have been executed
-//   // jest.runAllTimers();
-
-//   // expect(setTimeout).not.toHaveBeenCalled(mockCallback, 1000);
-
-//   // await expect(getByText('mock network error')).toBeInTheDocument()
-//   console.log('called: ', mockCallback.mock.calls.length)
-
-//   await new Promise(resolve => setTimeout(resolve, 100));
-
-//   console.log('called: ', mockCallback.mock.calls.length)
-//   expect(mockCallback.mock.calls.length).toBe(0)
-// })
