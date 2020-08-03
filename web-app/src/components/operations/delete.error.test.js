@@ -3,21 +3,15 @@ import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom/extend-expect'
 import regeneratorRuntime from 'regenerator-runtime' // required for async
+import waitForExpect from 'wait-for-expect'
 
-import RemoveUser from '../src/components/user/Delete'
+import RemoveUser from './Delete'
 
-jest.mock('../src/components/endpoints/User', () => {
+jest.mock('../endpoints/User', () => {
   return {
     EditUser: jest.fn((id, name, email) => { }),
-    DeleteUser: jest.fn((id) => {
-      console.log('throwing')
-      return new Promise((resolve, reject) => reject(new Error('mock network error')))
-    })
+    DeleteUser: jest.fn((id) => { return new Promise((resolve, reject) => reject(new Error('mock network error'))) })
   }
-})
-
-afterEach(() => {
-  jest.clearAllMocks()
 })
 
 test('handles errors', async () => {
@@ -29,8 +23,8 @@ test('handles errors', async () => {
   waitFor(() => getByRole('button', { name: 'Confirm' }))
   userEvent.click(getByRole('button', { name: 'Confirm' }))
 
-  await new Promise(resolve => setTimeout(resolve, 100))
-
-  expect(getByText('Error: mock network error')).toBeInTheDocument()
-  expect(mockCallback).not.toHaveBeenCalled()
+  await waitForExpect(() => {
+    expect(mockCallback).not.toHaveBeenCalled()
+    expect(getByText('Error: mock network error')).toBeInTheDocument()
+  }, 700)
 })
