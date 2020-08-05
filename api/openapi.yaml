@@ -13,6 +13,9 @@ servers:
     variables:
       server:
         default: https://api.example.com
+        enum:
+        - https://api.example.com
+        - https://ec2-3-14-64-10.us-east-2.compute.amazonaws.com/
 
 tags:
   - name: Search
