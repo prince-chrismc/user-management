@@ -137,6 +137,11 @@ paths:
       tags:
         - Search
       summary: List of users
+      parameters:
+        - in: header
+          name: If-Match
+          schema:
+            $ref: "#/components/headers/If-Match"
       responses:
         "200":
           description: OK
@@ -160,6 +165,8 @@ paths:
                   },
                   { "id": 89, "name": "Jane Doe", "email": "jane@example.com" },
                 ]
+        "304":
+          $ref: "#/components/responses/NotModified"
     put:
       tags:
         - Edit
@@ -187,14 +194,21 @@ paths:
         "400":
           $ref: "#/components/responses/BadRequest"
         "415":
-          $ref:  "#/components/responses/UnsupportedMediaType"
+          $ref: "#/components/responses/UnsupportedMediaType"
     options:
       tags:
         - CORS
       description: List
+      parameters:
+        - in: header
+          name: If-Match
+          schema:
+            $ref: "#/components/headers/If-Match"
       responses:
         "204":
           $ref: "#/components/responses/Options"
+        "304":
+          $ref: "#/components/responses/NotModified"
   /users/{id}:
     parameters:
       - $ref: "#/components/parameters/id"
@@ -202,6 +216,11 @@ paths:
       tags:
         - Search
       summary: Display individual user
+      parameters:
+        - in: header
+          name: If-Match
+          schema:
+            $ref: "#/components/headers/If-Match"
       responses:
         "200":
           description: OK
@@ -223,6 +242,8 @@ paths:
                 $ref: "#/components/schemas/User"
               example:
                 { "id": 234, "name": "John Doe", "email": "john@example.com" }
+        "304":
+          $ref: "#/components/responses/NotModified"
         "404":
           $ref: "#/components/responses/NotFound"
     patch:
@@ -269,9 +290,9 @@ paths:
         "412":
           $ref: "#/components/responses/PreconditionFailed"
         "415":
-          $ref:  "#/components/responses/UnsupportedMediaType"
+          $ref: "#/components/responses/UnsupportedMediaType"
         "428":
-          $ref:  "#/components/responses/PreconditionRequired"
+          $ref: "#/components/responses/PreconditionRequired"
     delete:
       tags:
         - Edit
@@ -290,11 +311,18 @@ paths:
         "412":
           $ref: "#/components/responses/PreconditionFailed"
         "428":
-          $ref:  "#/components/responses/PreconditionRequired"
+          $ref: "#/components/responses/PreconditionRequired"
     options:
       tags:
         - CORS
       description: User
+      parameters:
+        - in: header
+          name: If-Match
+          schema:
+            $ref: "#/components/headers/If-Match"
       responses:
         "204":
           $ref: "#/components/responses/Options"
+        "304":
+          $ref: "#/components/responses/NotModified"
