@@ -15,6 +15,9 @@ class database : public user_management::user_list {
   time_point last_modified() const { return last_modified; }
   time_point last_modified(key id) const { return users_last_modified.at(id); }
 
+  std::string etag() const { return last_modified; }
+  std::string etag(key id) const { return users_last_modified.at(id); }
+
   user_management::list_modifier& modify() {
     last_modified = std::chrono::system_clock::now();
     return user_management::list_modifier{*this};

@@ -14,7 +14,7 @@
 #include "schemas.hpp"
 
 namespace user_management {
-using user_key = size;
+using user_key = size_t;
 struct user {
   user_key id;
   std::string name;

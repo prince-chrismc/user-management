@@ -4,8 +4,6 @@
 
 #include <catch2/catch.hpp>
 
-#include <algorithm>
-
 namespace Catch {
 template <>
 struct StringMaker<user_management::user> {
@@ -21,6 +19,14 @@ TEST_CASE("User") {
   CHECK(user.name == "John Doe");
   CHECK(user.email == "john@example.com");
 
+  CHECK_THAT(nlohmann::json(user).dump(), Catch::StartsWith("{") && Catch::Contains("0") &&
+                                              Catch::Contains("John Doe") && Catch::Contains("john@example.com") &&
+                                              Catch::EndsWith("}"));
+  CHECK(nlohmann::json(user) == R"##({"email":"john@example.com","id":0,"name":"John Doe"})##"_json);
+}
+
+TEST_CASE("Comparison") {
+  user user{0, "John Doe", "john@example.com"};
   CHECK(user == user);
   CHECK_FALSE(user != user);
   CHECK(user <= user);
@@ -35,11 +41,6 @@ TEST_CASE("User") {
   CHECK_FALSE(user >= other);
   CHECK_FALSE(user > other);
   CHECK(user < other);
-
-  CHECK_THAT(nlohmann::json(user).dump(), Catch::StartsWith("{") && Catch::Contains("0") &&
-                                              Catch::Contains("John Doe") && Catch::Contains("john@example.com") &&
-                                              Catch::EndsWith("}"));
-  CHECK(nlohmann::json(user) == R"##({"email":"john@example.com","id":0,"name":"John Doe"})##"_json);
 }
 
 TEST_CASE("List") {
