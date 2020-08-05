@@ -14,8 +14,9 @@
 #include "schemas.hpp"
 
 namespace user_management {
+using user_key = size;
 struct user {
-  size_t id;
+  user_key id;
   std::string name;
   std::string email;
 };
@@ -41,14 +42,16 @@ inline void to_json(nlohmann::json &json, const user &user) {
   json = nlohmann::json::object({{"id", user.id}, {"name", user.name}, {"email", user.email}});
 }
 
-class user_list : std::map<size_t, user> {
-  size_t index = 0;
+class user_list : std::map<user_key, user> {
+  user_key index = 0;
 
  public:
-  using std::map<size_t, user>::begin;
-  using std::map<size_t, user>::end;
+  using std::map<user_key, user>::begin;
+  using std::map<user_key, user>::end;
+  size_t count() const { return size(); }
 
-  user &get(size_t id) { return at(id); }
+  user &get(user_key id) { return at(id); }
+  user get(user_key id) const { return at(id); }
 
   user &add(std::string name, std::string email) {
     const auto id = ++index;
@@ -56,7 +59,7 @@ class user_list : std::map<size_t, user> {
     return get(id);
   }
 
-  user remove(size_t id) {
+  user remove(user_key id) {
     const auto it = find(id);
     const auto copy = it->second;
     erase(it);

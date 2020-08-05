@@ -71,6 +71,7 @@ TEST_CASE("Add") {
   CHECK(user.id == 1);
   CHECK(user.name == "Jane Doe");
   CHECK(user.email == "jane@example.com");
+  CHECK(list.count() == 1);
 }
 
 TEST_CASE("Remove") {
@@ -81,8 +82,7 @@ TEST_CASE("Remove") {
     CHECK(list.remove(1) == user_management::user{1, "Jane Doe", "jane@example.com"});
     CHECK_THROWS(list.get(1));
   }
-  const auto size = std::count_if(list.begin(), list.end(), [](auto) { return true; });
-  CHECK(size == 0);
+  CHECK(list.count() == 0);
 }
 
 TEST_CASE("Loader") {
