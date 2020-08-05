@@ -1,9 +1,9 @@
 find_package(restinio 0.6.8 REQUIRED)
 
-add_library(user_database "user_database.hpp" "user_database.cpp")
-target_include_directories(user_database PUBLIC "..")
-set_target_properties(user_database PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(user_database PUBLIC user_management::user_management restinio::restinio)
+add_library(user_routes "user_routes.hpp" "user_routes.cpp")
+target_include_directories(user_routes PUBLIC "..")
+set_target_properties(user_routes PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(user_routes PUBLIC user_management::user_management restinio::restinio)
 
 add_library(serve_files "serve_files.hpp" "serve_files.cpp")
 target_include_directories(serve_files PUBLIC "..")
@@ -17,8 +17,8 @@ target_link_libraries(web_app PUBLIC content_type restinio::restinio)
 
 if(${RUN_TIDY})
   include("clang-tidy")
-  setup_clang_tidy(handlers_tidy "user_database.hpp" "user_database.cpp" "serve_files.hpp" "serve_files.cpp"
-                   "web_app.hpp" "web_app.cpp")
+  setup_clang_tidy(handlers "user_routes.hpp" "user_routes.cpp" "serve_files.hpp" "serve_files.cpp" "web_app.hpp"
+                   "web_app.cpp")
 
   include("cmake-format")
   setup_cmake_format(handlers "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
