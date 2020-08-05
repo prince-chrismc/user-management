@@ -7,8 +7,8 @@ target_link_libraries(users PUBLIC user_management::user_management)
 
 if(${RUN_TIDY})
   include("clang-tidy")
-  setup_clang_tidy(users_tidy "users.hpp")
+  setup_clang_tidy(users "users.hpp")
 
   include("cmake-format")
-  setup_cmake_format(users_format "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
+  setup_cmake_format(users "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
 endif()
