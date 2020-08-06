@@ -1,6 +1,6 @@
 // MIT License
 
-#include "handlers/user_database.hpp"
+#include "handlers/user_routes.hpp"
 #include "unit_test/helpers.hpp"
 
 #include <catch2/catch.hpp>
