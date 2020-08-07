@@ -1,4 +1,5 @@
 add_subdirectory("utility")
+add_subdirectory("encoders")
 add_subdirectory("handlers")
 
 add_executable(user_database_app "main.cpp")

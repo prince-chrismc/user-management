@@ -1,14 +1,16 @@
 // MIT License
 
+#include <stdexcept>
 #include <string>
+#include <vector>
+
+#include <openssl/evp.h>
 
 namespace encode {
-std::string base64(const char* data, size_t length)
-{
-     const auto pl = 4*((length+2)/3);
-  auto output = reinterpret_cast<char *>(calloc(pl+1, 1)); //+1 for the terminating null that EVP_EncodeBlock adds on
-  const auto ol = EVP_EncodeBlock(reinterpret_cast<unsigned char *>(output), data, length);
-  if (pl != ol) { std::cerr << "Whoops, encode predicted " << pl << " but we got " << ol << "\n"; }
-  return output;
+std::string base64(const char* data, size_t length) {
+  std::vector<uint8_t> buffer(4 * ((length + 2) / 3), 0);
+  if (EVP_EncodeBlock(buffer.data(), reinterpret_cast<const unsigned char*>(data), length) != buffer.size())
+    throw std::runtime_error("OpenSSL EVP_EncodeBlock unexpected size");
+  return {buffer.begin(), buffer.end()};
 }
 }  // namespace encode
