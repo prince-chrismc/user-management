@@ -8,6 +8,8 @@ const { createHttpTerminator } = require('http-terminator')
 const app = express()
 const port = 3001
 
+let __error = false
+
 const JSON_USER_LIST = [
   {
     id: 123,
@@ -25,14 +27,24 @@ app.use(express.json())
 
 app.get('/um/v1/users', (req, res) => {
   console.log('GET /um/v1/users')
-  res.send(JSON.stringify(JSON_USER_LIST))
+  
+  if (__error) {
+    res.sendStatus(500)
+  } else {
+    res.send(JSON.stringify(JSON_USER_LIST))
+  }
 })
 
 app.post('/um/v1/users', (req, res) => {
   console.log('POST /um/v1/users', req.body)
-  const json = req.body
-  json.id = 543
-  res.send(JSON.stringify(json))
+
+  if (__error) {
+    res.sendStatus(500)
+  } else {
+    const json = req.body
+    json.id = 543
+    res.send(JSON.stringify(json))
+  }
 })
 
 let httpTerminator = null
@@ -63,4 +75,18 @@ test('add new user to list', async () => {
   console.log(json)
 
   expect(json).toEqual({ id: 543, name: 'James Does', email: 'james@example.com' })
+})
+
+test('faulty backend > get list', async () => {
+  __error = true
+  expect.assertions(1)
+
+  await expect(LoadUsers()).rejects.toBeInstanceOf(Response)
+})
+
+test('faulty backend > add user', async () => {
+  __error = true
+  expect.assertions(1)
+
+  await expect(AddUser('James Does', 'james@example.com')).rejects.toBeInstanceOf(Response)
 })
