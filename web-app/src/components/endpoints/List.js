@@ -23,5 +23,5 @@ export const AddUser = async (name, email) => {
   }
   return await fetch(process.env.API_URL + '/um/v1/users', requestOptions)
     .then(res => (res.ok ? res : Promise.reject(res)))
-    .then(res => JSON.parse(res.text()))
+    .then(res => res.json())
 }
