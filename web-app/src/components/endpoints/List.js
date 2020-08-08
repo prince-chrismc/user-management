@@ -3,17 +3,12 @@ import regeneratorRuntime from 'regenerator-runtime' // required for async
 export const LoadUsers = async () => {
   const requestOptions = {
     headers: {
-      'Accept': 'application/json',
-      'Connection': 'keep-alive',
-      'Pragma': 'no-cache',
-      'Cache-Control': 'no-cache'
+      'Accept': 'application/json'
     }
   }
   console.log(process.env.API_URL + '/um/v1/users')
   return await fetch(process.env.API_URL + '/um/v1/users', requestOptions)
-    .then(res => res.text())
-    .then(json => console.log(json))
-  // .then(body => JSON.parse(body))
+    .then(res => res.json())
 }
 
 export const AddUser = async (name, email) => {
