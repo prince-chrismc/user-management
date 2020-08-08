@@ -57,6 +57,6 @@ test('notifies id on delete', async () => {
   userEvent.click(getByRole('button', { name: 'Confirm' }))
 
   await waitForExpect(() => {
-    expect(mockCallback).toHaveBeenCalledWith("27") // TODO: understand why this is not a number
+    expect(mockCallback).toHaveBeenCalledWith('27') // TODO: understand why this is not a number
   }, 700)
 })
