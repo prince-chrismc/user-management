@@ -1,11 +1,12 @@
 import React from 'react'
-import { enableFetchMocks } from 'jest-fetch-mock'
+import { enableFetchMocks } from 'jest-fetch-mock' // mock fetch within list endpoints
 
 import { LoadUsers } from './List'
 
-const http = require('http')
+
 const express = require('express')
-let app = express()
+const { createHttpTerminator } = require('http-terminator')
+const app = express()
 const port = 3001
 
 const JSON_USER_LIST = [
@@ -26,30 +27,23 @@ app.get('/um/v1/users', (req, res) => {
     res.send(JSON.stringify(JSON_USER_LIST))
 })
 
-let server = null
+let httpTerminator = null
 
 beforeEach(async () => {
-    app.listen(port, () => {
-        console.log(`Example app listening at http://localhost:${port}`)
+    const server = app.listen(port, () => {
+        console.log(`Mock listening at http://localhost:${port}`)
     })
-    server = http.createServer(app)
+    httpTerminator = createHttpTerminator({ server })
 
     await new Promise(resolve => setTimeout(resolve, 2000))
 })
 
 afterEach(async () => {
-    server.close(() => {
-        console.log('HTTP server closed')
-    })
-
-    server = null
-    app = null
+    httpTerminator.terminate()
     await new Promise(resolve => setTimeout(resolve, 2000))
 })
 
 test('get list of users', async () => {
-    // enableFetchMocks()
-
     const json = await LoadUsers()
     console.log(json)
 
