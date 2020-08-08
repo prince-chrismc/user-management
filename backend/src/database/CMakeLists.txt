@@ -3,7 +3,7 @@ find_package(restinio 0.6.8 REQUIRED)
 add_library(users_databse "users.hpp")
 target_include_directories(users_databse PUBLIC "..")
 set_target_properties(users_databse PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(users_databse PUBLIC user_management::user_management)
+target_link_libraries(users_databse PUBLIC user_management encoders)
 
 if(${RUN_TIDY})
   include("clang-tidy")
