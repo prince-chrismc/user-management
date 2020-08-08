@@ -3,7 +3,7 @@ import regeneratorRuntime from 'regenerator-runtime' // required for async
 export const LoadUsers = async () => {
   const requestOptions = {
     headers: {
-      'Accept': 'application/json'
+      Accept: 'application/json'
     }
   }
   console.log(process.env.API_URL + '/um/v1/users')
@@ -16,7 +16,7 @@ export const AddUser = async (name, email) => {
   const requestOptions = {
     method: 'POST',
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ name: name, email: email })
