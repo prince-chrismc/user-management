@@ -13,7 +13,7 @@ class database : public user_management::user_list {
   using user_entry = user_management::user;
   using time_point = std::chrono::system_clock::time_point;
   time_point database_last_modified;
-  std::map<key, time_point> users_last_modified;
+  std::unordered_map<key, time_point> users_last_modified;
 
  public:
   time_point last_modified() const {

@@ -31,8 +31,9 @@ TEST_CASE("Tracks Last-Modified") {
   CHECK_FALSE(user_database.last_modified() == user_database.last_modified(new_id));
 
   // Remove
-  user_database.remove(new_id);
-  CHECK(user_database.last_modified() == user_database.last_modified(new_id));
+  user_database.remove(new_id); // Remove is very slow.
+  Approx target = Approx(user_database.last_modified(new_id).time_since_epoch().count()).epsilon(0.01);
+  CHECK(user_database.last_modified().time_since_epoch().count() == target);
   CHECK_FALSE(user_database.last_modified() == user_database.last_modified(second_id));
 }
 

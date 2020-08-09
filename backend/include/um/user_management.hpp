@@ -4,7 +4,7 @@
 #ifndef UM_USER_MANAGEMENT_HPP_
 #define UM_USER_MANAGEMENT_HPP_
 
-#include <map>
+#include <unordered_map>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -43,12 +43,12 @@ inline void to_json(json &json, const user &user) {
   json = json::object({{"id", user.id}, {"name", user.name}, {"email", user.email}});
 }
 
-class user_list : std::map<user_key, user> {
+class user_list : std::unordered_map<user_key, user> {
   user_key index = 0;
 
  public:
-  using std::map<user_key, user>::begin;
-  using std::map<user_key, user>::end;
+  using std::unordered_map<user_key, user>::begin;
+  using std::unordered_map<user_key, user>::end;
   size_t count() const { return size(); }
 
   user &get(user_key id) { return at(id); }
