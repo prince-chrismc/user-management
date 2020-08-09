@@ -86,7 +86,7 @@ components:
             $ref: "#/components/schemas/Error"
           example: { "error": "Content-Type must be application/json" }
     Options:
-      description: No Content
+      description: Generic OPTIONS response
       headers:
         Access-Control-Allow-Origin:
           $ref: "#/components/headers/Access-Control-Allow-Origin"
