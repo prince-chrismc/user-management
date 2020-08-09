@@ -10,6 +10,7 @@
 namespace user {
 class database : public user_management::user_list {
   using key = user_management::user_key;
+  using user_entry = user_management::user;
   using time_point = std::chrono::system_clock::time_point;
   time_point database_last_modified;
   std::map<key, time_point> users_last_modified;
@@ -32,13 +33,24 @@ class database : public user_management::user_list {
     return encode::base64(encode::sha256(raw.data(), raw.length()));
   }
 
-  user_management::list_modifier modify() {
+  user_entry& add(const user_management::json& json) {
     database_last_modified = std::chrono::system_clock::now();
-    return user_management::list_modifier{*this};
+    auto& user = user_management::list_modifier{*this}.add(json);
+    users_last_modified[user.id] = std::chrono::system_clock::now();
+    return user;
   }
-  user_management::user_modifier modify(key id) {
+  user_entry& edit(key id, const user_management::json& json) {
+    database_last_modified = std::chrono::system_clock::now();
+    auto& user = get(id);
+    user_management::user_modifier{user}.apply(json);
     users_last_modified[id] = std::chrono::system_clock::now();
-    return user_management::user_modifier{get(id)};
+    return user;
+  }
+  user_entry remove(key id) {
+    database_last_modified = std::chrono::system_clock::now();
+    auto user = user_management::user_list::remove(id);
+    users_last_modified[id] = std::chrono::system_clock::now();
+    return user;
   }
 };
 }  // namespace user

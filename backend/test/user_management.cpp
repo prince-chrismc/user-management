@@ -11,10 +11,10 @@ struct StringMaker<user_management::user> {
 };
 }  // namespace Catch
 
-using namespace user_management;
+namespace um = user_management;
 
 TEST_CASE("User") {
-  user user{0, "John Doe", "john@example.com"};
+  um::user user{0, "John Doe", "john@example.com"};
   CHECK(user.id == 0);
   CHECK(user.name == "John Doe");
   CHECK(user.email == "john@example.com");
@@ -26,7 +26,7 @@ TEST_CASE("User") {
 }
 
 TEST_CASE("Comparison") {
-  user user{0, "John Doe", "john@example.com"};
+  um::user user{0, "John Doe", "john@example.com"};
   CHECK(user == user);
   CHECK_FALSE(user != user);
   CHECK(user <= user);
@@ -34,7 +34,7 @@ TEST_CASE("Comparison") {
   CHECK_FALSE(user > user);
   CHECK_FALSE(user < user);
 
-  user_management::user other{1, "Jane Doe", "jane@example.com"};
+  um::user other{1, "Jane Doe", "jane@example.com"};
   CHECK_FALSE(user == other);
   CHECK(user != other);
   CHECK(user <= other);
@@ -44,7 +44,7 @@ TEST_CASE("Comparison") {
 }
 
 TEST_CASE("List") {
-  user_list list;
+  um::user_list list;
   auto& user = list.add("John Doe", "john@example.com");
   CHECK(user.id == 1);
   CHECK(user.name == "John Doe");
@@ -57,27 +57,27 @@ TEST_CASE("List") {
 }
 
 TEST_CASE("Edit") {
-  user_list list;
+  um::user_list list;
   auto& user = list.add("John Doe", "j@example.com");
-  user_modifier(user).apply(R"##({"name": "Jane Doe"})##"_json);
+  um::user_modifier(user).apply(R"##({"name": "Jane Doe"})##"_json);
   CHECK_THAT(user.name, Catch::Equals("Jane Doe"));
 
-  user_modifier(user).apply(R"##({"email": "jane@example.com"})##"_json);
+  um::user_modifier(user).apply(R"##({"email": "jane@example.com"})##"_json);
   CHECK_THAT(user.email, Catch::Equals("jane@example.com"));
 }
 
 TEST_CASE("Add") {
-  user_list list;
-  auto& user = list_modifier(list).add(R"##({"name": "Jane Doe", "email": "jane@example.com"})##"_json);
+  um::user_list list;
+  auto& user = um::list_modifier(list).add(R"##({"name": "Jane Doe", "email": "jane@example.com"})##"_json);
   CHECK(user.id == 1);
   CHECK(user.name == "Jane Doe");
   CHECK(user.email == "jane@example.com");
   CHECK(list.count() == 1);
-}
+} 
 
 TEST_CASE("Remove") {
-  user_list list;
-  auto& user = list_modifier(list).add(R"##({"name": "Jane Doe", "email": "jane@example.com"})##"_json);
+  um::user_list list;
+  auto& user = um::list_modifier(list).add(R"##({"name": "Jane Doe", "email": "jane@example.com"})##"_json);
   CHECKED_IF(user.id == 1) {
     CHECK(list.get(1) == user);
     CHECK(list.remove(1) == user_management::user{1, "Jane Doe", "jane@example.com"});
@@ -88,8 +88,8 @@ TEST_CASE("Remove") {
 
 TEST_CASE("Loader") {
   nlohmann::json json;
-  impl::loader(nlohmann::json_uri{"/user.json"}, json);
+  um::impl::loader(nlohmann::json_uri{"/user.json"}, json);
   CHECK(json == api::user);
 
-  CHECK_THROWS_AS(impl::loader(nlohmann::json_uri{"/unknown.json"}, json), std::logic_error);
+  CHECK_THROWS_AS(um::impl::loader(nlohmann::json_uri{"/unknown.json"}, json), std::logic_error);
 }
