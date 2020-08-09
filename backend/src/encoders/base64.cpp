@@ -7,9 +7,10 @@
 #include <openssl/evp.h>
 
 namespace encode {
-std::string base64(const char* data, size_t length) {
+std::string base64(const std::string& input) {
+  const auto length = input.length();
   std::vector<uint8_t> buffer(4 * ((length + 2) / 3), 0);
-  if (EVP_EncodeBlock(buffer.data(), reinterpret_cast<const unsigned char*>(data), length) != buffer.size())
+  if (EVP_EncodeBlock(buffer.data(), reinterpret_cast<const unsigned char*>(input.data()), length) != buffer.size())
     throw std::runtime_error("OpenSSL EVP_EncodeBlock unexpected size");
   return {buffer.begin(), buffer.end()};
 }

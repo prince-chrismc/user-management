@@ -3,5 +3,5 @@
 #include <string>
 
 namespace encode {
-std::string base64(const char* data, size_t length);
+std::string base64(const std::string& input);
 }  // namespace encode

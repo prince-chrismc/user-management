@@ -1,8 +1,8 @@
 find_package(Catch2 2.13.0 REQUIRED)
 
 include("unit-test-helper")
-add_executable(user_tests "main.cpp" "user_management.cpp" "user_routes.cpp" "encoders.cpp")
-target_link_libraries(user_tests PRIVATE encoders user_routes unit_test_helper Catch2::Catch2)
+add_executable(user_tests "main.cpp" "user_management.cpp" "user_routes.cpp" "user_database.cpp" "encoders.cpp")
+target_link_libraries(user_tests PRIVATE encoders users_databse user_routes unit_test_helper Catch2::Catch2)
 
 if(${COVERAGE})
   include("code-coverage")

@@ -14,6 +14,7 @@
 #include "schemas.hpp"
 
 namespace user_management {
+using json = api::json;
 using user_key = size_t;
 struct user {
   user_key id;
@@ -38,8 +39,8 @@ inline bool operator>=(const user &lhs, const user &rhs) {
   return std::tie(lhs.id, lhs.name, lhs.email) >= std::tie(rhs.id, rhs.name, rhs.email);
 }
 
-inline void to_json(nlohmann::json &json, const user &user) {
-  json = nlohmann::json::object({{"id", user.id}, {"name", user.name}, {"email", user.email}});
+inline void to_json(json &json, const user &user) {
+  json = json::object({{"id", user.id}, {"name", user.name}, {"email", user.email}});
 }
 
 class user_list : std::map<user_key, user> {
@@ -67,13 +68,13 @@ class user_list : std::map<user_key, user> {
   }
 };
 
-inline void to_json(nlohmann::json &json, const user_list &list) {
-  json = nlohmann::json::array();
-  for (const auto &id_user : list) json.push_back(nlohmann::json(id_user.second));
+inline void to_json(json &json, const user_list &list) {
+  json = json::array();
+  for (const auto &id_user : list) json.push_back(user_management::json(id_user.second));
 }
 
 namespace impl {
-inline void loader(const nlohmann::json_uri &uri, nlohmann::json &schema) {
+inline void loader(const nlohmann::json_uri &uri, json &schema) {
   if (uri.path() == "/user.json") {
     schema = api::user;
     return;
@@ -89,7 +90,7 @@ class user_modifier {
  public:
   explicit user_modifier(user &user) : user_(user) {}
 
-  void apply(const nlohmann::json &data) {
+  void apply(const json &data) {
     nlohmann::json_schema::json_validator validator(impl::loader, nlohmann::json_schema::default_string_format_check);
     validator.set_root_schema(api::edit);
     validator.validate(data);
@@ -110,7 +111,7 @@ class list_modifier {
  public:
   explicit list_modifier(user_list &list) : list_(list) {}
 
-  user &add(const nlohmann::json &data) {
+  user &add(const json &data) {
     nlohmann::json_schema::json_validator validator(impl::loader, nlohmann::json_schema::default_string_format_check);
     validator.set_root_schema(api::add);
     validator.validate(data);

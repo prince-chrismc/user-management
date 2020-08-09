@@ -9,7 +9,7 @@
 
 TEST_CASE("base64") {
   const std::string input{"1"};
-  CHECK(encode::base64(input.data(), input.length()) == "MQ==");
+  CHECK(encode::base64(input) == "MQ==");
 }
 
 TEST_CASE("sha256") {
