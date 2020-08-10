@@ -14,6 +14,9 @@ constexpr restinio::string_view_t user = "/um/v1/users/:id(\\d+)"_sv;
 }  // namespace route
 
 using user_management::user_list;
+using request_status = restinio::request_handling_status_t;
+using request_handle = restinio::request_handle_t;
+using route_params = restinio::router::route_params_t;
 
 class add {
   user_list &list_;
@@ -21,8 +24,7 @@ class add {
  public:
   add(user_list &list) : list_(list) {}
 
-  restinio::request_handling_status_t operator()(const restinio::request_handle_t &req,
-                                                 restinio::router::route_params_t params);
+  request_status operator()(const request_handle &req, route_params params);
 };
 
 class remove {
@@ -31,8 +33,7 @@ class remove {
  public:
   remove(user_list &list) : list_(list) {}
 
-  restinio::request_handling_status_t operator()(const restinio::request_handle_t &req,
-                                                 restinio::router::route_params_t params);
+  request_status operator()(const request_handle &req, route_params params);
 };
 
 class edit {
@@ -41,8 +42,7 @@ class edit {
  public:
   edit(user_list &list) : list_(list) {}
 
-  restinio::request_handling_status_t operator()(const restinio::request_handle_t &req,
-                                                 restinio::router::route_params_t params);
+  request_status operator()(const request_handle &req, route_params params);
 };
 
 class get_user {
@@ -51,8 +51,7 @@ class get_user {
  public:
   get_user(user_list &list) : list_(list) {}
 
-  restinio::request_handling_status_t operator()(const restinio::request_handle_t &req,
-                                                 restinio::router::route_params_t params);
+  request_status operator()(const request_handle &req, route_params params);
 };
 
 class get_list {
@@ -61,15 +60,12 @@ class get_list {
  public:
   get_list(user_list &list) : list_(list) {}
 
-  restinio::request_handling_status_t operator()(const restinio::request_handle_t &req,
-                                                 restinio::router::route_params_t params);
+  request_status operator()(const request_handle &req, route_params params);
 };
 
 namespace preflight {
-restinio::request_handling_status_t list(const restinio::request_handle_t &req,
-                                         restinio::router::route_params_t params);
-restinio::request_handling_status_t user(const restinio::request_handle_t &req,
-                                         restinio::router::route_params_t params);
+request_status list(const request_handle &req, route_params params);
+request_status user(const request_handle &req, route_params params);
 }  // namespace preflight
 }  // namespace user
 }  // namespace handler
