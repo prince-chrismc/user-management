@@ -2,7 +2,7 @@
 
 #include "um/user_management.hpp"
 
-#include <restinio/router/express.hpp>
+#include "routing.hpp"
 
 namespace handler {
 namespace user {
@@ -14,9 +14,6 @@ constexpr restinio::string_view_t user = "/um/v1/users/:id(\\d+)"_sv;
 }  // namespace route
 
 using user_management::user_list;
-using request_status = restinio::request_handling_status_t;
-using request_handle = restinio::request_handle_t;
-using route_params = restinio::router::route_params_t;
 
 class add {
   user_list &list_;
