@@ -22,8 +22,10 @@ target_link_libraries(web_app PUBLIC content_type routing)
 
 if(${RUN_TIDY})
   include("clang-tidy")
-  setup_clang_tidy(handlers "routing.hpp" "user_routes.hpp" "user_routes.cpp" "serve_files.hpp" "serve_files.cpp"
-                   "web_app.hpp" "web_app.cpp")
+  setup_clang_tidy(routing)
+  setup_clang_tidy(user_routes)
+  setup_clang_tidy(serve_files)
+  setup_clang_tidy(web_app)
 
   include("cmake-format")
   setup_cmake_format(handlers "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")

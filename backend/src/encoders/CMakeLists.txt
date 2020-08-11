@@ -7,8 +7,7 @@ target_link_libraries(encoders PUBLIC OpenSSL::OpenSSL)
 
 if(${RUN_TIDY})
   include("clang-tidy")
-  get_target_property(ENCODER_SOURCES encoders SOURCES)
-  setup_clang_tidy(encoders ${ENCODER_SOURCES})
+  setup_clang_tidy(encoders)
 
   include("cmake-format")
   setup_cmake_format(encoders "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")

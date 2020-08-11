@@ -14,7 +14,8 @@ target_link_libraries(app_args PUBLIC lyra::lyra fmt::fmt)
 
 if(${RUN_TIDY})
   include("clang-tidy")
-  setup_clang_tidy(utility "content_type_from_ext.hpp" "content_type_from_ext.cpp" "app_args.hpp" "app_args.cpp")
+  setup_clang_tidy(content_type)
+  setup_clang_tidy(app_args)
 
   include("cmake-format")
   setup_cmake_format(utility "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")

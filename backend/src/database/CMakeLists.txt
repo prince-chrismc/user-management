@@ -7,7 +7,7 @@ target_link_libraries(users_databse PUBLIC user_management encoders)
 
 if(${RUN_TIDY})
   include("clang-tidy")
-  setup_clang_tidy(users_databse "users.hpp")
+  setup_clang_tidy(users_databse)
 
   include("cmake-format")
   setup_cmake_format(users_databse "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
