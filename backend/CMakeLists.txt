@@ -27,18 +27,18 @@ target_include_directories(user_management INTERFACE $<BUILD_INTERFACE:${CMAKE_C
                                                      $<INSTALL_INTERFACE:include>)
 target_link_libraries(user_management INTERFACE schemas nlohmann_json_schema_validator::nlohmann_json_schema_validator)
 
-if(${BUILD_WEB_SERVER})
-  add_subdirectory(src)
-endif()
-
-if(${BUILD_TESTS})
-  add_subdirectory(test)
-endif()
-
 if(${RUN_TIDY})
   include("clang-tidy")
   setup_clang_tidy(um "include/um/user_management.hpp")
 
   include("cmake-format")
   setup_cmake_format(main "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
+endif()
+
+if(${BUILD_WEB_SERVER})
+  add_subdirectory(src)
+endif()
+
+if(${BUILD_TESTS})
+  add_subdirectory(test)
 endif()

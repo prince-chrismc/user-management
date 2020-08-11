@@ -1,6 +1,7 @@
 // MIT License
 
-#include <fmt/chrono.h>
+#include <fmt/chrono.h>>
+
 #include <catch2/catch.hpp>
 
 #include "database/users.hpp"

@@ -11,6 +11,12 @@ function(SETUP_CLANG_TIDY TARGET)
 
   find_program(PYTHON_EXE NAMES "python3" "python")
 
-  add_custom_target(clang-tidy-${TARGET} ALL COMMAND "${PYTHON_EXE}" "${TIDY_RUNNER}" "-fix" "-format" "-p"
-                                                     "${CMAKE_BINARY_DIR}" ${ARGV})
+  add_custom_target(clang-tidy-${TARGET} COMMAND "${PYTHON_EXE}" "${TIDY_RUNNER}" "-fix" "-format" "-p"
+                                                 "${CMAKE_BINARY_DIR}" ${ARGV})
+
+  if(TARGET clang-tidy)
+    add_dependencies(clang-tidy clang-tidy-${TARGET})
+  else()
+    add_custom_target(clang-tidy DEPENDS clang-tidy-${TARGET})
+  endif()
 endfunction()

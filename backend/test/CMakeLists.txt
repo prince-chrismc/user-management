@@ -17,7 +17,7 @@ endif()
 if(${RUN_TIDY})
   include("clang-tidy")
   get_target_property(TESTER_SOURCES user_tests SOURCES)
-  setup_clang_tidy(tester ${TESTER_SOURCES})
+  # setup_clang_tidy(tester ${TESTER_SOURCES})
 
   include("cmake-format")
   setup_cmake_format(tests "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
