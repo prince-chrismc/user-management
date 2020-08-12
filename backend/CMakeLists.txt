@@ -1,5 +1,6 @@
-project(user-management)
 cmake_minimum_required(VERSION 3.8)
+
+project(user-management)
 
 option(BUILD_WEB_SERVER "build the web server for this application" ON)
 option(BUILD_TESTS "build the tests for this application" OFF)
