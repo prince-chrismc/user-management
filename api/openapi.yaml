@@ -14,16 +14,18 @@ servers:
       server:
         default: https://api.example.com
         enum:
-        - https://api.example.com
-        - https://ec2-3-14-64-10.us-east-2.compute.amazonaws.com/
+          - https://api.example.com
+          - https://ec2-3-14-64-10.us-east-2.compute.amazonaws.com/
 
 tags:
   - name: Search
-    description: Searching database of users
+    description: Browsing database of users
   - name: Edit
     description: Edit user's entry in database
   - name: CORS
-    description: Preflight requests to support CORS
+    description: >-
+      Preflight requests to support Cross-origin resource sharing (CORS).
+      Describes access to a selected resources from a different origin
 
 components:
   parameters:
@@ -66,7 +68,7 @@ components:
             Schema Error:
               value: { "error": "schema was not respected." }
     Options:
-      description: Generic OPTIONS response
+      description: Options
       headers:
         Access-Control-Allow-Origin:
           $ref: "#/components/headers/Access-Control-Allow-Origin"
@@ -148,7 +150,7 @@ paths:
     options:
       tags:
         - CORS
-      description: Descripe access to selected resources from a different origin
+      description: List
       responses:
         "204":
           $ref: "#/components/responses/Options"
@@ -158,7 +160,7 @@ paths:
     get:
       tags:
         - Search
-      summary: Display user
+      summary: Display individual user
       responses:
         "200":
           description: OK
@@ -220,7 +222,7 @@ paths:
     options:
       tags:
         - CORS
-      description: Descripe access to selected resources from a different origin
+      description: User
       responses:
         "204":
           $ref: "#/components/responses/Options"
