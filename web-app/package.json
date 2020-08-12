@@ -1,6 +1,6 @@
 {
   "name": "user-management",
-  "version": "1.0.0",
+  "version": "1.0.0-dev.0",
   "description": "React web application hosted from a C++ web server",
   "main": "index.js",
   "author": "Chris Mc",
