@@ -31,7 +31,7 @@ components:
       name: id
       in: path
       required: true
-      description: ID of the resoective user to display
+      description: ID of the respective user to display
       schema:
         type: integer
       example: 15
@@ -48,7 +48,7 @@ components:
       $ref: "./schema/error.json"
   responses:
     NotFound:
-      description: The specified resource was not found
+      description: Not Found
       content:
         application/json:
           schema:
@@ -60,13 +60,13 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
-          examples: 
+          examples:
             Bad JSON:
               value: { "error": "malformed JSON" }
             Schema Error:
               value: { "error": "schema was not respected." }
     Options:
-      description: No Content
+      description: Generic OPTIONS response
       headers:
         Access-Control-Allow-Origin:
           $ref: "#/components/headers/Access-Control-Allow-Origin"
@@ -148,7 +148,6 @@ paths:
     options:
       tags:
         - CORS
-      summary: Preflight check for CORS
       description: Descripe access to selected resources from a different origin
       responses:
         "204":
@@ -221,7 +220,6 @@ paths:
     options:
       tags:
         - CORS
-      summary: Preflight check for CORS
       description: Descripe access to selected resources from a different origin
       responses:
         "204":
