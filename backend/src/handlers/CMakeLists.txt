@@ -27,6 +27,12 @@ if(${RUN_TIDY})
   setup_clang_tidy(serve_files)
   setup_clang_tidy(web_app)
 
+  include("clang-format")
+  setup_clang_format(routing)
+  setup_clang_format(user_routes)
+  setup_clang_format(serve_files)
+  setup_clang_format(web_app)
+
   include("cmake-format")
   setup_cmake_format(handlers "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
 endif()

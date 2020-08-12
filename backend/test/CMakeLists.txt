@@ -18,6 +18,9 @@ if(${RUN_TIDY})
   include("clang-tidy")
   # setup_clang_tidy(tester) # Very annoying warnings because of catch2
 
+  include("clang-format")
+  setup_clang_format(user_tests)
+
   include("cmake-format")
   setup_cmake_format(tests "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
 endif()

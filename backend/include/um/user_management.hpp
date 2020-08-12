@@ -4,9 +4,9 @@
 #ifndef UM_USER_MANAGEMENT_HPP_
 #define UM_USER_MANAGEMENT_HPP_
 
-#include <unordered_map>
 #include <stdexcept>
 #include <string>
+#include <unordered_map>
 #include <utility>
 
 #include <nlohmann/json-schema.hpp>

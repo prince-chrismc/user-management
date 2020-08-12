@@ -73,7 +73,7 @@ TEST_CASE("Add") {
   CHECK(user.name == "Jane Doe");
   CHECK(user.email == "jane@example.com");
   CHECK(list.count() == 1);
-} 
+}
 
 TEST_CASE("Remove") {
   um::user_list list;

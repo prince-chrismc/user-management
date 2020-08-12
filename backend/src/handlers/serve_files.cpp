@@ -7,8 +7,7 @@
 namespace handler {
 namespace serve_files {
 
-request_status from_disk::operator()(const request_handle& req,
-                                                          route_params /*params*/) {
+request_status from_disk::operator()(const request_handle& req, route_params /*params*/) {
   auto path = req->header().path();
 
   if (std::string::npos == path.find("..")) {

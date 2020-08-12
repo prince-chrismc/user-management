@@ -32,6 +32,9 @@ if(${RUN_TIDY})
   include("clang-tidy")
   setup_clang_tidy(user_management)
 
+  include("clang-format")
+  setup_clang_format(user_management)
+
   include("cmake-format")
   setup_cmake_format(main "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
 endif()

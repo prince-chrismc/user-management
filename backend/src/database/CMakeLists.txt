@@ -9,6 +9,9 @@ if(${RUN_TIDY})
   include("clang-tidy")
   setup_clang_tidy(users_databse)
 
+  include("clang-format")
+  setup_clang_format(users_databse)
+
   include("cmake-format")
   setup_cmake_format(users_databse "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
 endif()
