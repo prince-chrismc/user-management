@@ -1,5 +1,6 @@
 // MIT License
-// Copyright (c) 2020 Chris Mc
+// Copyright (c) 2020 Christopher McArthur
+// Version: 1.0.0-dev.0
 
 #ifndef UM_USER_MANAGEMENT_HPP_
 #define UM_USER_MANAGEMENT_HPP_

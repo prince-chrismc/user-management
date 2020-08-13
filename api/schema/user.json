@@ -14,7 +14,7 @@
         "name": {
             "type": "string",
             "title": "The Name Schema",
-            "description": "the name given to a user.",
+            "description": "The name given to a user.",
             "examples": [
                 "John Doe",
                 "Jane Doe"
