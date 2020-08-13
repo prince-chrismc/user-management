@@ -199,16 +199,9 @@ paths:
       tags:
         - CORS
       description: List
-      parameters:
-        - in: header
-          name: If-Match
-          schema:
-            $ref: "#/components/headers/If-Match"
       responses:
         "204":
           $ref: "#/components/responses/Options"
-        "304":
-          $ref: "#/components/responses/NotModified"
   /users/{id}:
     parameters:
       - $ref: "#/components/parameters/id"
@@ -316,13 +309,6 @@ paths:
       tags:
         - CORS
       description: User
-      parameters:
-        - in: header
-          name: If-Match
-          schema:
-            $ref: "#/components/headers/If-Match"
       responses:
         "204":
           $ref: "#/components/responses/Options"
-        "304":
-          $ref: "#/components/responses/NotModified"
