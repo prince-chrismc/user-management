@@ -17,7 +17,7 @@ function(SETUP_CLANG_TIDY TARGET)
   endif()
 
   get_target_property(TARGET_SOURCES ${TARGET} SOURCES)
-  add_custom_target(clang-tidy-${TARGET} COMMAND "${PYTHON_EXE}" "${TIDY_RUNNER}" "-fix" "-format" "-p"
+  add_custom_target(clang-tidy-${TARGET} COMMAND "${PYTHON_EXE}" "${TIDY_RUNNER}" "-quiet" "-fix" "-format" "-p"
                                                  "${CMAKE_BINARY_DIR}" ${TARGET_SOURCES})
   add_dependencies(${TARGET} clang-tidy-${TARGET})
 

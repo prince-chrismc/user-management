@@ -1,67 +1,64 @@
 // MIT License
 
-#include "um/user_management.hpp"
+#include "database/users.hpp"
 
 #include "routing.hpp"
 
 namespace handler {
 namespace user {
-
 namespace route {
 using namespace nonstd::string_view_literals;
-constexpr restinio::string_view_t list = "/um/v1/users"_sv;
+constexpr restinio::string_view_t db = "/um/v1/users"_sv;
 constexpr restinio::string_view_t user = "/um/v1/users/:id(\\d+)"_sv;
 }  // namespace route
 
-using user_management::user_list;
-
 class add {
-  user_list &list_;
+  ::user::database &db_;
 
  public:
-  add(user_list &list) : list_(list) {}
+  add(::user::database &db) : db_(db) {}
 
   request_status operator()(const request_handle &req, route_params params);
 };
 
 class remove {
-  user_list &list_;
+  ::user::database &db_;
 
  public:
-  remove(user_list &list) : list_(list) {}
+  remove(::user::database &db) : db_(db) {}
 
   request_status operator()(const request_handle &req, route_params params);
 };
 
 class edit {
-  user_list &list_;
+  ::user::database &db_;
 
  public:
-  edit(user_list &list) : list_(list) {}
+  edit(::user::database &db) : db_(db) {}
 
   request_status operator()(const request_handle &req, route_params params);
 };
 
 class get_user {
-  user_list &list_;
+  const ::user::database &db_;
 
  public:
-  get_user(user_list &list) : list_(list) {}
+  get_user(const ::user::database &db) : db_(db) {}
 
   request_status operator()(const request_handle &req, route_params params);
 };
 
 class get_list {
-  user_list &list_;
+  const ::user::database &db_;
 
  public:
-  get_list(user_list &list) : list_(list) {}
+  get_list(const ::user::database &db) : db_(db) {}
 
   request_status operator()(const request_handle &req, route_params params);
 };
 
 namespace preflight {
-request_status list(const request_handle &req, route_params params);
+request_status db(const request_handle &req, route_params params);
 request_status user(const request_handle &req, route_params params);
 }  // namespace preflight
 }  // namespace user

@@ -8,7 +8,7 @@ namespace handler {
 namespace user {
 request_status add::operator()(const request_handle &req, route_params /*params*/) {
   try {
-    const auto new_user = user_management::list_modifier(list_).add(nlohmann::json::parse(req->body()));
+    const auto new_user = db_.add(nlohmann::json::parse(req->body()));
 
     return req->create_response()
         .append_header(restinio::http_field::access_control_allow_origin, "*")
@@ -25,15 +25,14 @@ request_status add::operator()(const request_handle &req, route_params /*params*
 }
 
 request_status remove::operator()(const request_handle &req, route_params params) {
-  list_.remove(restinio::cast_to<int>(params["id"]));
+  db_.remove(restinio::cast_to<size_t>(params["id"]));
   return req->create_response(restinio::status_no_content())
       .append_header(restinio::http_field::access_control_allow_origin, "*")
       .done();
 }
 
 request_status edit::operator()(const request_handle &req, route_params params) {
-  auto &user = list_.get(restinio::cast_to<int>(params["id"]));
-  user_management::user_modifier(user).apply(nlohmann::json::parse(req->body()));
+  const auto user = db_.edit(restinio::cast_to<size_t>(params["id"]), nlohmann::json::parse(req->body()));
 
   return req->create_response()
       .append_header(restinio::http_field::access_control_allow_origin, "*")
@@ -43,7 +42,7 @@ request_status edit::operator()(const request_handle &req, route_params params) 
 }
 
 request_status get_user::operator()(const request_handle &req, route_params params) {
-  const auto user = list_.get(restinio::cast_to<int>(params["id"]));
+  const auto user = db_.get(restinio::cast_to<size_t>(params["id"]));
   return req->create_response()
       .append_header(restinio::http_field::access_control_allow_origin, "*")
       .append_header(restinio::http_field::content_type, "application/json")
@@ -55,7 +54,7 @@ request_status get_list::operator()(const request_handle &req, route_params /*pa
   return req->create_response()
       .append_header(restinio::http_field::access_control_allow_origin, "*")
       .append_header(restinio::http_field::content_type, "application/json")
-      .set_body(nlohmann::json(list_).dump())
+      .set_body(nlohmann::json(db_).dump())
       .done();
 }
 

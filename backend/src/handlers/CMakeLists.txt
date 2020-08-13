@@ -8,7 +8,7 @@ target_link_libraries(routing PUBLIC restinio::restinio)
 add_library(user_routes "user_routes.hpp" "user_routes.cpp")
 target_include_directories(user_routes PUBLIC "..")
 set_target_properties(user_routes PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(user_routes PUBLIC user_management::user_management routing)
+target_link_libraries(user_routes PUBLIC users_databse routing)
 
 add_library(serve_files "serve_files.hpp" "serve_files.cpp")
 target_include_directories(serve_files PUBLIC "..")

@@ -12,12 +12,12 @@ using server_settings_t = restinio::server_settings_t<traits_t>;
 using http_server_t = restinio::http_server_t<traits_t>;
 
 TEST_CASE("List Endpoints") {
-  user_management::user_list list;
+  user::database list;
   list.add("John Doe", "john@example.com");
 
   auto router = std::make_unique<router_t>();
-  router->http_get(handler::user::route::list, handler::user::get_list{list});
-  router->http_post(handler::user::route::list, handler::user::add{list});
+  router->http_get(list, handler::user::get_list{list});
+  router->http_post(list, handler::user::add{list});
 
   http_server_t http_server{
       restinio::own_io_context(),
@@ -58,7 +58,7 @@ TEST_CASE("List Endpoints") {
 }
 
 TEST_CASE("User Endpoints") {
-  user_management::user_list list;
+  user::database list;
   const auto user = list.add("John Doe", "john@example.com");
 
   auto router = std::make_unique<router_t>();
