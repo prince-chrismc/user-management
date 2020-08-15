@@ -43,7 +43,7 @@ using namespace std::chrono_literals;  // NOLINT(google-build-using-namespace)
 
 using router_t = restinio::router::express_router_t<>;
 
-auto server_handler(const std::string &root_dir, user_management::user_list &list) {
+auto server_handler(const std::string &root_dir, user::database &db) {
   std::string server_root_dir;
 
   if (root_dir.empty()) {
@@ -61,12 +61,12 @@ auto server_handler(const std::string &root_dir, user_management::user_list &lis
   router->http_get(R"(/:path(.*)\.:ext(.*))", restinio::path2regex::options_t{}.strict(true),
                    handler::serve_files::from_disk{server_root_dir});
 
-  router->http_get(handler::user::route::list, handler::user::get_list{list});
-  router->http_get(handler::user::route::user, handler::user::get_user{list});
+  router->http_get(handler::user::route::list, handler::user::get_list{db});
+  router->http_get(handler::user::route::user, handler::user::get_user{db});
 
-  router->http_post(handler::user::route::list, handler::user::add{list});
-  router->http_delete(handler::user::route::user, handler::user::remove{list});
-  router->add_handler(restinio::http_method_patch(), handler::user::route::user, handler::user::edit{list});
+  router->http_post(handler::user::route::list, handler::user::add{db});
+  router->http_delete(handler::user::route::user, handler::user::remove{db});
+  router->add_handler(restinio::http_method_patch(), handler::user::route::user, handler::user::edit{db});
 
   router->add_handler(restinio::http_method_options(), handler::user::route::list, &handler::user::preflight::list);
   router->add_handler(restinio::http_method_options(), handler::user::route::user, &handler::user::preflight::user);
@@ -82,7 +82,6 @@ int main(int argc, char const *argv[]) {
       return 0;
     }
 
-    using traits_t = restinio::tls_traits_t<restinio::asio_timer_manager_t, restinio::null_logger_t, router_t>;
 
     namespace asio = restinio::asio_ns;
 
@@ -95,12 +94,12 @@ int main(int argc, char const *argv[]) {
     tls_context.use_private_key_file(args.certs_dir + "/key.pem", asio::ssl::context::pem);
     tls_context.use_tmp_dh_file(args.certs_dir + "/dh2048.pem");
 
-    user_management::user_list list;
-
+    user::database db;
+    using traits_t = restinio::tls_traits_t<restinio::asio_timer_manager_t, restinio::null_logger_t, router_t>;
     restinio::run(restinio::on_thread_pool<traits_t>(args.pool_size)
                       .address(args.address)
                       .port(args.port)
-                      .request_handler(server_handler(args.root_dir, list))
+                      .request_handler(server_handler(args.root_dir, db))
                       .read_next_http_message_timelimit(10s)
                       .write_http_response_timelimit(1s)
                       .handle_request_timeout(1s)

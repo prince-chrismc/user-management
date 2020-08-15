@@ -13,16 +13,15 @@ using http_server_t = restinio::http_server_t<traits_t>;
 
 TEST_CASE("List Endpoints") {
   user::database list;
-  list.add("John Doe", "john@example.com");
+  list.add(R"##({"name": "John Doe", "email": "john@example.com"})##"_json);
 
   auto router = std::make_unique<router_t>();
-  router->http_get(list, handler::user::get_list{list});
-  router->http_post(list, handler::user::add{list});
+  router->http_get(handler::user::route::list, handler::user::get_list{list});
+  router->http_post(handler::user::route::list, handler::user::add{list});
 
   http_server_t http_server{
       restinio::own_io_context(),
       server_settings_t{}.address("127.0.0.1").port(utest_default_port()).request_handler(std::move(router))};
-
   other_work_thread_for_server_t<http_server_t> other_thread{http_server};
   other_thread.run();
 
@@ -59,7 +58,7 @@ TEST_CASE("List Endpoints") {
 
 TEST_CASE("User Endpoints") {
   user::database list;
-  const auto user = list.add("John Doe", "john@example.com");
+  const auto user = list.add(R"##({"name": "John Doe", "email": "john@example.com"})##"_json);
 
   auto router = std::make_unique<router_t>();
   router->http_get(handler::user::route::user, handler::user::get_user{list});
@@ -69,7 +68,6 @@ TEST_CASE("User Endpoints") {
   http_server_t http_server{
       restinio::own_io_context(),
       server_settings_t{}.address("127.0.0.1").port(utest_default_port()).request_handler(std::move(router))};
-
   other_work_thread_for_server_t<http_server_t> other_thread{http_server};
   other_thread.run();
 

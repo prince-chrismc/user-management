@@ -5,8 +5,6 @@
 #include "encoders/base64.hpp"
 #include "encoders/sha256.hpp"
 
-#include <iostream>
-
 TEST_CASE("base64") {
   const std::string input{"1"};
   CHECK(encode::base64(input) == "MQ==");
