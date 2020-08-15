@@ -45,6 +45,7 @@ TEST_CASE("Comparison") {
 
 TEST_CASE("List") {
   um::user_list list;
+  CHECK_THROWS(list.get(1));
   auto& user = list.add("John Doe", "john@example.com");
   CHECK(user.id == 1);
   CHECK(user.name == "John Doe");
