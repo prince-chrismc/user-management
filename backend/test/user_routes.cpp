@@ -71,7 +71,7 @@ TEST_CASE("User Endpoints") {
   other_work_thread_for_server_t<http_server_t> other_thread{http_server};
   other_thread.run();
 
-  SECTION("GET") {
+  SECTION("GET 200") {
     const std::string get_user{
         "GET /um/v1/users/1 HTTP/1.0\r\n"
         "From: unit-test\r\n"
@@ -82,6 +82,20 @@ TEST_CASE("User Endpoints") {
     std::string response;
     REQUIRE_NOTHROW(response = do_request(get_user));
     CHECK_THAT(response, Catch::Contains(nlohmann::json(user).dump()));
+  }
+
+  SECTION("GET 404") {
+    const std::string get_user{
+        "GET /um/v1/users/0 HTTP/1.0\r\n"
+        "From: unit-test\r\n"
+        "User-Agent: unit-test\r\n"
+        "Connection: close\r\n"
+        "\r\n"};
+
+    std::string response;
+    REQUIRE_NOTHROW(response = do_request(get_user));
+    CHECK_THAT(response, Catch::Contains("404") && Catch::Contains("Not Found") && Catch::Contains("error") /*&&
+                             Catch::Contains("user does not exists")*/);
   }
 
   SECTION("DELETE") {

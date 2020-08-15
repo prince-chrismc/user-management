@@ -42,12 +42,20 @@ request_status edit::operator()(const request_handle &req, route_params params) 
 }
 
 request_status get_user::operator()(const request_handle &req, route_params params) {
-  const auto user = db_.get(restinio::cast_to<size_t>(params["id"]));
-  return req->create_response()
-      .append_header(restinio::http_field::access_control_allow_origin, "*")
-      .append_header(restinio::http_field::content_type, "application/json")
-      .set_body(nlohmann::json(user).dump())
-      .done();
+  try {
+    const auto user = db_.get(restinio::cast_to<size_t>(params["id"]));
+    return req->create_response()
+        .append_header(restinio::http_field::access_control_allow_origin, "*")
+        .append_header(restinio::http_field::content_type, "application/json")
+        .set_body(nlohmann::json(user).dump())
+        .done();
+  } catch (const std::exception &e) {
+    return req->create_response(restinio::status_not_found())
+        .append_header(restinio::http_field::access_control_allow_origin, "*")
+        .append_header(restinio::http_field::content_type, "application/json")
+        .set_body(nlohmann::json({{"error", e.what()}}).dump())
+        .done();
+  }
 }
 
 request_status get_list::operator()(const request_handle &req, route_params /*params*/) {
