@@ -18,7 +18,7 @@ TEST_CASE("List Endpoints") {
 
   auto router = std::make_unique<router_t>();
   router->http_get(handler::user::route::list, handler::user::get_list{list});
-  router->http_post(handler::user::route::list, handler::user::add{list});
+  router->http_put(handler::user::route::list, handler::user::add{list});
 
   http_server_t http_server{
       restinio::own_io_context(),

@@ -64,7 +64,7 @@ auto server_handler(const std::string &root_dir, user::database &db) {
   router->http_get(handler::user::route::list, handler::user::get_list{db});
   router->http_get(handler::user::route::user, handler::user::get_user{db});
 
-  router->http_post(handler::user::route::list, handler::user::add{db});
+  router->http_put(handler::user::route::list, handler::user::add{db});
   router->http_delete(handler::user::route::user, handler::user::remove{db});
   router->add_handler(restinio::http_method_patch(), handler::user::route::user, handler::user::edit{db});
 

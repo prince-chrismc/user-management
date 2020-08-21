@@ -44,6 +44,11 @@ inline void to_json(json &json, const user &user) {
   json = json::object({{"id", user.id}, {"name", user.name}, {"email", user.email}});
 }
 
+class user_does_not_exist : public std::runtime_error {
+ public:
+  user_does_not_exist(user_key id) : std::runtime_error("user '" + std::to_string(id) + "' does not exists") {}
+};
+
 class user_list : std::unordered_map<user_key, user> {
   user_key index = 0;
 
@@ -52,8 +57,14 @@ class user_list : std::unordered_map<user_key, user> {
   using std::unordered_map<user_key, user>::end;
   size_t count() const { return size(); }
 
-  user &get(user_key id) { return at(id); }
-  user get(user_key id) const { return at(id); }
+  user &get(user_key id) {
+    if (find(id) == end()) throw user_does_not_exist(id);
+    return at(id);
+  }
+  user get(user_key id) const {
+    if (find(id) == end()) throw user_does_not_exist(id);
+    return at(id);
+  }
 
   user &add(std::string name, std::string email) {
     const auto id = ++index;
@@ -75,13 +86,18 @@ inline void to_json(json &json, const user_list &list) {
 }
 
 namespace impl {
+class user_schema_error : public std::runtime_error {
+ public:
+  using runtime_error::runtime_error;
+};
+
 inline void loader(const nlohmann::json_uri &uri, json &schema) {
   if (uri.path() == "/user.json") {
     schema = api::user;
     return;
   }
 
-  throw std::logic_error("unkown schema");
+  throw user_schema_error("unkown schema");
 }
 }  // namespace impl
 
