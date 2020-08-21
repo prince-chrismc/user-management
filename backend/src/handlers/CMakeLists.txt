@@ -2,15 +2,10 @@ find_package(restinio 0.6.8 REQUIRED)
 
 add_subdirectory("utility")
 
-add_library(routing "routing.hpp")
-target_include_directories(routing PUBLIC "..")
-set_target_properties(routing PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(routing PUBLIC restinio::restinio)
-
 add_library(user_routes "user_routes.hpp" "user_routes.cpp")
 target_include_directories(user_routes PUBLIC "..")
 set_target_properties(user_routes PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(user_routes PUBLIC users_databse routing)
+target_link_libraries(user_routes PUBLIC users_databse response_builder)
 
 add_library(serve_files "serve_files.hpp" "serve_files.cpp")
 target_include_directories(serve_files PUBLIC "..")
@@ -24,13 +19,11 @@ target_link_libraries(web_app PUBLIC content_type routing)
 
 if(${RUN_TIDY})
   include("clang-tidy")
-  setup_clang_tidy(routing)
   setup_clang_tidy(user_routes)
   setup_clang_tidy(serve_files)
   setup_clang_tidy(web_app)
 
   include("clang-format")
-  setup_clang_format(routing)
   setup_clang_format(user_routes)
   setup_clang_format(serve_files)
   setup_clang_format(web_app)

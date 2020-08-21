@@ -14,5 +14,5 @@ if(${RUN_TIDY})
   setup_clang_format(app_args)
 
   include("cmake-format")
-  setup_cmake_format(utility "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
+  setup_cmake_format(src-utility "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
 endif()

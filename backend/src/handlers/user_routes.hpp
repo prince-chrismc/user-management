@@ -1,7 +1,7 @@
 // MIT License
 
 #include "database/users.hpp"
-#include "routing.hpp"
+#include "utility/routing.hpp"
 
 namespace handler {
 namespace user {
