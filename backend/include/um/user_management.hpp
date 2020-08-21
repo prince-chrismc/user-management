@@ -74,6 +74,7 @@ class user_list : std::unordered_map<user_key, user> {
 
   user remove(user_key id) {
     const auto it = find(id);
+    if (it == end()) throw user_does_not_exist(id);
     const auto copy = it->second;
     erase(it);
     return copy;

@@ -45,7 +45,7 @@ TEST_CASE("Comparison") {
 
 TEST_CASE("List") {
   um::user_list list;
-  CHECK_THROWS(list.get(1));
+  CHECK_THROWS_AS(list.get(1), um::user_does_not_exist);
   auto& user = list.add("John Doe", "john@example.com");
   CHECK(user.id == 1);
   CHECK(user.name == "John Doe");
@@ -92,5 +92,5 @@ TEST_CASE("Loader") {
   um::impl::loader(nlohmann::json_uri{"/user.json"}, json);
   CHECK(json == api::user);
 
-  CHECK_THROWS_AS(um::impl::loader(nlohmann::json_uri{"/unknown.json"}, json), std::logic_error);
+  CHECK_THROWS_AS(um::impl::loader(nlohmann::json_uri{"/unknown.json"}, json), um::impl::user_schema_error);
 }
