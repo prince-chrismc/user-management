@@ -8,6 +8,7 @@ if(${COVERAGE})
   include("code-coverage")
   setup_coverage(user_tests)
   setup_coverage(user_routes)
+  setup_coverage(users_databse)
   setup_coverage(encoders)
 
   set(COVERAGE_EXCLUDES "/usr/**" "/home/*/.conan/**" "*test*" "*build*")

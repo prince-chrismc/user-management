@@ -1,5 +1,7 @@
 find_package(restinio 0.6.8 REQUIRED)
 
+add_subdirectory("utility")
+
 add_library(routing "routing.hpp")
 target_include_directories(routing PUBLIC "..")
 set_target_properties(routing PROPERTIES LINKER_LANGUAGE CXX)

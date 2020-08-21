@@ -1,5 +1,7 @@
 find_package(restinio 0.6.8 REQUIRED)
 
+add_subdirectory("encoders")
+
 add_library(users_databse "users.hpp")
 target_include_directories(users_databse PUBLIC "..")
 set_target_properties(users_databse PROPERTIES LINKER_LANGUAGE CXX)
