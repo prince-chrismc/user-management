@@ -4,6 +4,7 @@
 
 namespace handler {
 namespace response {
+using http_field = restinio::http_field;
 
 class builder;
 namespace impl {
@@ -20,7 +21,7 @@ class builder {
     // add_edit_headers(builder_);
   }
 
-  builder& append_header(restinio::http_field_t field_id, std::string field_value) {
+  builder& append_header(http_field field_id, std::string field_value) {
     builder_.append_header(field_id, std::move(field_value));
     return *this;
   }
@@ -35,7 +36,7 @@ class builder {
 
 namespace impl {
 inline void add_cors_headers(builder& builder) {
-  builder.append_header(restinio::http_field::access_control_allow_origin, "*");
+  builder.append_header(http_field::access_control_allow_origin, "*");
 }
 }  // namespace impl
 }  // namespace response
