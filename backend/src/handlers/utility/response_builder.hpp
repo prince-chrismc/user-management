@@ -8,6 +8,7 @@ using http_field = restinio::http_field;
 
 class builder;
 namespace impl {
+inline void add_generic_headers(builder& builder);
 inline void add_cors_headers(builder& builder);
 }  // namespace impl
 
@@ -16,6 +17,7 @@ class builder {
 
  public:
   builder(const request_handle& req) : builder_{req->create_response()} {
+    impl::add_generic_headers(*this);
     impl::add_cors_headers(*this);
     // add_api_headers(builder_);
     // add_edit_headers(builder_);
@@ -35,6 +37,9 @@ class builder {
 };
 
 namespace impl {
+inline void add_generic_headers(builder& builder){
+  builder.append_header(http_field::server, "user-management/1.0.0-dev.0; restinio/0.6.8.1");
+}
 inline void add_cors_headers(builder& builder) {
   builder.append_header(http_field::access_control_allow_origin, "*");
 }
