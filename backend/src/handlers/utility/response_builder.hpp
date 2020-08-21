@@ -27,6 +27,12 @@ class builder {
     builder_.append_header(field_id, std::move(field_value));
     return *this;
   }
+  
+  builder& append_header(http_field field_id, std::chrono::system_clock::time_point tp) {
+    builder_.append_header(field_id, restinio::make_date_field_value(tp));
+    return *this;
+  }
+  
 
   builder& set_body(std::string body) {
     builder_.set_body(std::move(body));
@@ -39,6 +45,7 @@ class builder {
 namespace impl {
 inline void add_generic_headers(builder& builder){
   builder.append_header(http_field::server, "user-management/1.0.0-dev.0; restinio/0.6.8.1");
+  builder.append_header(http_field::date, std::chrono::system_clock::now());
 }
 inline void add_cors_headers(builder& builder) {
   builder.append_header(http_field::access_control_allow_origin, "*");
