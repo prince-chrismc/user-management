@@ -1,8 +1,7 @@
 // MIT License
 
 #include "routing.hpp"
-
-#include <um/user_management.hpp>
+#include "um/user_management.hpp"
 
 namespace handler {
 namespace response {
@@ -23,7 +22,7 @@ class builder {
   builder(const request_handle& req, const http_status_line& status) : builder_{req->create_response(status)} {
     impl::add_generic_headers(*this);
     impl::add_cors_headers(*this);
-    impl::add_api_headers(*this);
+    if (status.status_code() != restinio::status_no_content().status_code()) impl::add_api_headers(*this);
   }
 
   builder(const request_handle& req) : builder(req, restinio::status_ok()) {}
@@ -63,12 +62,44 @@ class not_found : public error_builder<user_management::user_does_not_exist> {
   not_found(const request_handle& req) : error_builder(req, restinio::status_not_found()){};
 };
 
+namespace builders {
+class list : public builder {
+ public:
+  static void add_cors_methods_header(builder& builder) {
+    builder.append_header(http_field::access_control_allow_methods, "GET, PUT");
+  }
+
+  list(const request_handle& req, const http_status_line& status) : builder(req, status) {
+    add_cors_methods_header(*this);
+  }
+
+  list(const request_handle& req) : list(req, restinio::status_ok()) {}
+};
+
+class user : public builder {
+ public:
+  static void add_cors_methods_header(builder& builder) {
+    builder.append_header(http_field::access_control_allow_methods, "GET, PATCH, DELETE");
+  }
+
+  user(const request_handle& req, const http_status_line& status) : builder(req, status) {
+    add_cors_methods_header(*this);
+  }
+
+  user(const request_handle& req) : user(req, restinio::status_ok()) {}
+};
+}  // namespace builders
+
 namespace impl {
 inline void add_generic_headers(builder& builder) {
-  builder.append_header(http_field::server, "user-management/1.0.0-dev.0; restinio/0.6.8.1");
-  builder.append_header(http_field::date, std::chrono::system_clock::now());
+  builder.append_header(http_field::server, "user-management/1.0.0-dev.0; restinio/0.6.8.1")
+      .append_header(http_field::date, std::chrono::system_clock::now());
 }
-inline void add_cors_headers(builder& builder) { builder.append_header(http_field::access_control_allow_origin, "*"); }
+inline void add_cors_headers(builder& builder) {
+  builder.append_header(http_field::access_control_allow_origin, "*")
+      .append_header(restinio::http_field::access_control_allow_headers, "Content-Type")
+      .append_header(restinio::http_field::access_control_max_age, "86400");
+}
 inline void add_api_headers(builder& builder) { builder.append_header(http_field::content_type, "application/json"); }
 }  // namespace impl
 }  // namespace response
