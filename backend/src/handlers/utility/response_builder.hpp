@@ -60,7 +60,7 @@ class error_builder : builder {
   using builder::done;
 
   error_builder& set_body(const exception& e) {
-    builder::set_body(nlohmann::json({{"error", e.what()}}).dump());
+    builder::set_body(user_management::json({{"error", e.what()}}).dump());
     return *this;
   }
 };
@@ -73,6 +73,16 @@ class not_found : public error_builder<user_management::user_does_not_exist> {
 class unsupported_media_type : public error_builder<> {
  public:
   unsupported_media_type(const request_handle& req) : error_builder(req, restinio::status_unsupported_media_type()){};
+};
+
+class precondition_required : public error_builder<> {
+ public:
+  precondition_required(const request_handle& req) : error_builder(req, restinio::status_precondition_required()){}
+};
+
+class precondition_failed : public error_builder<> {
+ public:
+  precondition_failed(const request_handle& req) : error_builder(req, restinio::status_precondition_failed()){}
 };
 
 namespace builders {
