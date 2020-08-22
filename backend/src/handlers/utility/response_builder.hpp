@@ -70,6 +70,11 @@ class not_found : public error_builder<user_management::user_does_not_exist> {
   not_found(const request_handle& req) : error_builder(req, restinio::status_not_found()){};
 };
 
+class unsupported_media_type : public error_builder<> {
+ public:
+  unsupported_media_type(const request_handle& req) : error_builder(req, restinio::status_unsupported_media_type()){};
+};
+
 namespace builders {
 class list : public builder {
  public:
