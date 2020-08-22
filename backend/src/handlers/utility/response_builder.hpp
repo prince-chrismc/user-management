@@ -46,7 +46,7 @@ class builder {
   auto done() { return builder_.done(); }
 };
 
-template <class exception>
+template <class exception = std::exception>
 class error_builder : builder {
  public:
   using builder::builder;
@@ -59,7 +59,8 @@ class error_builder : builder {
 };
 
 class not_found : public error_builder<user_management::user_does_not_exist> {
-  error_builder(const request_handle& req) : error_builder(req, restinio::status_not_found()){};
+ public:
+  not_found(const request_handle& req) : error_builder(req, restinio::status_not_found()){};
 };
 
 namespace impl {

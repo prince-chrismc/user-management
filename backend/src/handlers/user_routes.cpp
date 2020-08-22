@@ -1,9 +1,10 @@
 // MIT License
 
 #include "user_routes.hpp"
-#include "utility/response_builder.hpp"
 
 #include <restinio/cast_to.hpp>
+
+#include "utility/response_builder.hpp"
 
 using user_management::user_does_not_exist;
 
@@ -12,22 +13,11 @@ namespace user {
 request_status add::operator()(const request_handle &req, route_params /*params*/) {
   try {
     const auto new_user = db_.add(nlohmann::json::parse(req->body()));
-
     return response::builder(req).set_body(nlohmann::json(new_user).dump()).done();
   } catch (const user_does_not_exist &e) {
-    return response::error_builder<user_does_not_exist>(req).set_body(e).done();
-
-    return req->create_response(restinio::status_not_found())
-        .append_header(restinio::http_field::access_control_allow_origin, "*")
-        .append_header(restinio::http_field::content_type, "application/json")
-        .set_body(nlohmann::json({{"error", e.what()}}).dump())
-        .done();
+    return response::not_found(req).set_body(e).done();
   } catch (const std::exception &e) {
-    return req->create_response(restinio::status_bad_request())
-        .append_header(restinio::http_field::access_control_allow_origin, "*")
-        .append_header(restinio::http_field::content_type, "application/json")
-        .set_body(nlohmann::json({{"error", e.what()}}).dump())
-        .done();
+    return response::error_builder<std::exception>(req).set_body(e).done();
   }
 }
 
