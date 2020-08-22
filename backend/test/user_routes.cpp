@@ -169,7 +169,7 @@ TEST_CASE("User Endpoints") {
         "DELETE /um/v1/users/1 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-Match \"dlfvbgayruefgba743t6374hnvjdbnq74gp\"\r\n"
+        "If-Match: \"dlfvbgayruefgba743t6374hnvjdbnq74gp\"\r\n"
         "Connection: close\r\n"
         "\r\n"};
 
@@ -235,7 +235,7 @@ TEST_CASE("User Endpoints") {
         "PATCH /um/v1/users/1 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-Match \"dlfvbgayruefgba743t6374hnvjdbnq74gp\"\r\n"
+        "If-Match: \"dlfvbgayruefgba743t6374hnvjdbnq74gp\"\r\n"
         "Content-Type: application/json\r\n"
         "Content-Length: 49\r\n"
         "Connection: close\r\n"
