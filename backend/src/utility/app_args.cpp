@@ -9,7 +9,7 @@
 
 using namespace lyra;  // NOLINT(google-build-using-namespace)
 
-app_args_t app_args_t::parse(int argc, const char *argv[]) {
+app_args_t app_args_t::parse(int argc, const char *argv[]) { // NOLINT(hicpp-avoid-c-arrays)
   app_args_t result;
 
   auto cli = cli_parser() |

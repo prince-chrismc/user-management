@@ -13,11 +13,10 @@ request_status add::operator()(const request_handle &req, route_params /*params*
   try {
     const auto new_user = db_.add(nlohmann::json::parse(req->body()));
 
-    return response::builder(req)
-        .append_header(restinio::http_field::content_type, "application/json")
-        .set_body(nlohmann::json(new_user).dump())
-        .done();
+    return response::builder(req).set_body(nlohmann::json(new_user).dump()).done();
   } catch (const user_does_not_exist &e) {
+    return response::error_builder<user_does_not_exist>(req).set_body(e).done();
+
     return req->create_response(restinio::status_not_found())
         .append_header(restinio::http_field::access_control_allow_origin, "*")
         .append_header(restinio::http_field::content_type, "application/json")
@@ -57,11 +56,7 @@ request_status edit::operator()(const request_handle &req, route_params params) 
   try {
     const auto user = db_.edit(restinio::cast_to<size_t>(params["id"]), nlohmann::json::parse(req->body()));
 
-    return req->create_response()
-        .append_header(restinio::http_field::access_control_allow_origin, "*")
-        .append_header(restinio::http_field::content_type, "application/json")
-        .set_body(nlohmann::json(user).dump())
-        .done();
+    return response::builder(req).set_body(nlohmann::json(user).dump()).done();
   } catch (const user_does_not_exist &e) {
     return req->create_response(restinio::status_not_found())
         .append_header(restinio::http_field::access_control_allow_origin, "*")
@@ -80,11 +75,7 @@ request_status edit::operator()(const request_handle &req, route_params params) 
 request_status get_user::operator()(const request_handle &req, route_params params) {
   try {
     const auto user = db_.get(restinio::cast_to<size_t>(params["id"]));
-    return req->create_response()
-        .append_header(restinio::http_field::access_control_allow_origin, "*")
-        .append_header(restinio::http_field::content_type, "application/json")
-        .set_body(nlohmann::json(user).dump())
-        .done();
+    return response::builder(req).set_body(nlohmann::json(user).dump()).done();
   } catch (const user_does_not_exist &e) {
     return req->create_response(restinio::status_not_found())
         .append_header(restinio::http_field::access_control_allow_origin, "*")
@@ -101,11 +92,7 @@ request_status get_user::operator()(const request_handle &req, route_params para
 }
 
 request_status get_list::operator()(const request_handle &req, route_params /*params*/) {
-  return req->create_response()
-      .append_header(restinio::http_field::access_control_allow_origin, "*")
-      .append_header(restinio::http_field::content_type, "application/json")
-      .set_body(nlohmann::json(db_).dump())
-      .done();
+  return response::builder(req).set_body(nlohmann::json(db_).dump()).done();
 }
 
 namespace preflight {

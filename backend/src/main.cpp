@@ -82,7 +82,6 @@ int main(int argc, char const *argv[]) {
       return 0;
     }
 
-
     namespace asio = restinio::asio_ns;
 
     asio::ssl::context tls_context{asio::ssl::context::tls};
