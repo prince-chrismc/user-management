@@ -22,7 +22,15 @@ class builder {
   builder(const request_handle& req, const http_status_line& status) : builder_{req->create_response(status)} {
     impl::add_generic_headers(*this);
     impl::add_cors_headers(*this);
-    if (status.status_code() != restinio::status_no_content().status_code()) impl::add_api_headers(*this);
+
+    // Some responses codes do not require the API Content-Type header
+    switch (status.status_code().raw_code()) {
+      case restinio::status_code::no_content.raw_code():
+      case restinio::status_code::not_modified.raw_code():
+        break;
+      default:
+        impl::add_api_headers(*this);
+    }
   }
 
   builder(const request_handle& req) : builder(req, restinio::status_ok()) {}
