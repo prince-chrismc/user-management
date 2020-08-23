@@ -17,6 +17,7 @@ struct StringMaker<user::database::time_point> {
 
 TEST_CASE("Tracks Last-Modified") {
   user::database user_database;
+  CHECK(user_database.last_modified() == std::chrono::system_clock::time_point{std::chrono::system_clock::time_point::duration{0}});
 
   // Add
   const auto new_id = user_database.add(R"##({"name": "Jane Doe", "email": "jane@example.com"})##"_json).id;
