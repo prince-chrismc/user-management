@@ -13,7 +13,7 @@ using server_settings_t = restinio::server_settings_t<traits_t>;
 using http_server_t = restinio::http_server_t<traits_t>;
 
 TEST_CASE("List Endpoints") {
-  user::database list;
+  database::user list;
   list.add(R"##({"name": "John Doe", "email": "john@example.com"})##"_json);
 
   auto router = std::make_unique<router_t>();
@@ -126,7 +126,7 @@ TEST_CASE("List Endpoints") {
 }
 
 TEST_CASE("User Endpoints") {
-  user::database list;
+  database::user list;
   const auto user = list.add(R"##({"name": "John Doe", "email": "john@example.com"})##"_json);
 
   auto router = std::make_unique<router_t>();

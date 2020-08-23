@@ -8,7 +8,7 @@
 
 namespace Catch {
 template <>
-struct StringMaker<user::database::time_point> {
+struct StringMaker<database::user::time_point> {
   static std::string convert(std::chrono::system_clock::time_point const& value) {
     return fmt::format("{}", value.time_since_epoch());
   }
@@ -16,8 +16,8 @@ struct StringMaker<user::database::time_point> {
 }  // namespace Catch
 
 TEST_CASE("Tracks Last-Modified") {
-  user::database user_database;
-  CHECK(user_database.last_modified() == std::chrono::system_clock::time_point{std::chrono::system_clock::time_point::duration{0}});
+  database::user user_database;
+  CHECK(user_database.last_modified() == database::user::time_point{database::user::time_point::duration{0}});
 
   // Add
   const auto new_id = user_database.add(R"##({"name": "Jane Doe", "email": "jane@example.com"})##"_json).id;
@@ -40,7 +40,7 @@ TEST_CASE("Tracks Last-Modified") {
 }
 
 TEST_CASE("Handles ETAg") {
-  user::database user_database;
+  database::user user_database;
   const auto db_empty_hash = user_database.etag();
 
   // Add

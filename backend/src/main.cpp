@@ -40,10 +40,10 @@ SOFTWARE.
 #include <map>
 
 using namespace std::chrono_literals;  // NOLINT(google-build-using-namespace)
-
 using router_t = restinio::router::express_router_t<>;
+using user_database = handler::user::database;
 
-auto server_handler(const std::string &root_dir, user::database &db) {
+auto server_handler(const std::string &root_dir, user_database &db) {
   std::string server_root_dir;
 
   if (root_dir.empty()) {
@@ -93,7 +93,7 @@ int main(int argc, char const *argv[]) {
     tls_context.use_private_key_file(args.certs_dir + "/key.pem", asio::ssl::context::pem);
     tls_context.use_tmp_dh_file(args.certs_dir + "/dh2048.pem");
 
-    user::database db;
+    user_database db;
     using traits_t = restinio::tls_traits_t<restinio::asio_timer_manager_t, restinio::null_logger_t, router_t>;
     restinio::run(restinio::on_thread_pool<traits_t>(args.pool_size)
                       .address(args.address)
