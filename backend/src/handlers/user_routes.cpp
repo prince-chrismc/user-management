@@ -4,6 +4,7 @@
 
 #include <restinio/cast_to.hpp>
 #include <restinio/helpers/http_field_parsers/content-type.hpp>
+#include <utility>
 
 #include "utility/response_builder.hpp"
 
@@ -21,10 +22,10 @@ class precondition_failed : public std::runtime_error {
 
 using restinio::http_field;
 namespace {
-bool conditional_matching(const handler::request_handle &req, http_field field, std::string etag) {
-  const auto maybeMatch = req->header().opt_value_of(field);
-  if (maybeMatch.has_value()) {
-    auto val = maybeMatch.value();
+bool conditional_matching(const handler::request_handle &req, http_field field, const std::string &etag) {
+  const auto maybe_match = req->header().opt_value_of(field);
+  if (maybe_match.has_value()) {
+    auto val = maybe_match.value();
     // Trim quotes around ETag value
     val.remove_prefix(1);
     val.remove_suffix(1);
@@ -61,7 +62,7 @@ void verify_if_match(const handler::request_handle &req) {
   }
 }
 
-void verify_etag(const handler::request_handle &req, user_management::user_key id, std::string etag) {
+void verify_etag(const handler::request_handle &req, user_management::user_key id, const std::string &etag) {
   verify_if_match(req);
   if (conditional_matching(req, http_field::if_match, etag)) return;
 

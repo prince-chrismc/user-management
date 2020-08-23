@@ -77,12 +77,12 @@ class unsupported_media_type : public error_builder<> {
 
 class precondition_required : public error_builder<> {
  public:
-  precondition_required(const request_handle& req) : error_builder(req, restinio::status_precondition_required()){}
+  precondition_required(const request_handle& req) : error_builder(req, restinio::status_precondition_required()) {}
 };
 
 class precondition_failed : public error_builder<> {
  public:
-  precondition_failed(const request_handle& req) : error_builder(req, restinio::status_precondition_failed()){}
+  precondition_failed(const request_handle& req) : error_builder(req, restinio::status_precondition_failed()) {}
 };
 
 namespace builders {
