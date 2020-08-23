@@ -55,6 +55,22 @@ TEST_CASE("List Endpoints") {
     CHECK_THAT(response, Catch::Contains("304") && Catch::Contains("Not Modified") && Catch::EndsWith("\r\n\r\n"));
   }
 
+  SECTION("PUT 400") {
+    const std::string put_list{
+        "PUT /um/v1/users HTTP/1.0\r\n"
+        "From: unit-test\r\n"
+        "User-Agent: unit-test\r\n"
+        "Content-Type: application/json\r\n"
+        "Content-Length: 54\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+        R"##({"name": "malformed JSON" "email": "jane@example.com"})##"};
+
+    std::string response;
+    REQUIRE_NOTHROW(response = do_request(put_list));
+    CHECK_THAT(response, Catch::Contains("400") && Catch::Contains("Bad Request") && Catch::Contains("error"));
+  }
+
   SECTION("PUT") {
     const std::string put_list{
         "PUT /um/v1/users HTTP/1.0\r\n"
@@ -78,6 +94,24 @@ TEST_CASE("List Endpoints") {
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
         "Content-Type: text/plain\r\n"
+        "Content-Length: 49\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+        R"##({"name": "Jane Doe", "email": "jane@example.com"})##"};
+
+    std::string response;
+    REQUIRE_NOTHROW(response = do_request(put_list));
+    CHECK_THAT(response, Catch::Contains("415") && Catch::Contains("Unsupported Media Type") &&
+                             Catch::Contains("error") && Catch::Contains("Content-Type") &&
+                             Catch::Contains("application/json"));
+  }
+
+  SECTION("PUT 415 Bad HTTP header") {
+    const std::string put_list{
+        "PUT /um/v1/users HTTP/1.0\r\n"
+        "From: unit-test\r\n"
+        "User-Agent: unit-test\r\n"
+        "Content-Type: ; not a content\r\n"
         "Content-Length: 49\r\n"
         "Connection: close\r\n"
         "\r\n"
@@ -266,6 +300,25 @@ TEST_CASE("User Endpoints") {
     REQUIRE_NOTHROW(response = do_request(patch_list));
     CHECK_THAT(response, Catch::Contains("404") && Catch::Contains("Not Found") && Catch::Contains("error") &&
                              Catch::Contains("user '0' does not exists"));
+  }
+
+  SECTION("PATCH 400") {
+    const std::string patch_list{
+        "PATCH /um/v1/users/1 HTTP/1.0\r\n"
+        "From: unit-test\r\n"
+        "User-Agent: unit-test\r\n"
+        "If-Match: \"" +
+        list.etag(1) +
+        "\"\r\n"
+        "Content-Type: application/json\r\n"
+        "Content-Length: 54\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+        R"##({"name": "malformed JSON" "email": "jane@example.com"})##"};
+
+    std::string response;
+    REQUIRE_NOTHROW(response = do_request(patch_list));
+    CHECK_THAT(response, Catch::Contains("400") && Catch::Contains("Bad Request") && Catch::Contains("error"));
   }
 
   SECTION("PATCH") {

@@ -86,8 +86,6 @@ request_status add::operator()(const request_handle &req, route_params /*params*
         .done();
   } catch (const unsupported_media_type &e) {
     return response::unsupported_media_type(req).set_body(e).done();
-  } catch (const user_does_not_exist &e) {
-    return response::not_found(req).set_body(e).done();
   } catch (const std::exception &e) {
     return response::error_builder<std::exception>(req).set_body(e).done();
   }
@@ -105,8 +103,6 @@ request_status remove::operator()(const request_handle &req, route_params params
     return response::precondition_failed(req).set_body(e).done();
   } catch (const user_does_not_exist &e) {
     return response::not_found(req).set_body(e).done();
-  } catch (const std::exception &e) {
-    return response::error_builder<std::exception>(req).set_body(e).done();
   }
 }
 
@@ -150,8 +146,6 @@ request_status get_user::operator()(const request_handle &req, route_params para
         .done();
   } catch (const user_does_not_exist &e) {
     return response::not_found(req).set_body(e).done();
-  } catch (const std::exception &e) {
-    return response::error_builder<std::exception>(req).set_body(e).done();
   }
 }
 
