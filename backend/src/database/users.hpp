@@ -1,59 +1,30 @@
 // MIT License
 
-#include <algorithm>
 #include <chrono>
 
-#include "encoders/base64.hpp"
-#include "encoders/sha256.hpp"
 #include "um/user_management.hpp"
 
-namespace user {
-class database : public user_management::user_list {
+namespace database {
+class user : public user_management::user_list {
+ public:
   using key = user_management::user_key;
-  using user_entry = user_management::user;
-  using time_point = std::chrono::system_clock::time_point;
+  using entry = user_management::user;
+  using json = user_management::json;
+  using clock = std::chrono::system_clock;
+  using time_point = clock::time_point;
+
+  time_point last_modified() const;
+  time_point last_modified(key id) const;
+
+  std::string etag() const;
+  std::string etag(key id) const;
+
+  entry& add(const json& json);
+  entry& edit(key id, const json& json);
+  entry remove(key id);
+
+ private:
   time_point database_last_modified{time_point::duration{0}};
   std::unordered_map<key, time_point> users_last_modified;
-
- public:
-  time_point last_modified() const {
-    if (count() > 0)
-      return std::max(database_last_modified,
-                      std::max_element(users_last_modified.begin(), users_last_modified.end())->second);
-
-    return database_last_modified;
-  }
-  time_point last_modified(key id) const { return users_last_modified.at(id); }
-
-  std::string etag() const {
-    const user_management::json data = *this;
-    const auto raw = data.dump();
-    return encode::base64(encode::sha256(raw.data(), raw.length()));
-  }
-  std::string etag(key id) const {
-    const user_management::json data = get(id);
-    const auto raw = data.dump();
-    return encode::base64(encode::sha256(raw.data(), raw.length()));
-  }
-
-  user_entry& add(const user_management::json& json) {
-    database_last_modified = std::chrono::system_clock::now();
-    auto& user = user_management::list_modifier{*this}.add(json);
-    users_last_modified[user.id] = std::chrono::system_clock::now();
-    return user;
-  }
-  user_entry& edit(key id, const user_management::json& json) {
-    database_last_modified = std::chrono::system_clock::now();
-    auto& user = get(id);
-    user_management::user_modifier{user}.apply(json);
-    users_last_modified[id] = std::chrono::system_clock::now();
-    return user;
-  }
-  user_entry remove(key id) {
-    database_last_modified = std::chrono::system_clock::now();
-    auto user = user_management::user_list::remove(id);
-    users_last_modified[id] = std::chrono::system_clock::now();
-    return user;
-  }
 };
-}  // namespace user
+}  // namespace database

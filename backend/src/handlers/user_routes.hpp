@@ -10,7 +10,7 @@ using namespace nonstd::string_view_literals;
 constexpr restinio::string_view_t list = "/um/v1/users"_sv;
 constexpr restinio::string_view_t user = "/um/v1/users/:id(\\d+)"_sv;
 }  // namespace route
-using database = ::user::database;
+using database = database::user;
 class add {
   database &db_;
 
