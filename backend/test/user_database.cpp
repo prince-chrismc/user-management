@@ -42,11 +42,13 @@ TEST_CASE("Tracks Last-Modified") {
 TEST_CASE("Handles ETAg") {
   database::user user_database;
   const auto db_empty_hash = user_database.etag();
+  CHECK_THAT(db_empty_hash, Catch::Matches(R"###(([wW]/)?"([^"]|\\")*")###"));
 
   // Add
   const auto new_id = user_database.add(R"##({"name": "Jane Doe", "email": "jane@example.com"})##"_json).id;
   CHECK(user_database.etag() != db_empty_hash);
   const auto new_user_hash = user_database.etag(new_id);
+  CHECK_THAT(new_user_hash, Catch::Matches(R"###(([wW]/)?"([^"]|\\")*")###"));
 
   // Edit
   user_database.edit(new_id, R"##({"name": "Jane Down"})##"_json);
