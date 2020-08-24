@@ -25,12 +25,7 @@ namespace {
 bool conditional_matching(const handler::request_handle &req, http_field field, const std::string &etag) {
   const auto maybe_match = req->header().opt_value_of(field);
   if (maybe_match.has_value()) {
-    auto val = maybe_match.value();
-    // Trim quotes around ETag value
-    val.remove_prefix(1);
-    val.remove_suffix(1);
-
-    return val == etag;
+    return maybe_match.value() == etag;
   }
 
   return false;

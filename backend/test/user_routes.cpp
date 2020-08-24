@@ -46,31 +46,15 @@ TEST_CASE("List Endpoints") {
         "GET /um/v1/users HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-None-Match: \"" +
+        "If-None-Match: " +
         list.etag() +
-        "\"\r\n"
+        "\r\n"
         "Connection: close\r\n"
         "\r\n"};
 
     std::string response;
     REQUIRE_NOTHROW(response = do_request(get_list));
     CHECK_THAT(response, Catch::Contains("304") && Catch::Contains("Not Modified") && Catch::EndsWith("\r\n\r\n"));
-  }
-
-  SECTION("PUT 400") {
-    const std::string put_list{
-        "PUT /um/v1/users HTTP/1.0\r\n"
-        "From: unit-test\r\n"
-        "User-Agent: unit-test\r\n"
-        "Content-Type: application/json\r\n"
-        "Content-Length: 54\r\n"
-        "Connection: close\r\n"
-        "\r\n"
-        R"##({"name": "malformed JSON" "email": "jane@example.com"})##"};
-
-    std::string response;
-    REQUIRE_NOTHROW(response = do_request(put_list));
-    CHECK_THAT(response, Catch::Contains("400") && Catch::Contains("Bad Request") && Catch::Contains("error"));
   }
 
   SECTION("PUT 415") {
@@ -107,6 +91,39 @@ TEST_CASE("List Endpoints") {
     CHECK_THAT(response, Catch::Contains("415") && Catch::Contains("Unsupported Media Type") &&
                              Catch::Contains("error") && Catch::Contains("Content-Type") &&
                              Catch::Contains("application/json"));
+  }
+
+  SECTION("PUT 400") {
+    const std::string put_list{
+        "PUT /um/v1/users HTTP/1.0\r\n"
+        "From: unit-test\r\n"
+        "User-Agent: unit-test\r\n"
+        "Content-Type: application/json\r\n"
+        "Content-Length: 54\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+        R"##({"name": "malformed JSON" "email": "jane@example.com"})##"};
+
+    std::string response;
+    REQUIRE_NOTHROW(response = do_request(put_list));
+    CHECK_THAT(response, Catch::Contains("400") && Catch::Contains("Bad Request") && Catch::Contains("\"error\"") &&
+                             Catch::Contains("syntax error"));
+  }
+
+  SECTION("PUT 400 Bad Schemas") {
+    const std::string put_list{
+        "PUT /um/v1/users HTTP/1.0\r\n"
+        "From: unit-test\r\n"
+        "User-Agent: unit-test\r\n"
+        "Content-Type: application/json\r\n"
+        "Content-Length: 43\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+        R"##({"bread": "bernese mountain dog", "age": 4})##"};
+
+    std::string response;
+    REQUIRE_NOTHROW(response = do_request(put_list));
+    CHECK_THAT(response, Catch::Contains("400") && Catch::Contains("Bad Request") && Catch::Contains("error"));
   }
 
   SECTION("PUT") {
@@ -178,9 +195,9 @@ TEST_CASE("User Endpoints") {
         "GET /um/v1/users/1 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-None-Match: \"" +
+        "If-None-Match: " +
         list.etag(1) +
-        "\"\r\n"
+        "\r\n"
         "Connection: close\r\n"
         "\r\n"};
 
@@ -209,7 +226,7 @@ TEST_CASE("User Endpoints") {
         "DELETE /um/v1/users/1 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-Match: \"dlfvbgayruefgba743t6374hnvjdbnq74gp\"\r\n"
+        "If-Match: dlfvbgayruefgba743t6374hnvjdbnq74gp\r\n"
         "Connection: close\r\n"
         "\r\n"};
 
@@ -224,9 +241,9 @@ TEST_CASE("User Endpoints") {
         "DELETE /um/v1/users/0 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-Match: \"" +
+        "If-Match: " +
         list.etag(1) +
-        "\"\r\n"
+        "\r\n"
         "Connection: close\r\n"
         "\r\n"};
 
@@ -241,9 +258,9 @@ TEST_CASE("User Endpoints") {
         "DELETE /um/v1/users/1 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-Match: \"" +
+        "If-Match: " +
         list.etag(1) +
-        "\"\r\n"
+        "\r\n"
         "Connection: close\r\n"
         "\r\n"};
 
@@ -275,7 +292,7 @@ TEST_CASE("User Endpoints") {
         "PATCH /um/v1/users/1 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-Match: \"dlfvbgayruefgba743t6374hnvjdbnq74gp\"\r\n"
+        "If-Match: dlfvbgayruefgba743t6374hnvjdbnq74gp\r\n"
         "Content-Type: application/json\r\n"
         "Content-Length: 49\r\n"
         "Connection: close\r\n"
@@ -311,9 +328,9 @@ TEST_CASE("User Endpoints") {
         "PATCH /um/v1/users/0 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-Match: \"" +
+        "If-Match: " +
         list.etag(1) +
-        "\"\r\n"
+        "\r\n"
         "Content-Type: application/json\r\n"
         "Content-Length: 49\r\n"
         "Connection: close\r\n"
@@ -331,9 +348,9 @@ TEST_CASE("User Endpoints") {
         "PATCH /um/v1/users/1 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-Match: \"" +
+        "If-Match: " +
         list.etag(1) +
-        "\"\r\n"
+        "\r\n"
         "Content-Type: application/json\r\n"
         "Content-Length: 54\r\n"
         "Connection: close\r\n"
@@ -350,9 +367,9 @@ TEST_CASE("User Endpoints") {
         "PATCH /um/v1/users/1 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-Match: \"" +
+        "If-Match: " +
         list.etag(1) +
-        "\"\r\n"
+        "\r\n"
         "Content-Type: application/json\r\n"
         "Content-Length: 49\r\n"
         "Connection: close\r\n"
