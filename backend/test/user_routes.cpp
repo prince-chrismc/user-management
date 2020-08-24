@@ -36,7 +36,9 @@ TEST_CASE("List Endpoints") {
 
     std::string response;
     REQUIRE_NOTHROW(response = do_request(get_list));
-    CHECK_THAT(response, Catch::Contains(nlohmann::json(list).dump()));
+    CHECK_THAT(response, Catch::Contains("200") && Catch::Contains("OK") &&
+                             Catch::Contains(fmt::format("ETag: {}\r\n", list.etag())) &&
+                             Catch::Contains(nlohmann::json(list).dump()));
   }
 
   SECTION("GET 304") {
@@ -69,23 +71,6 @@ TEST_CASE("List Endpoints") {
     std::string response;
     REQUIRE_NOTHROW(response = do_request(put_list));
     CHECK_THAT(response, Catch::Contains("400") && Catch::Contains("Bad Request") && Catch::Contains("error"));
-  }
-
-  SECTION("PUT") {
-    const std::string put_list{
-        "PUT /um/v1/users HTTP/1.0\r\n"
-        "From: unit-test\r\n"
-        "User-Agent: unit-test\r\n"
-        "Content-Type: application/json\r\n"
-        "Content-Length: 49\r\n"
-        "Connection: close\r\n"
-        "\r\n"
-        R"##({"name": "Jane Doe", "email": "jane@example.com"})##"};
-
-    std::string response;
-    REQUIRE_NOTHROW(response = do_request(put_list));
-    CHECK_THAT(response,
-               Catch::Contains(nlohmann::json(user_management::user{2, "Jane Doe", "jane@example.com"}).dump()));
   }
 
   SECTION("PUT 415") {
@@ -123,6 +108,25 @@ TEST_CASE("List Endpoints") {
                              Catch::Contains("error") && Catch::Contains("Content-Type") &&
                              Catch::Contains("application/json"));
   }
+
+  SECTION("PUT") {
+    const std::string put_list{
+        "PUT /um/v1/users HTTP/1.0\r\n"
+        "From: unit-test\r\n"
+        "User-Agent: unit-test\r\n"
+        "Content-Type: application/json\r\n"
+        "Content-Length: 49\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+        R"##({"name": "Jane Doe", "email": "jane@example.com"})##"};
+
+    std::string response;
+    REQUIRE_NOTHROW(response = do_request(put_list));
+    CHECK_THAT(response,
+               Catch::Contains("201") && Catch::Contains("Created") &&
+                   Catch::Contains(fmt::format("ETag: {}\r\n", list.etag(2))) &&
+                   Catch::Contains(nlohmann::json(user_management::user{2, "Jane Doe", "jane@example.com"}).dump()));
+  }
 }
 
 TEST_CASE("User Endpoints") {
@@ -140,6 +144,20 @@ TEST_CASE("User Endpoints") {
   other_work_thread_for_server_t<http_server_t> other_thread{http_server};
   other_thread.run();
 
+  SECTION("GET 404") {
+    const std::string get_user{
+        "GET /um/v1/users/0 HTTP/1.0\r\n"
+        "From: unit-test\r\n"
+        "User-Agent: unit-test\r\n"
+        "Connection: close\r\n"
+        "\r\n"};
+
+    std::string response;
+    REQUIRE_NOTHROW(response = do_request(get_user));
+    CHECK_THAT(response, Catch::Contains("404") && Catch::Contains("Not Found") && Catch::Contains("error") &&
+                             Catch::Contains("user '0' does not exists"));
+  }
+
   SECTION("GET") {
     const std::string get_user{
         "GET /um/v1/users/1 HTTP/1.0\r\n"
@@ -150,7 +168,9 @@ TEST_CASE("User Endpoints") {
 
     std::string response;
     REQUIRE_NOTHROW(response = do_request(get_user));
-    CHECK_THAT(response, Catch::Contains(nlohmann::json(user).dump()));
+    CHECK_THAT(response, Catch::Contains("200") && Catch::Contains("OK") &&
+                             Catch::Contains(fmt::format("ETag: {}\r\n", list.etag(1))) &&
+                             Catch::Contains(nlohmann::json(user).dump()));
   }
 
   SECTION("GET 304") {
@@ -167,20 +187,6 @@ TEST_CASE("User Endpoints") {
     std::string response;
     REQUIRE_NOTHROW(response = do_request(get_user));
     CHECK_THAT(response, Catch::Contains("304") && Catch::Contains("Not Modified") && Catch::EndsWith("\r\n\r\n"));
-  }
-
-  SECTION("GET 404") {
-    const std::string get_user{
-        "GET /um/v1/users/0 HTTP/1.0\r\n"
-        "From: unit-test\r\n"
-        "User-Agent: unit-test\r\n"
-        "Connection: close\r\n"
-        "\r\n"};
-
-    std::string response;
-    REQUIRE_NOTHROW(response = do_request(get_user));
-    CHECK_THAT(response, Catch::Contains("404") && Catch::Contains("Not Found") && Catch::Contains("error") &&
-                             Catch::Contains("user '0' does not exists"));
   }
 
   SECTION("DELETE 428") {
@@ -282,6 +288,24 @@ TEST_CASE("User Endpoints") {
                              Catch::Contains("the user '1' was modified without you knowledge"));
   }
 
+  SECTION("PATCH 415") {
+    const std::string patch_list{
+        "PATCH /um/v1/users/1 HTTP/1.0\r\n"
+        "From: unit-test\r\n"
+        "User-Agent: unit-test\r\n"
+        "Content-Type: text/plain\r\n"
+        "Content-Length: 49\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+        R"##({"name": "Jane Doe", "email": "jane@example.com"})##"};
+
+    std::string response;
+    REQUIRE_NOTHROW(response = do_request(patch_list));
+    CHECK_THAT(response, Catch::Contains("415") && Catch::Contains("Unsupported Media Type") &&
+                             Catch::Contains("error") && Catch::Contains("Content-Type") &&
+                             Catch::Contains("application/json"));
+  }
+
   SECTION("PATCH 404") {
     const std::string patch_list{
         "PATCH /um/v1/users/0 HTTP/1.0\r\n"
@@ -338,24 +362,8 @@ TEST_CASE("User Endpoints") {
     std::string response;
     REQUIRE_NOTHROW(response = do_request(patch_list));
     CHECK_THAT(response,
-               Catch::Contains(nlohmann::json(user_management::user{1, "Jane Doe", "jane@example.com"}).dump()));
-  }
-
-  SECTION("PATCH 415") {
-    const std::string patch_list{
-        "PATCH /um/v1/users/1 HTTP/1.0\r\n"
-        "From: unit-test\r\n"
-        "User-Agent: unit-test\r\n"
-        "Content-Type: text/plain\r\n"
-        "Content-Length: 49\r\n"
-        "Connection: close\r\n"
-        "\r\n"
-        R"##({"name": "Jane Doe", "email": "jane@example.com"})##"};
-
-    std::string response;
-    REQUIRE_NOTHROW(response = do_request(patch_list));
-    CHECK_THAT(response, Catch::Contains("415") && Catch::Contains("Unsupported Media Type") &&
-                             Catch::Contains("error") && Catch::Contains("Content-Type") &&
-                             Catch::Contains("application/json"));
+               Catch::Contains("202") && Catch::Contains("Accepted") &&
+                   Catch::Contains(fmt::format("ETag: {}\r\n", list.etag(1))) &&
+                   Catch::Contains(nlohmann::json(user_management::user{1, "Jane Doe", "jane@example.com"}).dump()));
   }
 }

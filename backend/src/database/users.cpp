@@ -2,6 +2,8 @@
 
 #include "users.hpp"
 
+#include <fmt/format.h>
+
 #include <algorithm>
 
 #include "encoders/base64.hpp"
@@ -20,12 +22,12 @@ user::time_point user::last_modified(key id) const { return users_last_modified.
 std::string user::etag() const {
   const json data = *this;
   const auto raw = data.dump();
-  return encode::base64(encode::sha256(raw.data(), raw.length()));
+  return fmt::format("\"{}\"", encode::base64(encode::sha256(raw.data(), raw.length())));
 }
 std::string user::etag(key id) const {
   const json data = get(id);
   const auto raw = data.dump();
-  return encode::base64(encode::sha256(raw.data(), raw.length()));
+  return fmt::format("\"{}\"", encode::base64(encode::sha256(raw.data(), raw.length())));
 }
 
 user::entry& user::add(const json& json) {

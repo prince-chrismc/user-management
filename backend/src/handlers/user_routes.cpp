@@ -80,7 +80,7 @@ request_status add::operator()(const request_handle &req, route_params /*params*
   try {
     verify_application_json(req);
     const auto user = db_.add(json::parse(req->body()));
-    return response::builders::list(req)
+    return response::builders::list(req, restinio::status_created())
         .append_header(http_field::etag, db_.etag(user.id))
         .set_body(json(user).dump())
         .done();
@@ -112,7 +112,7 @@ request_status edit::operator()(const request_handle &req, route_params params) 
     const auto id = restinio::cast_to<user_key>(params["id"]);
     verify_etag(req, id, db_.etag(id));
     const auto user = db_.edit(id, json::parse(req->body()));
-    return response::builders::user(req)
+    return response::builders::user(req, restinio::status_accepted())
         .append_header(http_field::last_modified, db_.last_modified(user.id))
         .append_header(http_field::etag, db_.etag(user.id))
         .set_body(json(user).dump())
