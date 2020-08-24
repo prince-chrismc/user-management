@@ -189,6 +189,8 @@ paths:
           headers:
             Access-Control-Allow-Origin:
               $ref: "#/components/headers/Access-Control-Allow-Origin"
+            ETag:
+              $ref: "#/components/headers/ETag"
           content:
             application/json:
               schema:
@@ -274,6 +276,8 @@ paths:
           headers:
             Access-Control-Allow-Origin:
               $ref: "#/components/headers/Access-Control-Allow-Origin"
+            ETag:
+              $ref: "#/components/headers/ETag"
           content:
             application/json:
               schema:
