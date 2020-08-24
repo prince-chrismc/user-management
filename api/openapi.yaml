@@ -270,7 +270,7 @@ paths:
                   { "name": "Jane Marry Doe", "email": "jane.doe@example.com" }
       responses:
         "202":
-          description: Accpted
+          description: Accepted
           headers:
             Access-Control-Allow-Origin:
               $ref: "#/components/headers/Access-Control-Allow-Origin"
