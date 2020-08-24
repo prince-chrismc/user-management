@@ -44,9 +44,9 @@ TEST_CASE("List Endpoints") {
         "GET /um/v1/users HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-None-Match: " +
+        "If-None-Match: \"" +
         list.etag() +
-        "\r\n"
+        "\"\r\n"
         "Connection: close\r\n"
         "\r\n"};
 
@@ -158,9 +158,9 @@ TEST_CASE("User Endpoints") {
         "GET /um/v1/users/1 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-None-Match: " +
+        "If-None-Match: \"" +
         list.etag(1) +
-        "\r\n"
+        "\"\r\n"
         "Connection: close\r\n"
         "\r\n"};
 
@@ -203,7 +203,7 @@ TEST_CASE("User Endpoints") {
         "DELETE /um/v1/users/1 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-Match: dlfvbgayruefgba743t6374hnvjdbnq74gp\r\n"
+        "If-Match: \"dlfvbgayruefgba743t6374hnvjdbnq74gp\"\r\n"
         "Connection: close\r\n"
         "\r\n"};
 
@@ -218,9 +218,9 @@ TEST_CASE("User Endpoints") {
         "DELETE /um/v1/users/0 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-Match: " +
+        "If-Match: \"" +
         list.etag(1) +
-        "\r\n"
+        "\"\r\n"
         "Connection: close\r\n"
         "\r\n"};
 
@@ -235,9 +235,9 @@ TEST_CASE("User Endpoints") {
         "DELETE /um/v1/users/1 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-Match: " +
+        "If-Match: \"" +
         list.etag(1) +
-        "\r\n"
+        "\"\r\n"
         "Connection: close\r\n"
         "\r\n"};
 
@@ -269,7 +269,7 @@ TEST_CASE("User Endpoints") {
         "PATCH /um/v1/users/1 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-Match: dlfvbgayruefgba743t6374hnvjdbnq74gp\r\n"
+        "If-Match: \"dlfvbgayruefgba743t6374hnvjdbnq74gp\"\r\n"
         "Content-Type: application/json\r\n"
         "Content-Length: 49\r\n"
         "Connection: close\r\n"
@@ -287,9 +287,9 @@ TEST_CASE("User Endpoints") {
         "PATCH /um/v1/users/0 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-Match: " +
+        "If-Match: \"" +
         list.etag(1) +
-        "\r\n"
+        "\"\r\n"
         "Content-Type: application/json\r\n"
         "Content-Length: 49\r\n"
         "Connection: close\r\n"
@@ -307,9 +307,9 @@ TEST_CASE("User Endpoints") {
         "PATCH /um/v1/users/1 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-Match: " +
+        "If-Match: \"" +
         list.etag(1) +
-        "\r\n"
+        "\"\r\n"
         "Content-Type: application/json\r\n"
         "Content-Length: 54\r\n"
         "Connection: close\r\n"
@@ -326,9 +326,9 @@ TEST_CASE("User Endpoints") {
         "PATCH /um/v1/users/1 HTTP/1.0\r\n"
         "From: unit-test\r\n"
         "User-Agent: unit-test\r\n"
-        "If-Match: " +
+        "If-Match: \"" +
         list.etag(1) +
-        "\r\n"
+        "\"\r\n"
         "Content-Type: application/json\r\n"
         "Content-Length: 49\r\n"
         "Connection: close\r\n"
