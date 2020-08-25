@@ -14,7 +14,7 @@ class UserManagement(ConanFile):
     def requirements(self):
         self.requires("fmt/7.0.3")
         self.requires("openssl/1.1.1g")
-        self.requires("restinio/0.6.8.1")
+        self.requires("restinio/0.6.10")
         self.requires("json-schema-validator/2.1.0")
         self.requires("lyra/1.4.0")
 

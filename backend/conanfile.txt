@@ -1,6 +1,6 @@
 [requires]
 fmt/7.0.3
-restinio/0.6.8.1
+restinio/0.6.10
 lyra/1.4.0
 json-schema-validator/2.1.0
 catch2/2.13.0
