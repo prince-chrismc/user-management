@@ -8,6 +8,7 @@ if(${COVERAGE})
   include("code-coverage")
   setup_coverage(user_tests)
   setup_coverage(user_routes)
+  setup_coverage(response_builder)
   setup_coverage(users_databse)
   setup_coverage(encoders)
 
