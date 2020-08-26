@@ -11,9 +11,10 @@ export const EditUser = async (id, name, email) => {
     .then(res => res.json())
 }
 
-export const DeleteUser = async (id) => {
+export const DeleteUser = async (id, etag) => {
   const requestOptions = {
-    method: 'DELETE'
+    method: 'DELETE',
+    headers: { 'If-None-Match': '"' + etag + '"' },
   }
   return await fetch(process.env.API_URL + '/um/v1/users/' + id, requestOptions)
     .then(res => (res.status == 204 ? null : Promise.reject(res)))
