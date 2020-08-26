@@ -13,7 +13,7 @@ target_link_libraries(response_builder PUBLIC routing user_management)
 add_library(content_type "content_type_from_ext.hpp" "content_type_from_ext.cpp")
 target_include_directories(content_type PUBLIC "..")
 set_target_properties(content_type PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(content_type PUBLIC string-view-lite::string-view-lite)
+target_link_libraries(content_type PUBLIC nonstd::string-view-lite)
 
 if(${RUN_TIDY})
   include("clang-tidy")
