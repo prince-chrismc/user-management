@@ -9,7 +9,10 @@ class UserManagement(ConanFile):
     description = "An open-source application delivering a responsive user management experience."
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake_find_package"
-    exports_sources = "CMakeLists.txt", "cmake/*", "src/*", "include/*", "conanfile.txt"
+    exports_sources = "CMakeLists.txt", "cmake/*", "src/*", "include/*"
+
+    def build_requirements(self):
+        self.build_requires("catch2/2.13.0")
 
     def requirements(self):
         self.requires("fmt/7.0.3")
