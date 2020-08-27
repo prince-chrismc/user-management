@@ -9,6 +9,13 @@
 #include "encoders/base64.hpp"
 #include "encoders/sha256.hpp"
 
+namespace {
+std::string make_etag(database::user::json json) {
+  const auto raw = json.dump();
+  return fmt::format("\"{}\"", encode::base64(encode::sha256(raw.data(), raw.length())));
+}
+} // namespace
+
 namespace database {
 user::time_point user::last_modified() const {
   if (count() > 0)
@@ -20,14 +27,10 @@ user::time_point user::last_modified() const {
 user::time_point user::last_modified(key id) const { return users_last_modified.at(id); }
 
 std::string user::etag() const {
-  const json data = *this;
-  const auto raw = data.dump();
-  return fmt::format("\"{}\"", encode::base64(encode::sha256(raw.data(), raw.length())));
+  return make_etag(*this);
 }
 std::string user::etag(key id) const {
-  const json data = get(id);
-  const auto raw = data.dump();
-  return fmt::format("\"{}\"", encode::base64(encode::sha256(raw.data(), raw.length())));
+  return make_etag(get(id));
 }
 
 user::entry& user::add(const json& json) {
