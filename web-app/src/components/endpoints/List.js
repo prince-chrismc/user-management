@@ -8,7 +8,7 @@ export const LoadUsers = async () => {
   }
   console.log(process.env.API_URL + '/um/v1/users')
   return await fetch(process.env.API_URL + '/um/v1/users', requestOptions)
-    .then(res => (res.ok ? res : Promise.reject(res.body)))
+    .then(res => (res.ok ? res : Promise.reject(res)))
     .then(res => res.json())
 }
 
@@ -22,6 +22,6 @@ export const AddUser = async (name, email) => {
     body: JSON.stringify({ name: name, email: email })
   }
   return await fetch(process.env.API_URL + '/um/v1/users', requestOptions)
-    .then(res => (res.ok ? res : Promise.reject(res.body)))
+    .then(res => (res.ok ? res : Promise.reject(res)))
     .then(res => res.json())
 }

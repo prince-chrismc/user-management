@@ -38,7 +38,7 @@ app.get('/um/v1/users', (req, res) => {
   }
 })
 
-app.post('/um/v1/users', (req, res) => {
+app.put('/um/v1/users', (req, res) => {
   console.log('POST /um/v1/users', req.body)
 
   if (__error) {
@@ -125,7 +125,7 @@ test('delete users', async () => {
 })
 
 test('edit users', async () => {
-  const json = await EditUser(123, 'James Does', 'james@example.com')
+  const json = await EditUser(123, 'James Does', 'james@example.com', '')
   console.log(json)
 
   expect(json).toEqual({ email: 'james@example.com', id: '123', name: 'James Does' })
