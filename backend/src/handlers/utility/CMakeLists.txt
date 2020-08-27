@@ -1,9 +1,9 @@
-find_package(string-view-lite 1.3.0 REQUIRED)
+find_package(restinio 0.6.10 REQUIRED)
 
 add_library(routing "routing.hpp")
 target_include_directories(routing PUBLIC "..")
 set_target_properties(routing PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(routing PUBLIC restinio::restinio)
+target_link_libraries(routing PUBLIC restinio::restinio nonstd::string-view-lite) # Temporary work
 
 add_library(response_builder "response_builder.hpp")
 target_include_directories(response_builder PUBLIC "..")
