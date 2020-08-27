@@ -1,11 +1,9 @@
-find_package(restinio 0.6.8 REQUIRED)
-
 add_subdirectory("utility")
 
 add_library(user_routes "user_routes.hpp" "user_routes.cpp")
 target_include_directories(user_routes PUBLIC "..")
 set_target_properties(user_routes PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(user_routes PUBLIC users_databse response_builder)
+target_link_libraries(user_routes PUBLIC routing users_databse response_builder)
 
 add_library(serve_files "serve_files.hpp" "serve_files.cpp")
 target_include_directories(serve_files PUBLIC "..")
