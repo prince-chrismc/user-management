@@ -160,7 +160,7 @@ request_status list(const request_handle &req, route_params /*params*/) {
   return req->create_response(restinio::status_no_content())
       .append_header(http_field::access_control_allow_origin, "*")
       .append_header(http_field::access_control_allow_methods, "GET, PUT")
-      .append_header(http_field::access_control_allow_headers, "Content-Type")
+      .append_header(http_field::access_control_allow_headers, "Content-Type, If-None-Match")
       .append_header(http_field::access_control_max_age, "86400")
       .done();
 }
