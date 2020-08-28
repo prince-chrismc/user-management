@@ -13,7 +13,6 @@ class MakeCards extends Component {
   state = { users: this.props.users }
 
   onAdd = (user) => {
-    // console.log(user)
     this.setState({ users: this.state.users.concat(user) })
   }
 
