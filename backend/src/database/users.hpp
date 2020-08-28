@@ -1,5 +1,8 @@
 // MIT License
 
+#ifndef DATABASE_USERS_HPP_
+#define DATABASE_USERS_HPP_
+
 #include <chrono>
 
 #include "um/user_management.hpp"
@@ -28,3 +31,5 @@ class user : public user_management::user_list {
   std::unordered_map<key, time_point> users_last_modified;
 };
 }  // namespace database
+
+#endif DATABASE_USERS_HPP_

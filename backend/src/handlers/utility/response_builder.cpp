@@ -49,18 +49,14 @@ builder& builder::set_body(std::string body) {
 }
 
 namespace builders {
-void list::add_cors_methods_header(builder& builder) {
-  builder.append_header(http_field::access_control_allow_methods, "GET, PUT");
-}
-
 list::list(const request_handle& req, const http_status_line& status) : builder(req, status) {
   add_cors_methods_header(*this);
 }
 
 list::list(const request_handle& req) : list(req, restinio::status_ok()) {}
 
-void user::add_cors_methods_header(builder& builder) {
-  builder.append_header(http_field::access_control_allow_methods, "GET, PATCH, DELETE");
+void list::add_cors_methods_header(builder& builder) {
+  builder.append_header(http_field::access_control_allow_methods, "GET, PUT");
 }
 
 user::user(const request_handle& req, const http_status_line& status) : builder(req, status) {
@@ -68,6 +64,10 @@ user::user(const request_handle& req, const http_status_line& status) : builder(
 }
 
 user::user(const request_handle& req) : user(req, restinio::status_ok()) {}
+
+void user::add_cors_methods_header(builder& builder) {
+  builder.append_header(http_field::access_control_allow_methods, "GET, PATCH, DELETE");
+}
 }  // namespace builders
 }  // namespace response
 }  // namespace handler

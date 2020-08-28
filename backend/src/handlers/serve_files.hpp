@@ -1,5 +1,8 @@
 // MIT License
 
+#ifndef HANDLERS_SERVE_FILES_HPP_
+#define HANDLERS_SERVE_FILES_HPP_
+
 #include "utility/routing.hpp"
 
 namespace handler {
@@ -11,3 +14,5 @@ struct from_disk {
 };
 }  // namespace serve_files
 }  // namespace handler
+
+#endif // HANDLERS_SERVE_FILES_HPP_
