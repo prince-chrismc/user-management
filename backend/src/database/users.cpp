@@ -10,11 +10,11 @@
 #include "encoders/sha256.hpp"
 
 namespace {
-std::string make_etag(database::user::json json) {
+std::string make_etag(const database::user::json& json) {
   const auto raw = json.dump();
   return fmt::format("\"{}\"", encode::base64(encode::sha256(raw.data(), raw.length())));
 }
-} // namespace
+}  // namespace
 
 namespace database {
 user::time_point user::last_modified() const {
@@ -26,12 +26,8 @@ user::time_point user::last_modified() const {
 }
 user::time_point user::last_modified(key id) const { return users_last_modified.at(id); }
 
-std::string user::etag() const {
-  return make_etag(*this);
-}
-std::string user::etag(key id) const {
-  return make_etag(get(id));
-}
+std::string user::etag() const { return make_etag(*this); }
+std::string user::etag(key id) const { return make_etag(get(id)); }
 
 user::entry& user::add(const json& json) {
   database_last_modified = clock::now();
