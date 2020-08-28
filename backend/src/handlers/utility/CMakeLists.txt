@@ -5,7 +5,7 @@ target_include_directories(routing PUBLIC "..")
 set_target_properties(routing PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(routing PUBLIC restinio::restinio nonstd::string-view-lite) # Temporary work
 
-add_library(response_builder "response_builder.hpp")
+add_library(response_builder "response_builder.hpp" "response_builder.cpp")
 target_include_directories(response_builder PUBLIC "..")
 set_target_properties(response_builder PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(response_builder PUBLIC routing user_management)
