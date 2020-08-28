@@ -15,4 +15,4 @@ struct from_disk {
 }  // namespace serve_files
 }  // namespace handler
 
-#endif // HANDLERS_SERVE_FILES_HPP_
+#endif  // HANDLERS_SERVE_FILES_HPP_

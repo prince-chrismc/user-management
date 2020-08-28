@@ -12,4 +12,4 @@ request_status redirect(const request_handle& req, route_params params);
 }  // namespace web_app
 }  // namespace handler
 
-#endif // HANDLERS_WEB_APP_HPP_
+#endif  // HANDLERS_WEB_APP_HPP_

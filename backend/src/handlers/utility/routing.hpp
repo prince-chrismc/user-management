@@ -11,4 +11,4 @@ using request_handle = restinio::request_handle_t;
 using route_params = restinio::router::route_params_t;
 }  // namespace handler
 
-#endif // HANDLERS_UTILITY_ROUTING_HPP_
+#endif  // HANDLERS_UTILITY_ROUTING_HPP_

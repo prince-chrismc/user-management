@@ -66,4 +66,4 @@ request_status user(const request_handle &req, route_params params);
 }  // namespace user
 }  // namespace handler
 
-#endif // HANDLERS_USER_ROUTES_HPP_
+#endif  // HANDLERS_USER_ROUTES_HPP_

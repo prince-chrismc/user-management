@@ -35,7 +35,7 @@ class builder {
 template <class exception = std::exception>
 class error_builder : builder {
  public:
- explicit error_builder(const request_handle& req) : builder(req, restinio::status_bad_request()) {}
+  explicit error_builder(const request_handle& req) : builder(req, restinio::status_bad_request()) {}
   using builder::builder;
   using builder::done;
 
