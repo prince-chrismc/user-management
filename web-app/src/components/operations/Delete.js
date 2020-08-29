@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 import { Message } from 'semantic-ui-react'
 
-import sha256 from 'crypto-js/sha256'
-import Base64 from 'crypto-js/enc-base64'
-
 import FormConfirm from '../dialogs/ConfirmForm'
 import PopupModal from '../dialogs/UserModal'
 import { DeleteUser } from '../endpoints/User'
