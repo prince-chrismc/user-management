@@ -20,6 +20,7 @@ class http_server {
   explicit http_server(std::unique_ptr<router_t> router)
       : server(restinio::own_io_context(),
                server_settings_t{}.address("127.0.0.1").port(utest_default_port()).request_handler(std::move(router))) {
+    other_thread.run();
   }
 };
 
