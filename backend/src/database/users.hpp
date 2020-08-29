@@ -32,4 +32,4 @@ class user : public user_management::user_list {
 };
 }  // namespace database
 
-#endif DATABASE_USERS_HPP_
+#endif  // DATABASE_USERS_HPP_

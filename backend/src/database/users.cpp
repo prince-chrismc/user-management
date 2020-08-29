@@ -18,10 +18,10 @@ std::string make_etag(const database::user::json& json) {
 
 namespace database {
 user::time_point user::last_modified() const {
-  if (count() > 0)
-    return std::max(database_last_modified,
-                    std::max_element(users_last_modified.begin(), users_last_modified.end())->second);
-
+  if (count() > 0) {
+    const auto last_modified = std::max_element(users_last_modified.begin(), users_last_modified.end());
+    if (last_modified != std::end(users_last_modified)) return std::max(database_last_modified, last_modified->second);
+  }
   return database_last_modified;
 }
 user::time_point user::last_modified(key id) const { return users_last_modified.at(id); }
