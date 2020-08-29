@@ -7,24 +7,29 @@
 
 #include "unit_test/helpers.hpp"
 
-using router_t = restinio::router::express_router_t<>;
+using router_t = handler::router;
 using traits_t = restinio::traits_t<restinio::asio_timer_manager_t, restinio::null_logger_t, router_t>;
 using server_settings_t = restinio::server_settings_t<traits_t>;
 using http_server_t = restinio::http_server_t<traits_t>;
+
+class http_server {
+  http_server_t server;
+  other_work_thread_for_server_t<http_server_t> other_thread{server};
+
+ public:
+  explicit http_server(std::unique_ptr<router_t> router)
+      : server(restinio::own_io_context(),
+               server_settings_t{}.address("127.0.0.1").port(utest_default_port()).request_handler(std::move(router))) {
+  }
+};
 
 TEST_CASE("List Endpoints") {
   database::user list;
   list.add(R"##({"name": "John Doe", "email": "john@example.com"})##"_json);
 
   auto router = std::make_unique<router_t>();
-  router->http_get(handler::user::route::list, handler::user::get_list{list});
-  router->http_put(handler::user::route::list, handler::user::add{list});
-
-  http_server_t http_server{
-      restinio::own_io_context(),
-      server_settings_t{}.address("127.0.0.1").port(utest_default_port()).request_handler(std::move(router))};
-  other_work_thread_for_server_t<http_server_t> other_thread{http_server};
-  other_thread.run();
+  handler::user::fill::list(*router, list);
+  http_server http_server(std::move(router));
 
   SECTION("GET") {
     const std::string get_list{
@@ -151,15 +156,8 @@ TEST_CASE("User Endpoints") {
   const auto user = list.add(R"##({"name": "John Doe", "email": "john@example.com"})##"_json);
 
   auto router = std::make_unique<router_t>();
-  router->http_get(handler::user::route::user, handler::user::get_user{list});
-  router->http_delete(handler::user::route::user, handler::user::remove{list});
-  router->add_handler(restinio::http_method_patch(), handler::user::route::user, handler::user::edit{list});
-
-  http_server_t http_server{
-      restinio::own_io_context(),
-      server_settings_t{}.address("127.0.0.1").port(utest_default_port()).request_handler(std::move(router))};
-  other_work_thread_for_server_t<http_server_t> other_thread{http_server};
-  other_thread.run();
+  handler::user::fill::user(*router, list);
+  http_server http_server(std::move(router));
 
   SECTION("GET 404") {
     const std::string get_user{

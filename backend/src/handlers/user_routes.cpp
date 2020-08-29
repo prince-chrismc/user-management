@@ -71,6 +71,20 @@ using user_management::user_key;
 
 namespace handler {
 namespace user {
+namespace fill {
+void list(router &router, database &db) {
+  router.http_get(route::list, get_list{db});
+  router.http_put(route::list, add{db});
+  router.add_handler(restinio::http_method_options(), route::list, &preflight::list);
+}
+void user(router &router, database &db) {
+  router.http_get(route::user, handler::user::get_user{db});
+  router.http_delete(route::user, remove{db});
+  router.add_handler(restinio::http_method_patch(), route::user, edit{db});
+  router.add_handler(restinio::http_method_options(), route::user, &preflight::user);
+}
+}  // namespace fill
+
 request_status add::operator()(const request_handle &req, route_params /*params*/) {
   try {
     verify_application_json(req);

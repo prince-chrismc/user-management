@@ -40,7 +40,6 @@ SOFTWARE.
 #include <map>
 
 using namespace std::chrono_literals;  // NOLINT(google-build-using-namespace)
-using router_t = restinio::router::express_router_t<>;
 using user_database = handler::user::database;
 
 auto server_handler(const std::string &root_dir, user_database &db) {
@@ -54,22 +53,15 @@ auto server_handler(const std::string &root_dir, user_database &db) {
     server_root_dir = root_dir;
   }
 
-  auto router = std::make_unique<router_t>();
+  auto router = std::make_unique<handler::router>();
 
   router->http_get("/", &handler::web_app::link);
   router->http_get("/web-app/", &handler::web_app::redirect);
   router->http_get(R"(/:path(.*)\.:ext(.*))", restinio::path2regex::options_t{}.strict(true),
                    handler::serve_files::from_disk{server_root_dir});
 
-  router->http_get(handler::user::route::list, handler::user::get_list{db});
-  router->http_get(handler::user::route::user, handler::user::get_user{db});
-
-  router->http_put(handler::user::route::list, handler::user::add{db});
-  router->http_delete(handler::user::route::user, handler::user::remove{db});
-  router->add_handler(restinio::http_method_patch(), handler::user::route::user, handler::user::edit{db});
-
-  router->add_handler(restinio::http_method_options(), handler::user::route::list, &handler::user::preflight::list);
-  router->add_handler(restinio::http_method_options(), handler::user::route::user, &handler::user::preflight::user);
+  handler::user::fill::list(*router, db);
+  handler::user::fill::user(*router, db);
 
   return router;
 }
@@ -94,7 +86,7 @@ int main(int argc, char const *argv[]) {
     tls_context.use_tmp_dh_file(args.certs_dir + "/dh2048.pem");
 
     user_database db;
-    using traits_t = restinio::tls_traits_t<restinio::asio_timer_manager_t, restinio::null_logger_t, router_t>;
+    using traits_t = restinio::tls_traits_t<restinio::asio_timer_manager_t, restinio::null_logger_t, handler::router>;
     restinio::run(restinio::on_thread_pool<traits_t>(args.pool_size)
                       .address(args.address)
                       .port(args.port)

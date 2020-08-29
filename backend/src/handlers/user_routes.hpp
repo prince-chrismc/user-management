@@ -14,6 +14,11 @@ constexpr restinio::string_view_t list = "/um/v1/users"_sv;
 constexpr restinio::string_view_t user = "/um/v1/users/:id(\\d+)"_sv;
 }  // namespace route
 using database = database::user;
+namespace fill {
+void list(router &router, database &db);
+void user(router &router, database &db);
+}  // namespace fill
+
 class add {
   database &db_;
 
