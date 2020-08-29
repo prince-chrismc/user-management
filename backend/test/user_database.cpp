@@ -1,118 +1,60 @@
 // MIT License
 
-#include "handlers/user_database.hpp"
-#include "unit_test/helpers.hpp"
+#include <fmt/chrono.h>
 
 #include <catch2/catch.hpp>
-#include <restinio/all.hpp>
 
-using router_t = restinio::router::express_router_t<>;
-using traits_t = restinio::traits_t<restinio::asio_timer_manager_t, restinio::null_logger_t, router_t>;
-using server_settings_t = restinio::server_settings_t<traits_t>;
-using http_server_t = restinio::http_server_t<traits_t>;
+#include "database/users.hpp"
 
-TEST_CASE("List Endpoints") {
-  user_management::user_list list;
-  list.add("John Doe", "john@example.com");
-
-  auto router = std::make_unique<router_t>();
-  router->http_get(handler::user::route::list, handler::user::get_list{list});
-  router->http_post(handler::user::route::list, handler::user::add{list});
-
-  http_server_t http_server{
-      restinio::own_io_context(),
-      server_settings_t{}.address("127.0.0.1").port(utest_default_port()).request_handler(std::move(router))};
-
-  other_work_thread_for_server_t<http_server_t> other_thread{http_server};
-  other_thread.run();
-
-  SECTION("GET") {
-    const std::string get_list{
-        "GET /um/v1/users HTTP/1.0\r\n"
-        "From: unit-test\r\n"
-        "User-Agent: unit-test\r\n"
-        "Connection: close\r\n"
-        "\r\n"};
-
-    std::string response;
-    REQUIRE_NOTHROW(response = do_request(get_list));
-    CHECK_THAT(response, Catch::Contains(nlohmann::json(list).dump()));
+namespace Catch {
+template <>
+struct StringMaker<database::user::time_point> {
+  static std::string convert(std::chrono::system_clock::time_point const& value) {
+    return fmt::format("{}", value.time_since_epoch());
   }
+};
+}  // namespace Catch
 
-  SECTION("POST") {
-    const std::string post_list{
-        "POST /um/v1/users HTTP/1.0\r\n"
-        "From: unit-test\r\n"
-        "User-Agent: unit-test\r\n"
-        "Content-Type: application/json\r\n"
-        "Content-Length: 49\r\n"
-        "Connection: close\r\n"
-        "\r\n"
-        R"##({"name": "Jane Doe", "email": "jane@example.com"})##"};
+TEST_CASE("Tracks Last-Modified") {
+  database::user user_database;
+  CHECK(user_database.last_modified() == database::user::time_point{database::user::time_point::duration{0}});
 
-    std::string response;
-    REQUIRE_NOTHROW(response = do_request(post_list));
-    CHECK_THAT(response,
-               Catch::Contains(nlohmann::json(user_management::user{2, "Jane Doe", "jane@example.com"}).dump()));
-  }
+  // Add
+  const auto new_id = user_database.add(R"##({"name": "Jane Doe", "email": "jane@example.com"})##"_json).id;
+  CHECK(user_database.last_modified() == user_database.last_modified(new_id));
+
+  // Edit
+  user_database.edit(new_id, R"##({"name": "Jane Down"})##"_json);
+  CHECK(user_database.last_modified() == user_database.last_modified(new_id));
+
+  // Multiple Users
+  const auto second_id = user_database.add(R"##({"name": "John Doe", "email": "john@example.com"})##"_json).id;
+  CHECK(user_database.last_modified() == user_database.last_modified(second_id));
+  CHECK_FALSE(user_database.last_modified() == user_database.last_modified(new_id));
+
+  // Remove
+  user_database.remove(new_id);  // Remove is very slow.
+  Approx target = Approx(user_database.last_modified(new_id).time_since_epoch().count()).epsilon(0.01);
+  CHECK(user_database.last_modified().time_since_epoch().count() == target);
+  CHECK_FALSE(user_database.last_modified() == user_database.last_modified(second_id));
 }
 
-TEST_CASE("User Endpoints") {
-  user_management::user_list list;
-  const auto user = list.add("John Doe", "john@example.com");
+TEST_CASE("Handles ETAg") {
+  database::user user_database;
+  const auto db_empty_hash = user_database.etag();
+  CHECK_THAT(db_empty_hash, Catch::Matches(R"###(([wW]/)?"([^"]|\\")*")###"));
 
-  auto router = std::make_unique<router_t>();
-  router->http_get(handler::user::route::user, handler::user::get_user{list});
-  router->http_delete(handler::user::route::user, handler::user::remove{list});
-  router->add_handler(restinio::http_method_patch(), handler::user::route::user, handler::user::edit{list});
+  // Add
+  const auto new_id = user_database.add(R"##({"name": "Jane Doe", "email": "jane@example.com"})##"_json).id;
+  CHECK(user_database.etag() != db_empty_hash);
+  const auto new_user_hash = user_database.etag(new_id);
+  CHECK_THAT(new_user_hash, Catch::Matches(R"###(([wW]/)?"([^"]|\\")*")###"));
 
-  http_server_t http_server{
-      restinio::own_io_context(),
-      server_settings_t{}.address("127.0.0.1").port(utest_default_port()).request_handler(std::move(router))};
+  // Edit
+  user_database.edit(new_id, R"##({"name": "Jane Down"})##"_json);
+  CHECK(user_database.etag() != db_empty_hash);
+  CHECK(user_database.etag(new_id) != new_user_hash);
 
-  other_work_thread_for_server_t<http_server_t> other_thread{http_server};
-  other_thread.run();
-
-  SECTION("GET") {
-    const std::string get_user{
-        "GET /um/v1/users/1 HTTP/1.0\r\n"
-        "From: unit-test\r\n"
-        "User-Agent: unit-test\r\n"
-        "Connection: close\r\n"
-        "\r\n"};
-
-    std::string response;
-    REQUIRE_NOTHROW(response = do_request(get_user));
-    CHECK_THAT(response, Catch::Contains(nlohmann::json(user).dump()));
-  }
-
-  SECTION("DELETE") {
-    const std::string get_user{
-        "DELETE /um/v1/users/1 HTTP/1.0\r\n"
-        "From: unit-test\r\n"
-        "User-Agent: unit-test\r\n"
-        "Connection: close\r\n"
-        "\r\n"};
-
-    std::string response;
-    REQUIRE_NOTHROW(response = do_request(get_user));
-    CHECK_THAT(response, Catch::Contains("204"));
-  }
-
-  SECTION("PATCH") {
-    const std::string post_list{
-        "PATCH /um/v1/users/1 HTTP/1.0\r\n"
-        "From: unit-test\r\n"
-        "User-Agent: unit-test\r\n"
-        "Content-Type: application/json\r\n"
-        "Content-Length: 49\r\n"
-        "Connection: close\r\n"
-        "\r\n"
-        R"##({"name": "Jane Doe", "email": "jane@example.com"})##"};
-
-    std::string response;
-    REQUIRE_NOTHROW(response = do_request(post_list));
-    CHECK_THAT(response,
-               Catch::Contains(nlohmann::json(user_management::user{1, "Jane Doe", "jane@example.com"}).dump()));
-  }
+  user_database.remove(new_id);
+  CHECK(user_database.etag() == db_empty_hash);
 }

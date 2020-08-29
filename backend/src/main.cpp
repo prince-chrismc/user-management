@@ -25,7 +25,7 @@ SOFTWARE.
 */
 
 #include "handlers/serve_files.hpp"
-#include "handlers/user_database.hpp"
+#include "handlers/user_routes.hpp"
 #include "handlers/web_app.hpp"
 #include "utility/app_args.hpp"
 
@@ -40,10 +40,9 @@ SOFTWARE.
 #include <map>
 
 using namespace std::chrono_literals;  // NOLINT(google-build-using-namespace)
+using user_database = handler::user::database;
 
-using router_t = restinio::router::express_router_t<>;
-
-auto server_handler(const std::string &root_dir, user_management::user_list &list) {
+auto server_handler(const std::string &root_dir, user_database &db) {
   std::string server_root_dir;
 
   if (root_dir.empty()) {
@@ -54,22 +53,15 @@ auto server_handler(const std::string &root_dir, user_management::user_list &lis
     server_root_dir = root_dir;
   }
 
-  auto router = std::make_unique<router_t>();
+  auto router = std::make_unique<handler::router>();
 
   router->http_get("/", &handler::web_app::link);
   router->http_get("/web-app/", &handler::web_app::redirect);
   router->http_get(R"(/:path(.*)\.:ext(.*))", restinio::path2regex::options_t{}.strict(true),
                    handler::serve_files::from_disk{server_root_dir});
 
-  router->http_get(handler::user::route::list, handler::user::get_list{list});
-  router->http_get(handler::user::route::user, handler::user::get_user{list});
-
-  router->http_post(handler::user::route::list, handler::user::add{list});
-  router->http_delete(handler::user::route::user, handler::user::remove{list});
-  router->add_handler(restinio::http_method_patch(), handler::user::route::user, handler::user::edit{list});
-
-  router->add_handler(restinio::http_method_options(), handler::user::route::list, &handler::user::preflight::list);
-  router->add_handler(restinio::http_method_options(), handler::user::route::user, &handler::user::preflight::user);
+  handler::user::fill::list(*router, db);
+  handler::user::fill::user(*router, db);
 
   return router;
 }
@@ -82,8 +74,6 @@ int main(int argc, char const *argv[]) {
       return 0;
     }
 
-    using traits_t = restinio::tls_traits_t<restinio::asio_timer_manager_t, restinio::null_logger_t, router_t>;
-
     namespace asio = restinio::asio_ns;
 
     asio::ssl::context tls_context{asio::ssl::context::tls};
@@ -95,12 +85,12 @@ int main(int argc, char const *argv[]) {
     tls_context.use_private_key_file(args.certs_dir + "/key.pem", asio::ssl::context::pem);
     tls_context.use_tmp_dh_file(args.certs_dir + "/dh2048.pem");
 
-    user_management::user_list list;
-
+    user_database db;
+    using traits_t = restinio::tls_traits_t<restinio::asio_timer_manager_t, restinio::null_logger_t, handler::router>;
     restinio::run(restinio::on_thread_pool<traits_t>(args.pool_size)
                       .address(args.address)
                       .port(args.port)
-                      .request_handler(server_handler(args.root_dir, list))
+                      .request_handler(server_handler(args.root_dir, db))
                       .read_next_http_message_timelimit(10s)
                       .write_http_response_timelimit(1s)
                       .handle_request_timeout(1s)

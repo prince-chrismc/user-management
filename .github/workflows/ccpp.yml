@@ -31,7 +31,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/.conan/data
-        key: ${{ runner.os }}-${{ hashFiles('**/conanfile.txt') }}
+        key: ${{ runner.os }}-${{ hashFiles('**/conanfile.py') }}
 
     - name: install conan
       run: |

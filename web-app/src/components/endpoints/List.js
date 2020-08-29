@@ -14,7 +14,7 @@ export const LoadUsers = async () => {
 
 export const AddUser = async (name, email) => {
   const requestOptions = {
-    method: 'POST',
+    method: 'PUT',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json'

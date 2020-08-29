@@ -4,6 +4,7 @@ import { Message } from 'semantic-ui-react'
 import FormConfirm from '../dialogs/ConfirmForm'
 import PopupModal from '../dialogs/UserModal'
 import { DeleteUser } from '../endpoints/User'
+import { Etag } from '../tools/Etag'
 
 class RemoveUser extends Component {
   state = { id: this.props.id, name: this.props.name, email: this.props.email, showError: false, errMsg: '', showOkay: false }
@@ -24,7 +25,8 @@ class RemoveUser extends Component {
   }
 
   handleDelete = () => {
-    DeleteUser(this.state.id)
+    const etag = Etag(this.state.email, this.state.id, this.state.name)
+    DeleteUser(this.state.id, etag)
       .then(() => this.toggleSuccess())
       .catch((err) => this.toggleError(err))
   }

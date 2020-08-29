@@ -1,14 +1,18 @@
 // MIT License
 
-#include <restinio/router/express.hpp>
+#ifndef HANDLERS_SERVE_FILES_HPP_
+#define HANDLERS_SERVE_FILES_HPP_
+
+#include "utility/routing.hpp"
 
 namespace handler {
 namespace serve_files {
 struct from_disk {
-  std::string server_root_dir;
+  const std::string server_root_dir;
 
-  restinio::request_handling_status_t operator()(const restinio::request_handle_t& req,
-                                                 restinio::router::route_params_t params);
+  request_status operator()(const request_handle& req, route_params params);
 };
 }  // namespace serve_files
 }  // namespace handler
+
+#endif  // HANDLERS_SERVE_FILES_HPP_
