@@ -36,7 +36,7 @@ test('default data on submit', async () => {
   expect(mockCallback).not.toHaveBeenCalled()
 
   await waitForExpect(() => {
-    expect(mockCallback).toHaveBeenCalledWith({id: 9, name: 'John Doe', email: 'john@example.com'})
+    expect(mockCallback).toHaveBeenCalledWith({ id: 9, name: 'John Doe', email: 'john@example.com' })
     expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
     expect(screen.getByText('Success!', { exact: false })).toBeInTheDocument()
   }, 700)
@@ -55,7 +55,7 @@ test('new data on submit', async () => {
   expect(mockCallback).not.toHaveBeenCalled()
 
   await waitForExpect(() => {
-    expect(mockCallback).toHaveBeenCalledWith({id: 9, name: 'Jenny Doe', email: 'jenny@example.com'})
+    expect(mockCallback).toHaveBeenCalledWith({ id: 9, name: 'Jenny Doe', email: 'jenny@example.com' })
     expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
     expect(screen.getByText('Success!', { exact: false })).toBeInTheDocument()
   }, 700)
