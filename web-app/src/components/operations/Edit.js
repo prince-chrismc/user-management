@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import { Message } from 'semantic-ui-react'
 
-import sha256 from 'crypto-js/sha256';
-import Base64 from 'crypto-js/enc-base64';
-
 import FormEditNameAndEmail from '../dialogs/EditForm'
 import PopupModal from '../dialogs/UserModal'
 import { EditUser } from '../endpoints/User'
+import { Etag } from '../tools/Etag'
 
 class ModifyUser extends Component {
   state = { id: this.props.id, name: this.props.name, email: this.props.email, showError: false, errMsg: '', showOkay: false }
@@ -27,12 +25,7 @@ class ModifyUser extends Component {
   }
 
   handleSubmit = (name, email) => {
-    const etag = Base64.stringify(sha256(JSON.stringify({
-      email: this.state.email,
-      id: this.state.id,
-      name: this.state.name,
-    })))
-
+    const etag = Etag(this.state.email, this.state.id, this.state.name)
     EditUser(this.state.id, name, email, etag)
       .then((data) => { this.toggleSuccess(data.name, data.email) })
       .catch((err) => this.toggleError(err))

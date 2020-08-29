@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import { Message } from 'semantic-ui-react'
 
-import sha256 from 'crypto-js/sha256';
-import Base64 from 'crypto-js/enc-base64';
+import sha256 from 'crypto-js/sha256'
+import Base64 from 'crypto-js/enc-base64'
 
 import FormConfirm from '../dialogs/ConfirmForm'
 import PopupModal from '../dialogs/UserModal'
 import { DeleteUser } from '../endpoints/User'
+import { Etag } from '../tools/Etag'
 
 class RemoveUser extends Component {
   state = { id: this.props.id, name: this.props.name, email: this.props.email, showError: false, errMsg: '', showOkay: false }
@@ -27,12 +28,7 @@ class RemoveUser extends Component {
   }
 
   handleDelete = () => {
-    const etag = Base64.stringify(sha256(JSON.stringify({
-      email: this.state.email,
-      id: this.state.id,
-      name: this.state.name,
-    })))
-
+    const etag = Etag(this.state.email, this.state.id, this.state.name)
     DeleteUser(this.state.id, etag)
       .then(() => this.toggleSuccess())
       .catch((err) => this.toggleError(err))

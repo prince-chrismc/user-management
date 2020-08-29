@@ -3,6 +3,7 @@ import { enableFetchMocks } from 'jest-fetch-mock' // mock fetch within list end
 
 import { LoadUsers, AddUser } from './List'
 import { EditUser, DeleteUser } from './User'
+import { Etag } from '../tools/Etag'
 
 const express = require('express')
 const { createHttpTerminator } = require('http-terminator')
@@ -55,6 +56,8 @@ app.delete('/um/v1/users/:id(\\d+)', (req, res) => {
 
   if (__error) {
     res.sendStatus(500)
+  } else if (typeof req.header('If-Match') === 'undefined') {
+    res.sendStatus(428)
   } else {
     res.sendStatus(204)
   }
@@ -65,6 +68,8 @@ app.patch('/um/v1/users/:id(\\d+)', (req, res) => {
 
   if (__error) {
     res.sendStatus(500)
+  } else if (typeof req.header('If-Match') === 'undefined') {
+    res.sendStatus(428)
   } else {
     const json = req.body
     json.id = req.params.id
@@ -118,14 +123,16 @@ test('faulty backend > add user', async () => {
 })
 
 test('delete users', async () => {
-  const json = await DeleteUser(123)
+  const etag = Etag(JSON_USER_123.id, JSON_USER_123.name, JSON_USER_123.email)
+  const json = await DeleteUser(123, etag)
   console.log(json)
 
   expect(json).toEqual(null)
 })
 
 test('edit users', async () => {
-  const json = await EditUser(123, 'James Does', 'james@example.com', '')
+  const etag = Etag(JSON_USER_123.id, JSON_USER_123.name, JSON_USER_123.email)
+  const json = await EditUser(123, 'James Does', 'james@example.com', etag)
   console.log(json)
 
   expect(json).toEqual({ email: 'james@example.com', id: '123', name: 'James Does' })
