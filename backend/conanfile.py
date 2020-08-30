@@ -1,5 +1,6 @@
 from conans import ConanFile, CMake
-
+from six import StringIO
+from os import path, getcwd
 
 class UserManagement(ConanFile):
     name = "user-management"
@@ -10,6 +11,17 @@ class UserManagement(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake_find_package"
     exports_sources = "CMakeLists.txt", "cmake/*", "src/*", "include/*"
+
+    def init(self):
+        # Append the commit has for the build info
+        buffer = StringIO()
+        self.run("git rev-parse --short HEAD", output=buffer)
+        self.version += '+'
+        self.version += buffer.getvalue()
+
+    def export_sources(self):
+        schema_source = path.normpath(path.join(getcwd(), ".."))
+        self.copy("api/schema/*.json", src=schema_source)
 
     def build_requirements(self):
         self.build_requires("catch2/2.13.0")
@@ -23,5 +35,19 @@ class UserManagement(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure(source_folder=".")
+        cmake.definitions["CONAN_SETUP"] = False
+        cmake.definitions["SCHEMAS_ROOT"] = "."
+        cmake.configure()
         cmake.build()
+
+    def package(self):
+        self.copy("*.hpp", src=".")
+        self.copy("*.lib", dst="lib", keep_path=False)
+        self.copy("*.dll", dst="bin", keep_path=False)
+        self.copy("*.so", dst="lib", keep_path=False)
+        self.copy("*.dylib", dst="lib", keep_path=False)
+        self.copy("*.a", dst="lib", keep_path=False)
+        self.copy("*user_database_app", dst="bin", keep_path=False)
+
+    def package_info(self):
+        self.cpp_info.libs = ["user-management"]
