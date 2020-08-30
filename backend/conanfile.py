@@ -51,3 +51,6 @@ class UserManagement(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = ["user-management"]
+
+    def deploy(self):
+        self.copy("user_database_app", src="bin", dst="bin", keep_path=False)
