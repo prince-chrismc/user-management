@@ -40,14 +40,13 @@ jobs:
         conan profile update settings.compiler.libcxx=libstdc++11 default
 
     - name: install cmake
-      uses: lukka/get-cmake@v3.17.2
+      uses: lukka/get-cmake@v3.18.1
 
     - name: configure
       run: |
         cd backend
         mkdir build
         cd build
-        conan install ..
         cmake ..
 
     - name: make
