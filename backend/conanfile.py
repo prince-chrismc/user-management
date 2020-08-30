@@ -2,6 +2,7 @@ from conans import ConanFile, CMake
 from six import StringIO
 from os import path, getcwd
 
+
 class UserManagement(ConanFile):
     name = "user-management"
     version = "1.0.0-dev.0"
@@ -11,9 +12,10 @@ class UserManagement(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake_find_package"
     exports_sources = "CMakeLists.txt", "cmake/*", "src/*", "include/*"
+    default_options = {"restinio:with_openssl": True}
 
     def init(self):
-        # Append the commit has for the build info
+        # Append the commit hash for the build info
         buffer = StringIO()
         self.run("git rev-parse --short HEAD", output=buffer)
         self.version += '+'
@@ -27,8 +29,6 @@ class UserManagement(ConanFile):
         self.build_requires("catch2/2.13.0")
 
     def requirements(self):
-        self.requires("fmt/7.0.3")
-        self.requires("openssl/1.1.1g")
         self.requires("restinio/0.6.10")
         self.requires("json-schema-validator/2.1.0")
         self.requires("lyra/1.4.0")
