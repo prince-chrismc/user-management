@@ -5,7 +5,6 @@ from os import path, getcwd
 
 class UserManagement(ConanFile):
     name = "user-management"
-    version = "1.0.0-dev.0"
     license = "MIT"
     url = "https://gitlab.com/prince-chrismc/user-management"
     description = "An open-source application delivering a responsive user management experience."
@@ -13,13 +12,6 @@ class UserManagement(ConanFile):
     generators = "cmake_find_package"
     exports_sources = "CMakeLists.txt", "cmake/*", "src/*", "include/*"
     default_options = {"restinio:with_openssl": True}
-
-    def init(self):
-        # Append the commit hash for the build info
-        buffer = StringIO()
-        self.run("git rev-parse --short HEAD", output=buffer)
-        self.version += '+'
-        self.version += buffer.getvalue()
 
     def export_sources(self):
         schema_source = path.normpath(path.join(getcwd(), ".."))
@@ -53,4 +45,4 @@ class UserManagement(ConanFile):
         self.cpp_info.libs = ["user-management"]
 
     def deploy(self):
-        self.copy("user_database_app", src="bin", dst="bin", keep_path=False)
+        self.copy("user_database_app", src="bin", dst="bin")
