@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.8)
 
 project(user-management)
 
+set(SCHEMAS_ROOT ".." CACHE STRING "root directoy where to find the JSON schemas")
+option(CONAN_SETUP "use conan to setup all the dependencies" ON)
 option(BUILD_WEB_SERVER "build the web server for this application" ON)
 option(BUILD_TESTS "build the tests for this application" OFF)
 option(RUN_TIDY "run clang-tidy" OFF)
@@ -11,13 +13,19 @@ if(${COVERAGE})
   cmake_policy(SET CMP0079 NEW)
 endif()
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_BINARY_DIR})
+
+if(${CONAN_SETUP})
+  include("conan-setup")
+endif()
 
 find_package(nlohmann_json_schema_validator 2.1.0 REQUIRED)
 
 include("schema-pack")
-set(SCHEMA_LIST "../api/schema/add.json" "../api/schema/edit.json" "../api/schema/error.json" "../api/schema/user.json"
-                "../api/schema/users.json")
+set(SCHEMA_LIST
+    "${SCHEMAS_ROOT}/api/schema/add.json" "${SCHEMAS_ROOT}/api/schema/edit.json"
+    "${SCHEMAS_ROOT}/api/schema/error.json" "${SCHEMAS_ROOT}/api/schema/user.json"
+    "${SCHEMAS_ROOT}/api/schema/users.json")
 pack_schemas("${SCHEMA_LIST}" schemas)
 
 add_library(user_management "include/um/user_management.hpp")
