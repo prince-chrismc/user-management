@@ -6,12 +6,13 @@ on:
     paths: 
       - 'backend/**'
       - 'api/schema/**'
-      - '.github/workflows/**'
+      - '.github/workflows/ccpp.yml'
   pull_request:
     branches: [ master ]
     paths: 
       - 'backend/**'
-      - '.github/workflows/**'
+      - 'api/schema/**'
+      - '.github/workflows/ccpp.yml'
 
 jobs:
   build:
@@ -40,19 +41,17 @@ jobs:
         conan profile update settings.compiler.libcxx=libstdc++11 default
 
     - name: install cmake
-      uses: lukka/get-cmake@v3.18.1
+      uses: lukka/get-cmake@latest
 
     - name: configure
       run: |
-        cd backend
-        mkdir build
-        cd build
+        mkdir backend/build
+        cd backend/build
         cmake ..
 
     - name: make
       run: |
-        cd backend/build
-        make
+        cmake --build backend/build
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
@@ -72,4 +71,3 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: backend/build/coverage.info
-        flag-name: cpp-backend-unit-test
