@@ -1,5 +1,4 @@
 from conans import ConanFile, CMake
-from six import StringIO
 from os import path, getcwd
 
 
