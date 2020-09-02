@@ -1,5 +1,5 @@
 name: 'Setup Conan'
-description: 'Install and configure the conan client and setup caching of the .conan/'
+description: 'Install and configure the conan client'
 inputs:
   libcxx:
     description: 'C++ standard ABI version to use'
@@ -20,8 +20,6 @@ runs:
     - run: python3 -m pip install conan
       shell: bash
     - run: echo "::set-env name=PATH::~/.local/bin:$(echo $PATH)"
-      shell: bash
-    - run: echo "$(echo $PATH)"
       shell: bash
     - run: conan profile new default --detect
       shell: bash
