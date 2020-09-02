@@ -25,11 +25,8 @@ jobs:
     - uses: actions/checkout@v2
     - id: foo
       uses: ./.github/actions/setup-conan
-      with:
-        who-to-greet: 'World!'
     - run: echo random-number ${{ steps.foo.outputs.random-number }} 
       shell: bash
-
 
   # Run tests.
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/
