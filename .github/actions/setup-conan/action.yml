@@ -5,21 +5,10 @@ inputs:
     description: 'C++ standard ABI version to use'
     required: false
     default: 'libstdc++11'
-outputs:
-  random-number: 
-    description: "Random number"
-    value: ${{ steps.random-number-generator.outputs.random-id }}
 runs:
   using: "composite"
   steps: 
-    - id: random-number-generator
-      run: echo "::set-output name=random-id::$(echo $RANDOM)"
-      shell: bash
-    - run: python3 -m pip install --upgrade pip setuptools
-      shell: bash
     - run: python3 -m pip install conan
-      shell: bash
-    - run: echo "::set-env name=PATH::~/.local/bin:$(echo $PATH)"
       shell: bash
     - run: conan profile new default --detect
       shell: bash
