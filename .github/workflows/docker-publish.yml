@@ -23,10 +23,7 @@ jobs:
     name: A job to say hello
     steps:
     - uses: actions/checkout@v2
-    - id: foo
-      uses: ./.github/actions/setup-conan
-    - run: echo random-number ${{ steps.foo.outputs.random-number }} 
-      shell: bash
+    - uses: ./.github/actions/setup-conan
 
   # Run tests.
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/
