@@ -19,7 +19,7 @@ runs:
       shell: bash
     - run: python3 -m pip install conan
       shell: bash
-    - run: echo "::set-env name=PATH::~/.local/bin;$(echo $PATH)"
+    - run: echo "::set-env name=PATH::~/.local/bin:$(echo $PATH)"
       shell: bash
     - run: echo "$(echo $PATH)"
       shell: bash
