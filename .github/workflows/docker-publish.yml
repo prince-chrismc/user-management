@@ -18,6 +18,19 @@ env:
   IMAGE_NAME: user-managment
 
 jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: A job to say hello
+    steps:
+    - uses: actions/checkout@v2
+    - id: foo
+      uses: user-management/setup-conan@latest
+      with:
+        who-to-greet: 'World!'
+    - run: echo random-number ${{ steps.foo.outputs.random-number }} 
+      shell: bash
+
+
   # Run tests.
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/
   test:
