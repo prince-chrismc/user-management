@@ -1,5 +1,5 @@
-name: 'Setup Conan'
-description: 'Install the latest Conan client and cache the '.conan' folder'
+name: 'Hello World'
+description: 'Greet someone'
 inputs:
   who-to-greet:  # id of input
     description: 'Who to greet'
