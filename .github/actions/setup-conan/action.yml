@@ -15,7 +15,8 @@ runs:
     - id: random-number-generator
       run: echo "::set-output name=random-id::$(echo $RANDOM)"
       shell: bash
-    - uses: actions/setup-python@v2
+    - name: 'setup python'
+      uses: actions/setup-python@v2
       with:
         python-version: 3.8
     - run: python -m pip install --upgrade pip conan
