@@ -19,12 +19,12 @@ runs:
       shell: bash
     - run: python3 -m pip install conan
       shell: bash
-    - run: conan profile new default --detect
-      shell: bash
-    - run: conan profile update settings.compiler.libcxx=${{ inputs.libcxx }} default
-      shell: bash
     - run: echo "::set-env name=PATH::~/.local/bin;$(echo $PATH)"
       shell: bash
     - run: echo "$(echo $PATH)"
+      shell: bash
+    - run: conan profile new default --detect
+      shell: bash
+    - run: conan profile update settings.compiler.libcxx=${{ inputs.libcxx }} default
       shell: bash
       
