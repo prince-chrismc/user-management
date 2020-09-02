@@ -1,10 +1,10 @@
-name: 'Hello World'
-description: 'Greet someone'
+name: 'Setup Conan'
+description: 'Install and configure the conan client and setup caching of the .conan/'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
-    required: true
-    default: 'World'
+  libcxx:
+    description: 'C++ standard ABI version to use'
+    required: false
+    default: 'libstdc++11'
 outputs:
   random-number: 
     description: "Random number"
@@ -12,8 +12,12 @@ outputs:
 runs:
   using: "composite"
   steps: 
-    - run: echo Hello ${{ inputs.who-to-greet }}.
-      shell: bash
     - id: random-number-generator
       run: echo "::set-output name=random-id::$(echo $RANDOM)"
+      shell: bash
+    - run: pip3 install conan
+      shell: bash
+    - run: conan profile new default --detect
+      shell: bash
+    - run: conan profile update settings.compiler.libcxx=${{ inputs.libcxx }} default
       shell: bash
