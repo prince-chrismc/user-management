@@ -24,7 +24,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - id: foo
-      uses: user-management/setup-conan@latest
+      uses: user-management/setup-conan@docker-deploy
       with:
         who-to-greet: 'World!'
     - run: echo random-number ${{ steps.foo.outputs.random-number }} 
