@@ -15,7 +15,10 @@ runs:
     - id: random-number-generator
       run: echo "::set-output name=random-id::$(echo $RANDOM)"
       shell: bash
-    - run: python3 -m pip install conan
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - run: python -m pip install --upgrade pip conan
       shell: bash
     - run: conan profile new default --detect
       shell: bash
