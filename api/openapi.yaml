@@ -1,7 +1,7 @@
 openapi: "3.0.0"
 info:
   title: User Management API
-  version: "1.0.0-dev"
+  version: "1.0.0-dev.0"
   description: >-
     A Simple API for creating, editing, and deleting
     users. The goal here is to offer minimal flexability
@@ -14,16 +14,18 @@ servers:
       server:
         default: https://api.example.com
         enum:
-        - https://api.example.com
-        - https://ec2-3-14-64-10.us-east-2.compute.amazonaws.com/
+          - https://api.example.com
+          - https://ec2-3-14-64-10.us-east-2.compute.amazonaws.com/
 
 tags:
   - name: Search
-    description: Searching database of users
+    description: Browsing database of users
   - name: Edit
     description: Edit user's entry in database
   - name: CORS
-    description: Preflight requests to support CORS
+    description: >-
+      Preflight requests to support Cross-origin resource sharing (CORS).
+      Describes access to a selected resources from a different origin
 
 components:
   parameters:
@@ -31,7 +33,7 @@ components:
       name: id
       in: path
       required: true
-      description: ID of the resoective user to display
+      description: ID of the respective user to display
       schema:
         type: integer
       example: 15
@@ -47,8 +49,10 @@ components:
     Error:
       $ref: "./schema/error.json"
   responses:
+    NotModified:
+      description: Not Modified
     NotFound:
-      description: The specified resource was not found
+      description: Not Found
       content:
         application/json:
           schema:
@@ -60,13 +64,34 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
-          examples: 
+          examples:
             Bad JSON:
               value: { "error": "malformed JSON" }
             Schema Error:
               value: { "error": "schema was not respected." }
+    PreconditionFailed:
+      description: Precondition Failed
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example: { "error": "the user was modified without your knowledge" }
+    PreconditionRequired:
+      description: Precondition Required
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example: { "error": "an If-Match ETag must be provided" }
+    UnsupportedMediaType:
+      description: Unsupported Media Type
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example: { "error": "Content-Type must be application/json" }
     Options:
-      description: No Content
+      description: Options
       headers:
         Access-Control-Allow-Origin:
           $ref: "#/components/headers/Access-Control-Allow-Origin"
@@ -93,6 +118,22 @@ components:
       schema:
         type: string
       description: Allowed number of seconds to cache the Preflight response.
+    Last-Modified:
+      schema:
+        type: string
+      description: Contains the date and time at which the origin server believes the resource was last modified.
+    ETag:
+      schema:
+        type: string
+      description: An identifier for a specific version of a resource
+    If-Match:
+      schema:
+        type: string
+      description: Makes the request conditional. The server will send back the requested resource only if it matches one of the listed ETags. For non-safe methods, it will only upload the resource in this case.
+    If-None-Match:
+      schema:
+        type: string
+      description: Makes the request conditional. The server will send back the requested resource only if it does not have an ETag matching the given one. For non-safe methods, it will only upload the resource in this case.
 
 paths:
   /users:
@@ -100,12 +141,21 @@ paths:
       tags:
         - Search
       summary: List of users
+      parameters:
+        - in: header
+          name: If-None-Match
+          schema:
+            $ref: "#/components/headers/If-None-Match"
       responses:
         "200":
           description: OK
           headers:
             Access-Control-Allow-Origin:
               $ref: "#/components/headers/Access-Control-Allow-Origin"
+            Last-Modified:
+              $ref: "#/components/headers/Last-Modified"
+            ETag:
+              $ref: "#/components/headers/ETag"
           content:
             application/json:
               schema:
@@ -119,6 +169,8 @@ paths:
                   },
                   { "id": 89, "name": "Jane Doe", "email": "jane@example.com" },
                 ]
+        "304":
+          $ref: "#/components/responses/NotModified"
     put:
       tags:
         - Edit
@@ -137,6 +189,8 @@ paths:
           headers:
             Access-Control-Allow-Origin:
               $ref: "#/components/headers/Access-Control-Allow-Origin"
+            ETag:
+              $ref: "#/components/headers/ETag"
           content:
             application/json:
               schema:
@@ -145,11 +199,12 @@ paths:
                 { "id": 234, "name": "John Doe", "email": "john@example.com" }
         "400":
           $ref: "#/components/responses/BadRequest"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
     options:
       tags:
         - CORS
-      summary: Preflight check for CORS
-      description: Descripe access to selected resources from a different origin
+      description: List
       responses:
         "204":
           $ref: "#/components/responses/Options"
@@ -159,25 +214,47 @@ paths:
     get:
       tags:
         - Search
-      summary: Display user
+      summary: Display individual user
+      parameters:
+        - in: header
+          name: If-None-Match
+          schema:
+            $ref: "#/components/headers/If-None-Match"
       responses:
         "200":
           description: OK
           headers:
+            Accept-Patch:
+              schema:
+                type: string
+                enum:
+                  - "application/json"
             Access-Control-Allow-Origin:
               $ref: "#/components/headers/Access-Control-Allow-Origin"
+            Last-Modified:
+              $ref: "#/components/headers/Last-Modified"
+            ETag:
+              $ref: "#/components/headers/ETag"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
               example:
                 { "id": 234, "name": "John Doe", "email": "john@example.com" }
+        "304":
+          $ref: "#/components/responses/NotModified"
         "404":
           $ref: "#/components/responses/NotFound"
     patch:
       tags:
         - Edit
       summary: Edit an existing user
+      parameters:
+        - in: header
+          name: If-Match
+          schema:
+            $ref: "#/components/headers/If-Match"
+          required: true
       requestBody:
         description: edit any number of settings for a given user
         required: true
@@ -195,10 +272,12 @@ paths:
                   { "name": "Jane Marry Doe", "email": "jane.doe@example.com" }
       responses:
         "202":
-          description: Accpted
+          description: Accepted
           headers:
             Access-Control-Allow-Origin:
               $ref: "#/components/headers/Access-Control-Allow-Origin"
+            ETag:
+              $ref: "#/components/headers/ETag"
           content:
             application/json:
               schema:
@@ -209,20 +288,35 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "404":
           $ref: "#/components/responses/NotFound"
+        "412":
+          $ref: "#/components/responses/PreconditionFailed"
+        "415":
+          $ref: "#/components/responses/UnsupportedMediaType"
+        "428":
+          $ref: "#/components/responses/PreconditionRequired"
     delete:
       tags:
         - Edit
       summary: Remove an existing user
+      parameters:
+        - in: header
+          name: If-Match
+          schema:
+            $ref: "#/components/headers/If-Match"
+          required: true
       responses:
         "204":
           description: No Content
         "404":
           $ref: "#/components/responses/NotFound"
+        "412":
+          $ref: "#/components/responses/PreconditionFailed"
+        "428":
+          $ref: "#/components/responses/PreconditionRequired"
     options:
       tags:
         - CORS
-      summary: Preflight check for CORS
-      description: Descripe access to selected resources from a different origin
+      description: User
       responses:
         "204":
           $ref: "#/components/responses/Options"

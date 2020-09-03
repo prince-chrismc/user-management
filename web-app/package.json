@@ -1,6 +1,6 @@
 {
   "name": "user-management",
-  "version": "1.0.0",
+  "version": "1.0.0-dev.0",
   "description": "React web application hosted from a C++ web server",
   "main": "index.js",
   "author": "Chris Mc",
@@ -42,6 +42,7 @@
     "babel-loader": "^8.0.6",
     "chalk": "^2.4.2",
     "cross-env": "^5.2.0",
+    "crypto-js": "^4.0.0",
     "css-loader": "^3.0.0",
     "cssnano": "^4.1.10",
     "eslint": "^7.4.0",

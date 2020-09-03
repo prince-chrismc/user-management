@@ -12,6 +12,10 @@ namespace api\n\
    using json = nlohmann::json;\n")
 
   foreach(SCHEMA ${SCHEMAS})
+    get_filename_component(SCHEMA ${SCHEMA} REALPATH)
+    if(NOT EXISTS ${SCHEMA})
+      message(SEND_ERROR "Unable to locate schema: ${SCHEMA}")
+    endif()
     string(REGEX REPLACE "(.*)/([^/]+).json" "\\2" VAR ${SCHEMA})
     string(MAKE_C_IDENTIFIER "${VAR}" VAR)
     file(APPEND "${SCHEMAS_HEADER}.tmp" "   static json ${VAR} = R\"-auto-generated-(")

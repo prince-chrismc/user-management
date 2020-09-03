@@ -6,13 +6,14 @@ on:
     paths: 
       - 'backend/**'
       - 'api/schema/**'
-      - '.github/workflows/**'
       - '.github/actions/**'
+      - '.github/workflows/ccpp.yml'
   pull_request:
     branches: [ master ]
     paths: 
       - 'backend/**'
-      - '.github/workflows/**'
+      - 'api/schema/**'
+      - '.github/workflows/ccpp.yml'
 
 jobs:
   build:
@@ -32,23 +33,20 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/.conan/data
-        key: ${{ runner.os }}-${{ hashFiles('**/conanfile.txt') }}
+        key: ${{ runner.os }}-${{ hashFiles('**/conanfile.py') }}
 
-    - name: setup cmake
-      uses: lukka/get-cmake@v3.17.2
+    - name: install cmake
+      uses: lukka/get-cmake@latest
 
     - name: configure
       run: |
-        cd backend
-        mkdir build
-        cd build
-        conan install ..
-        cmake ..
+        mkdir backend/build
+        cd backend/build
+        cmake .. -DCMAKE_BUILD_TYPE=Release
 
     - name: make
       run: |
-        cd backend/build
-        make
+        cmake --build backend/build
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
@@ -68,4 +66,3 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: backend/build/coverage.info
-        flag-name: cpp-backend-unit-test

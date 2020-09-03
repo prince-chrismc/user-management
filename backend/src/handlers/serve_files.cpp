@@ -7,8 +7,7 @@
 namespace handler {
 namespace serve_files {
 
-restinio::request_handling_status_t from_disk::operator()(const restinio::request_handle_t& req,
-                                                          restinio::router::route_params_t /*params*/) {
+request_status from_disk::operator()(const request_handle& req, route_params /*params*/) {
   auto path = req->header().path();
 
   if (std::string::npos == path.find("..")) {

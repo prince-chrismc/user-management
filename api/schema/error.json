@@ -3,7 +3,7 @@
     "$id": "error.json",
     "type": "object",
     "title": "Error",
-    "description": "The error schema is the schema that describes the structure of error messages",
+    "description": "The error schema is the schema that describes the structure of error messages.",
     "required": [
         "error"
     ],
@@ -12,7 +12,7 @@
             "$id": "#/properties/error",
             "type": "string",
             "title": "The Error Message",
-            "description": "the message to describe what went wrong.",
+            "description": "The message to describe what went wrong.",
             "examples": [
                 "The request data did not conform to schema",
                 "The request method is not allowed at this endpoint"

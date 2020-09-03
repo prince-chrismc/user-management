@@ -1,12 +1,15 @@
 // MIT License
 
-#include <restinio/router/express.hpp>
+#ifndef HANDLERS_WEB_APP_HPP_
+#define HANDLERS_WEB_APP_HPP_
+
+#include "utility/routing.hpp"
 
 namespace handler {
 namespace web_app {
-restinio::request_handling_status_t link(const restinio::request_handle_t& req,
-                                         restinio::router::route_params_t params);
-restinio::request_handling_status_t redirect(const restinio::request_handle_t& req,
-                                             restinio::router::route_params_t params);
+request_status link(const request_handle& req, route_params params);
+request_status redirect(const request_handle& req, route_params params);
 }  // namespace web_app
 }  // namespace handler
+
+#endif  // HANDLERS_WEB_APP_HPP_
