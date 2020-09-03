@@ -66,11 +66,12 @@ jobs:
   # Run tests.
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/
   test:
+    needs: [backend, frontend]
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
-
+      - uses: actions/download-artifact@v2
       - name: Run tests
         run: |
           if [ -f docker-compose.test.yml ]; then
