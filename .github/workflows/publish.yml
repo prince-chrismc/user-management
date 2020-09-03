@@ -20,7 +20,6 @@ env:
 jobs:
   backend:
     runs-on: ubuntu-latest
-    name: build and upload the backend app
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-python@v2
@@ -32,9 +31,11 @@ jobs:
         path: ~/.conan/data
         key: ${{ runner.os }}-${{ hashFiles('**/conanfile.py') }}
     - uses: lukka/get-cmake@latest
-    - run: mkdir backend/build
-    - run: cmake .. -DCMAKE_BUILD_TYPE=Release
-    - run: cmake --build backend/build
+    - run: |
+        mkdir backend/build
+        cd backend/build
+        cmake .. -DCMAKE_BUILD_TYPE=Release
+        cmake --build .
     - uses: actions/upload-artifact@v2
       with:
          name: user_database_app
@@ -42,7 +43,6 @@ jobs:
 
   frontend:
     runs-on: ubuntu-latest
-    name: build and upload the backend app
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
