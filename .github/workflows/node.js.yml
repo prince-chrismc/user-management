@@ -1,19 +1,16 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-name: Node.js CI
+name: Frontend CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, docker-deploy ]
     paths: 
       - 'web-app/**'
-      - '.github/workflows/**'
+      - '.github/workflows/node.js.yml'
   pull_request:
     branches: [ master ]
     paths: 
       - 'web-app/**'
-      - '.github/workflows/**'
+      - '.github/workflows/node.js.yml'
 
 jobs:
   build:
@@ -31,11 +28,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Cache multiple paths
+    - name: Cache Node Modules
       uses: actions/cache@v2
       with:
-        path: |
-          **/node_modules
+        path: '**/node_modules'
         key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
 
     - name: Production Build
@@ -43,35 +39,23 @@ jobs:
         cd web-app/
         yarn install
         yarn build
-        GZIP=-9 tar -zcf web-app-prod.tar.gz dist/
-
-    - name: Upload Build Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: web-app-prod.tar.gz
-        path: web-app/web-app-prod.tar.gz
 
   test:
     needs: [build]
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x]
-
     steps:
     - uses: actions/checkout@v2
       
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use Node.js 12.x
       uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 12.x
 
-    - name: Cache multiple paths
+    - name: Cache Node Modules
       uses: actions/cache@v2
       with:
-        path: |
-          **/node_modules
+        path: '**/node_modules'
         key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     
     - name: Run Tests
@@ -81,26 +65,21 @@ jobs:
         yarn test
 
   coverage: 
-    needs: [test]
+    needs: [build]
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [ 14.x ]
 
     steps:
     - uses: actions/checkout@v2
       
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use Node.js 14.x
       uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 14.x
 
-    - name: Cache multiple paths
+    - name: Cache Node Modules
       uses: actions/cache@v2
       with:
-        path: |
-          **/node_modules
+        path: '**/node_modules'
         key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
 
     - name: Coverage
@@ -115,39 +94,3 @@ jobs:
         file: web-app/coverage/lcov.info
         name: react-frontend-unit-test-${{ matrix.node-version }}
         fail_ci_if_error: true
-
-  deploy: 
-    needs: [test]
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [ 14.x ]
-
-    steps:
-    - uses: actions/checkout@v2
-      
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-
-    - name: Cache multiple paths
-      uses: actions/cache@v2
-      with:
-        path: |
-          **/node_modules
-        key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-
-    - name: Production Build
-      run: |
-        cd web-app/
-        yarn install
-        yarn build
-        GZIP=-9 tar -zcf web-app-prod.tar.gz dist/
-
-    - name: Upload Build Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: web-app-prod.tar.gz
-        path: web-app/web-app-prod.tar.gz

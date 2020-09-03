@@ -1,4 +1,4 @@
-name: C++ CI
+name: Backend CI
 
 on:
   push:
@@ -13,6 +13,7 @@ on:
     paths: 
       - 'backend/**'
       - 'api/schema/**'
+      - '.github/actions/**'
       - '.github/workflows/ccpp.yml'
 
 jobs:
@@ -21,7 +22,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: install python
+    - name: setup python
       uses: actions/setup-python@v2
       with:
         python-version: 3.8
@@ -38,28 +39,25 @@ jobs:
     - name: install cmake
       uses: lukka/get-cmake@latest
 
+    - name: install lcov
+      run: |
+        sudo apt-get install lcov
+
     - name: configure
       run: |
         mkdir backend/build
         cd backend/build
-        cmake .. -DCMAKE_BUILD_TYPE=Release
+        cmake .. -DBUILD_TESTS=ON -DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
 
-    - name: make
+    - name: build
       run: |
-        cmake --build backend/build
-
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2
-      with:
-         name: user_database_app
-         path: backend/build/src/user_database_app
+        cd backend/build
+        make user_tests
 
     - name: coverage
       run: |
-        sudo apt-get install lcov
         cd backend/build
-        cmake .. -DBUILD_TESTS=ON -DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
-        make user_tests coverage
+        make coverage
 
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v1.1.1

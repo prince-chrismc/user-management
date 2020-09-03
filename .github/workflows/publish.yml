@@ -1,4 +1,4 @@
-name: Docker
+name: Package
 
 on:
   push:
@@ -18,12 +18,50 @@ env:
   IMAGE_NAME: user-managment
 
 jobs:
-  hello_world_job:
+  backend:
     runs-on: ubuntu-latest
-    name: A job to say hello
+    name: build and upload the backend app
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
     - uses: ./.github/actions/setup-conan
+    - uses: actions/cache@v2
+      with:
+        path: ~/.conan/data
+        key: ${{ runner.os }}-${{ hashFiles('**/conanfile.py') }}
+    - uses: lukka/get-cmake@latest
+    - run: mkdir backend/build
+    - run: cmake .. -DCMAKE_BUILD_TYPE=Release
+    - run: cmake --build backend/build
+    - uses: actions/upload-artifact@v2
+      with:
+         name: user_database_app
+         path: backend/build/src/user_database_app
+
+  frontend:
+    runs-on: ubuntu-latest
+    name: build and upload the backend app
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 12.x # Current LTS
+    - uses: actions/cache@v2
+      with:
+        path: '**/node_modules'
+        key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+    - run: |
+        cd web-app/
+        yarn install
+        yarn build
+        GZIP=-9 tar -zcf web-app.tar.gz dist/
+    - uses: actions/upload-artifact@v2
+      with:
+        name: web-app.tar.gz
+        path: web-app/web-app.tar.gz
+
 
   # Run tests.
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/

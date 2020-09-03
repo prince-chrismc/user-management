@@ -1,19 +1,15 @@
-name: Documentation CI
+name: Documentation CI/CD
 
 on:
   push:
     branches: [ master ]
     paths: 
       - 'api/**'
-      - '.github/workflows/**'
+      - '.github/workflows/documentation.yml'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [12.x]
 
     steps:
     - uses: actions/checkout@v2
