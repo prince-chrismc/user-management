@@ -2,7 +2,7 @@ name: Backend CI
 
 on:
   push:
-    branches: [ master, docker-deploy ]
+    branches: [ master ]
     paths: 
       - 'backend/**'
       - 'api/schema/**'
