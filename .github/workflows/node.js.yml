@@ -2,7 +2,7 @@ name: Frontend CI
 
 on:
   push:
-    branches: [ master, docker-deploy ]
+    branches: [ master ]
     paths: 
       - 'web-app/**'
       - '.github/workflows/node.js.yml'
