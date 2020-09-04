@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 
 ADD build/user_database_app /usr/local/bin
-ADD web-app.tar.gz /tmp
+ADD build/web-app.tar.gz /tmp
 ADD backend/certs /opt/um/certs
 
 RUN tar -zxf /tmp/web-app.tar.gz
