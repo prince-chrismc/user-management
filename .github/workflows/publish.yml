@@ -1,4 +1,4 @@
-name: Package
+name: Package CD
 
 on:
   push:
@@ -78,7 +78,6 @@ jobs:
       - name: Run tests
         run: |
           echo ${{steps.download.outputs.download-path}}
-          mkdir build
           mv ${{steps.download.outputs.download-path}}/user_database_app build/
           mv ${{steps.download.outputs.download-path}}/web-app.tar.gz build/
           if [ -f docker-compose.test.yml ]; then
