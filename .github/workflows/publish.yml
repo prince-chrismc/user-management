@@ -95,6 +95,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        id: download
+        with:
+          path: build/
 
       - name: Build image
         run: docker build . --file Dockerfile --tag $IMAGE_NAME
