@@ -15,7 +15,7 @@ on:
   pull_request:
 
 env:
-  IMAGE_NAME: user-managment
+  IMAGE_NAME: user-management
 
 jobs:
   backend:
