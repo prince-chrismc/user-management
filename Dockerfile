@@ -4,7 +4,7 @@ ADD build/user_database_app /usr/local/bin
 ADD build/web-app.tar.gz /tmp
 ADD backend/certs /opt/um/certs
 
-RUN tar -zxf /tmp/web-app.tar.gz -c /opt/um \
+RUN tar -zxf /tmp/web-app.tar.gz -C /opt/um \
  && chmod +x /usr/local/bin/user_database_app
 
 WORKDIR /opt/um
