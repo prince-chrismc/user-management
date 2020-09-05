@@ -69,7 +69,8 @@ jobs:
         run: |
           docker build . --file Dockerfile --tag test-image
           docker run --name test -p 8443:443 --rm -d test-image
-          openssl s_client -connect localhost:8443
+          docker ps | grep test-image
+          curl -k --key backend/certs/key.pem --cert backend/certs/server.pem --url https://localhost:8443/index.html
           docker kill test-image
   push:
     needs: test
