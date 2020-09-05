@@ -69,7 +69,7 @@ jobs:
         run: |
           docker build . --file Dockerfile --tag test-image
           docker run --name test -p 8443:443 --rm -d test-image
-          curl -K https://localhost:8443/index.html
+          curl -k https://localhost:8443/index.html
           docker kill test-image
   push:
     needs: test
