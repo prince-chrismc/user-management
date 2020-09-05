@@ -71,7 +71,9 @@ jobs:
           docker run --name test -p 8443:8443 --rm -d test-image
           docker ps | grep test
           curl -s -k --key backend/certs/key.pem --cert backend/certs/server.pem \ 
-            --url https://localhost:8443/index.html | grep -q "<title>User Management</title>"
+            --url https://localhost:8443/index.html > output.log
+          cat output.log   
+          cat output.log | grep -q "<title>User Management</title>"
           docker kill test
   push:
     needs: test
