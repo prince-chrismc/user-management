@@ -66,8 +66,11 @@ jobs:
         with:
           path: build/
       - name: Run tests
-        run: docker build . --file Dockerfile
-
+        run: |
+          docker build . --file Dockerfile --tag test-image
+          docker run --name test -p 8443:443 --rm -d test-image
+          curl -K https://localhost:8443/index.html
+          docker kill test-image
   push:
     needs: test
     runs-on: ubuntu-latest
