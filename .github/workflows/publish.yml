@@ -69,9 +69,9 @@ jobs:
         run: |
           docker build . --file Dockerfile --tag test-image
           docker run --name test -p 8443:8443 --rm -d test-image
-          docker ps | grep test-image
+          docker ps | grep test
           curl -k --key backend/certs/key.pem --cert backend/certs/server.pem --url https://localhost:8443/index.html
-          docker kill test-image
+          docker kill test
   push:
     needs: test
     runs-on: ubuntu-latest
