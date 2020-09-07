@@ -1,0 +1,17 @@
+name: 'Setup Conan'
+description: 'Install and configure the conan client'
+inputs:
+  libcxx:
+    description: 'C++ standard ABI version to use'
+    required: false
+    default: 'libstdc++11'
+runs:
+  using: "composite"
+  steps: 
+    - run: python3 -m pip install conan
+      shell: bash
+    - run: conan profile new default --detect
+      shell: bash
+    - run: conan profile update settings.compiler.libcxx=${{ inputs.libcxx }} default
+      shell: bash
+      

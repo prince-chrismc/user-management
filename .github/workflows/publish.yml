@@ -1,0 +1,103 @@
+name: Package CD
+
+on:
+  push:
+    branches:
+      - master # tagged latest
+    tags:
+      - v* # semver release
+  pull_request: # runs tests
+
+env:
+  IMAGE_NAME: user-management
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - uses: ./.github/actions/setup-conan
+    - uses: actions/cache@v2
+      with:
+        path: ~/.conan/data
+        key: ${{ runner.os }}-${{ hashFiles('**/conanfile.py') }}
+    - uses: lukka/get-cmake@latest
+    - run: |
+        mkdir backend/build
+        cd backend/build
+        cmake .. -DCMAKE_BUILD_TYPE=Release
+        cmake --build .
+    - uses: actions/upload-artifact@v2
+      with:
+         name: user_database_app
+         path: backend/build/src/user_database_app
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 12.x # Current LTS
+    - uses: actions/cache@v2
+      with:
+        path: '**/node_modules'
+        key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+    - run: |
+        cd web-app/
+        yarn install
+        yarn build
+        GZIP=-9 tar -zcf web-app.tar.gz dist/
+    - uses: actions/upload-artifact@v2
+      with:
+        name: web-app.tar.gz
+        path: web-app/web-app.tar.gz
+
+  test:
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        id: download
+        with:
+          path: build/
+      - name: Run tests
+        run: |
+          docker build . --file Dockerfile --tag test-image
+          docker run --name test -p 8443:8443 --rm -d test-image
+          docker ps | grep test
+          curl -s -k --key backend/certs/key.pem --cert backend/certs/server.pem -o output.log --url https://localhost:8443/index.html
+          cat output.log | grep -q "<title>User Management</title>"
+          docker kill test
+  push:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        id: download
+        with:
+          path: build/
+      - name: Build image
+        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+      - name: Push image
+        run: |
+          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]') # Change all uppercase to lowercase
+          
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,') # Strip git ref prefix from version
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//') # Strip "v" prefix from tag name
+          [ "$VERSION" == "master" ] && VERSION=latest  # Use Docker `latest` tag convention
+
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
