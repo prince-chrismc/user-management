@@ -10,6 +10,8 @@ runs:
   steps: 
     - run: python3 -m pip install conan
       shell: bash
+    - run: conan config set general.revisions_enabled=1'
+      shell: bash
     - run: conan profile new default --detect
       shell: bash
     - run: conan profile update settings.compiler.libcxx=${{ inputs.libcxx }} default
