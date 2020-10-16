@@ -1,5 +1,15 @@
 # User management back-end
 
+## Setup
+
+Conan Configuration
+
+```sh
+conan config set general.revisions_enabled=1
+```
+
+*Note*: You will need to clear your conan cache, use `conan remove -f '*'`
+
 ## Usage
 
 Package
