@@ -1,10 +1,10 @@
-find_package(lyra 1.4.0 REQUIRED)
-find_package(fmt 7.0.2 REQUIRED)
+find_package(lyra 1.5.0 REQUIRED)
+find_package(fmt 7.0.3 REQUIRED)
 
 add_library(app_args "app_args.hpp" "app_args.cpp")
 target_include_directories(app_args PUBLIC "..")
 set_target_properties(app_args PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(app_args PUBLIC lyra::lyra fmt::fmt)
+target_link_libraries(app_args PUBLIC bfg::lyra fmt::fmt)
 
 if(${RUN_TIDY})
   include("clang-tidy")
