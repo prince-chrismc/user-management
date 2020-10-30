@@ -5,7 +5,7 @@ from os import path, getcwd
 class UserManagement(ConanFile):
     name = "user-management"
     license = "MIT"
-    url = "https://gitlab.com/prince-chrismc/user-management"
+    url = "https://github.com/prince-chrismc/user-management"
     description = "An open-source application delivering a responsive user management experience."
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake_find_package"
@@ -20,9 +20,9 @@ class UserManagement(ConanFile):
         self.build_requires("catch2/2.13.0")
 
     def requirements(self):
-        self.requires("restinio/0.6.10#6ded525708af0f9298a32bffc35cf7f5")
-        self.requires("json-schema-validator/2.1.0#a2a0f16dc456d099ebea16329868c60d")
-        self.requires("lyra/1.4.0#6b36b243a9eb423e1512567069899b52")
+        self.requires("restinio/0.6.10")
+        self.requires("json-schema-validator/2.1.0")
+        self.requires("lyra/1.5.0")
 
     def build(self):
         cmake = CMake(self)
