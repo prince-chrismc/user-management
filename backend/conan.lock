@@ -1,0 +1,86 @@
+{
+ "graph_lock": {
+  "nodes": {
+   "0": {
+    "ref": "user-management/None",
+    "requires": [
+     "1",
+     "10",
+     "12"
+    ],
+    "build_requires": [
+     "13"
+    ],
+    "path": "conanfile.py",
+    "context": "host"
+   },
+   "1": {
+    "ref": "restinio/0.6.10#6ded525708af0f9298a32bffc35cf7f5",
+    "requires": [
+     "2",
+     "3",
+     "4",
+     "5",
+     "6",
+     "7",
+     "8",
+     "9"
+    ],
+    "context": "host"
+   },
+   "2": {
+    "ref": "http_parser/2.9.4#68d0994d072e25ac7b300ff76802be9b",
+    "context": "host"
+   },
+   "3": {
+    "ref": "fmt/7.0.3#2e4cfb84c7647e8c2b5fef1ebb527b7a",
+    "context": "host"
+   },
+   "4": {
+    "ref": "expected-lite/0.4.0#38a249dc6180ebad129c295fb474f3b6",
+    "context": "host"
+   },
+   "5": {
+    "ref": "optional-lite/3.2.0#c155747d4127565689129d8b1a398ed3",
+    "context": "host"
+   },
+   "6": {
+    "ref": "string-view-lite/1.6.0#326afcf276c7c791558045027b294501",
+    "context": "host"
+   },
+   "7": {
+    "ref": "variant-lite/1.2.2#acd4057555f961ae23c72e2498ce3913",
+    "context": "host"
+   },
+   "8": {
+    "ref": "asio/1.17.0#d5e050dc0e244955b037e5160071935a",
+    "context": "host"
+   },
+   "9": {
+    "ref": "openssl/1.1.1h#7098aea4e4f2247cc9b5dcaaa1ebddbe",
+    "context": "host"
+   },
+   "10": {
+    "ref": "json-schema-validator/2.1.0#a2a0f16dc456d099ebea16329868c60d",
+    "requires": [
+     "11"
+    ],
+    "context": "host"
+   },
+   "11": {
+    "ref": "nlohmann_json/3.9.1#110d60d98d82121adf0e5c04ab5a5001",
+    "context": "host"
+   },
+   "12": {
+    "ref": "lyra/1.5.0#df32f3be54eb7ed3c3d1583ee392d93b",
+    "context": "host"
+   },
+   "13": {
+    "ref": "catch2/2.13.0#b8f4e03bfc860a975393ffd815ba7a46",
+    "context": "host"
+   }
+  },
+  "revisions_enabled": true
+ },
+ "version": "0.4"
+}
