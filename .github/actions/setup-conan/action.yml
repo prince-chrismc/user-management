@@ -12,6 +12,10 @@ runs:
       shell: bash
     - run: conan config set general.revisions_enabled=1
       shell: bash
+    - run: conan config set general.full_transitive_package_id=1
+      shell: bash
+    - run: conan config set general.default_package_id_mode=full_version_mode
+      shell: bash
     - run: conan profile new default --detect
       shell: bash
     - run: conan profile update settings.compiler.libcxx=${{ inputs.libcxx }} default
