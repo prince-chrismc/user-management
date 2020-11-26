@@ -28,6 +28,7 @@ SOFTWARE.
 #include "handlers/user_routes.hpp"
 #include "handlers/web_app.hpp"
 #include "utility/app_args.hpp"
+#include "utility/server_logger.hpp"
 
 #ifdef _WIN32
 #include <sdkddkver.h>
@@ -66,31 +67,28 @@ auto server_handler(const std::string &root_dir, user_database &db) {
   return router;
 }
 
+namespace ssl = restinio::asio_ns::ssl;
 int main(int argc, char const *argv[]) {
+  const auto args = app_args_t::parse(argc, argv);
+  if(!args.has_value())
+    return static_cast<int>(args.error());
+
   try {
-    const auto args = app_args_t::parse(argc, argv);
+    ssl::context tls_context{ssl::context::tls};
+    tls_context.set_options(ssl::context::default_workarounds | ssl::context::no_sslv2 |
+                            ssl::context::no_sslv3 | ssl::context::no_tlsv1 |
+                            ssl::context::single_dh_use);
 
-    if (args.help) {
-      return 0;
-    }
-
-    namespace asio = restinio::asio_ns;
-
-    asio::ssl::context tls_context{asio::ssl::context::tls};
-    tls_context.set_options(asio::ssl::context::default_workarounds | asio::ssl::context::no_sslv2 |
-                            asio::ssl::context::no_sslv3 | asio::ssl::context::no_tlsv1 |
-                            asio::ssl::context::single_dh_use);
-
-    tls_context.use_certificate_chain_file(args.certs_dir + "/server.pem");
-    tls_context.use_private_key_file(args.certs_dir + "/key.pem", asio::ssl::context::pem);
-    tls_context.use_tmp_dh_file(args.certs_dir + "/dh2048.pem");
+    tls_context.use_certificate_chain_file(args->certs_dir + "/server.pem");
+    tls_context.use_private_key_file(args->certs_dir + "/key.pem", ssl::context::pem);
+    tls_context.use_tmp_dh_file(args->certs_dir + "/dh2048.pem");
 
     user_database db;
-    using traits_t = restinio::tls_traits_t<restinio::asio_timer_manager_t, restinio::null_logger_t, handler::router>;
-    restinio::run(restinio::on_thread_pool<traits_t>(args.pool_size)
-                      .address(args.address)
-                      .port(args.port)
-                      .request_handler(server_handler(args.root_dir, db))
+    using traits_t = restinio::tls_traits_t<restinio::asio_timer_manager_t, server_logger, handler::router>;
+    restinio::run(restinio::on_thread_pool<traits_t>(args->pool_size)
+                      .address(args->address)
+                      .port(args->port)
+                      .request_handler(server_handler(args->root_dir, db))
                       .read_next_http_message_timelimit(10s)
                       .write_http_response_timelimit(1s)
                       .handle_request_timeout(1s)

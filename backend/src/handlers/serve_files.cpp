@@ -2,6 +2,7 @@
 
 #include "serve_files.hpp"
 
+#include "utility/add_headers.hpp"
 #include "utility/content_type_from_ext.hpp"
 
 namespace handler {
@@ -18,22 +19,23 @@ request_status from_disk::operator()(const request_handle& req, route_params /*p
     try {
       auto sf = restinio::sendfile(file_path);
       auto modified_at = restinio::make_date_field_value(sf.meta().last_modified_at());
-
       auto expires_at = restinio::make_date_field_value(std::chrono::system_clock::now() + std::chrono::hours(24 * 7));
 
-      return req->create_response()
-          .append_header(restinio::http_field::server, "RESTinio")
-          .append_header_date_field()
+      return response::impl::add_generic_headers(req->create_response())
           .append_header(restinio::http_field::last_modified, std::move(modified_at))
           .append_header(restinio::http_field::expires, std::move(expires_at))
           .append_header(restinio::http_field::content_type, content_type_by_file_extention(ext))
           .set_body(std::move(sf))
           .done();
     } catch (const std::exception&) {
-      return req->create_response(restinio::status_not_found()).append_header_date_field().connection_close().done();
+      return response::impl::add_generic_headers(req->create_response(restinio::status_not_found()))
+          .connection_close()
+          .done();
     }
   } else {
-    return req->create_response(restinio::status_forbidden()).append_header_date_field().connection_close().done();
+    return response::impl::add_generic_headers(req->create_response(restinio::status_forbidden()))
+        .connection_close()
+        .done();
   }
 }
 }  // namespace serve_files

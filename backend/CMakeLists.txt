@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.8) # using cxx_std_17
 
 project(user-management)
 
@@ -47,10 +47,10 @@ if(${RUN_TIDY})
   setup_cmake_format(main "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
 endif()
 
-if(${BUILD_WEB_SERVER})
+if(BUILD_WEB_SERVER)
   add_subdirectory(src)
 endif()
 
-if(${BUILD_TESTS})
+if(BUILD_TESTS)
   add_subdirectory(test)
 endif()

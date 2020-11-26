@@ -2,19 +2,23 @@
 
 #include "response_builder.hpp"
 
+#include "add_headers.hpp"
+
 namespace handler {
 namespace response {
 namespace impl {
 void add_generic_headers(builder& builder) {
-  builder.append_header(http_field::server, "user-management/1.0.0-dev.0; restinio/0.6.8.1")
+  builder.append_header(http_field::server, server_declaration())
       .append_header(http_field::date, std::chrono::system_clock::now());
 }
 void add_cors_headers(builder& builder) {
   builder.append_header(http_field::access_control_allow_origin, "*")
-      .append_header(restinio::http_field::access_control_allow_headers, "Content-Type")
-      .append_header(restinio::http_field::access_control_max_age, "86400");
+      .append_header(http_field::access_control_allow_headers, "Content-Type")
+      .append_header(http_field::access_control_max_age, "86400");
 }
-void add_api_headers(builder& builder) { builder.append_header(http_field::content_type, "application/json"); }
+void add_api_headers(builder& builder) {
+  builder.append_header(http_field::content_type, "application/json");
+}
 }  // namespace impl
 
 builder::builder(const request_handle& req, const http_status_line& status) : builder_{req->create_response(status)} {
