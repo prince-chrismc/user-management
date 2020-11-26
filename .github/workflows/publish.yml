@@ -16,14 +16,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: ~/.conan/data
+        key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
     - uses: actions/setup-python@v2
       with:
         python-version: 3.8
     - uses: ./.github/actions/setup-conan
-    - uses: actions/cache@v2
-      with:
-        path: ~/.conan/data
-        key: ${{ runner.os }}-${{ hashFiles('**/conanfile.py') }}
     - uses: lukka/get-cmake@latest
     - run: |
         mkdir backend/build
@@ -41,7 +45,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
       with:
-        node-version: 12.x # Current LTS
+        node-version: 14.x # Current LTS
     - uses: actions/cache@v2
       with:
         path: '**/node_modules'
@@ -73,6 +77,7 @@ jobs:
           curl -s -k --key backend/certs/key.pem --cert backend/certs/server.pem -o output.log --url https://localhost:8443/index.html
           cat output.log | grep -q "<title>User Management</title>"
           docker kill test
+
   push:
     needs: test
     runs-on: ubuntu-latest

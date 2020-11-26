@@ -6,48 +6,70 @@ Originally created by: [@esausilva](https://github.com/esausilva)
 
 Install dependencies
 
-```
-$ yarn install
+```sh
+yarn install
 ```
 
 Run development server
 
-```
-$ yarn dev
+```sh
+yarn dev
 ```
 
 Run tests
 
-```
-$ yarn test
+```sh
+yarn test
 ```
 
 Run ESlint
 
-```
-$ yarn lint
+```sh
+yarn lint
 ```
 
 ### Building
 
-```
-$ yarn build
+```sh
+yarn build
 ```
 
 Will create a `dist` directory containing your compiled code.
 
 Depending on your needs, you might want to do more optimization to the production build.
 
+### NPM package
+
+Can be simply created via
+
+```sh
+npm pack
+```
+
+### Updating dependencies
+
+A _light_ update within semver range (low risk to break)
+
+```sh
+yarn upgrade
+```
+
+or more agressively to change `package.json`
+
+```sh
+yarn upgrade --latest
+```
+
 ## Webpack Bundle Analyzer
 
 Run in development
 
-```
-$ yarn dev:bundleanalyzer
+```sh
+yarn dev:bundleanalyzer
 ```
 
-Run on the production oprimized build
+Run on the production optimized build
 
-```
-$ yarn build:bundleanalyzer
+```sh
+yarn build:bundleanalyzer
 ```

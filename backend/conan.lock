@@ -2,7 +2,7 @@
  "graph_lock": {
   "nodes": {
    "0": {
-    "ref": "user-management/None",
+    "ref": "user-management/1.0.0-dev.0",
     "requires": [
      "1",
      "10",
@@ -15,7 +15,7 @@
     "context": "host"
    },
    "1": {
-    "ref": "restinio/0.6.10#6ded525708af0f9298a32bffc35cf7f5",
+    "ref": "restinio/0.6.12#5e99922ca31945e41e2c3d4cb8998720",
     "requires": [
      "2",
      "3",
@@ -33,7 +33,7 @@
     "context": "host"
    },
    "3": {
-    "ref": "fmt/7.0.3#2e4cfb84c7647e8c2b5fef1ebb527b7a",
+    "ref": "fmt/7.1.2#a2b90b112a5e19a9569dcb45faf58071",
     "context": "host"
    },
    "4": {
@@ -53,11 +53,11 @@
     "context": "host"
    },
    "8": {
-    "ref": "asio/1.17.0#d5e050dc0e244955b037e5160071935a",
+    "ref": "asio/1.18.0#2368903d2afbf746207f98c4baf20d27",
     "context": "host"
    },
    "9": {
-    "ref": "openssl/1.1.1h#7098aea4e4f2247cc9b5dcaaa1ebddbe",
+    "ref": "openssl/1.1.1h#a54ec92b792d10b6595c581a15ad2cd7",
     "context": "host"
    },
    "10": {
@@ -76,7 +76,7 @@
     "context": "host"
    },
    "13": {
-    "ref": "catch2/2.13.0#b8f4e03bfc860a975393ffd815ba7a46",
+    "ref": "catch2/2.13.3#a4f1ed8fa355ba5a76c422fdfe94724d",
     "context": "host"
    }
   },
