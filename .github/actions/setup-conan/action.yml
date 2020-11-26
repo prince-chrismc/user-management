@@ -16,4 +16,5 @@ runs:
       shell: bash
     - run: conan profile update settings.compiler.libcxx=${{ inputs.libcxx }} default
       shell: bash
-
+    - run: conan remote list
+      shell: bash
