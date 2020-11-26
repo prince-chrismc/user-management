@@ -1,0 +1,150 @@
+name: Upload CD
+
+on:
+  push:
+    branches:
+      - master # tagged latest
+    tags:
+      - v* # semver release
+  pull_request: # runs tests
+
+env:
+  NAME: user-management
+  BUILD_VERSION: 1.0.0-commit.${{ github.run_number }}
+  CONAN_REMOTE: user-management-conan
+  CONAN_REMOTE_URL: https://princechrismc.jfrog.io/artifactory/api/conan/user-management-conan
+  DIST_URL: https://princechrismc.jfrog.io/artifactory/user-management-dist
+  NPM_REGISTRY_URL: https://princechrismc.jfrog.io/artifactory/api/npm/user-management-npm/ 
+  DOCKER_REGISTRY: princechrismc.jfrog.io/user-management-docker
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: ~/.conan/data
+        key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - uses: ./.github/actions/setup-conan
+    - uses: lukka/get-cmake@latest
+    - name: build and upload
+      run: |
+        cd backend
+        conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
+        conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+        conan create . $BUILD_VERSION@
+        conan create . $BUILD_VERSION@ -s build_type=Debug
+        conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 14.x # Current LTS
+    - uses: actions/cache@v2
+      with:
+        path: '**/node_modules'
+        key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+    - run: |
+        cd web-app/
+        yarn install
+        yarn build
+        GZIP=-9 tar -zcf $NAME-static-fe-$BUILD_VERSION.tar.gz dist/
+        curl -uprince-chrismc:${{ secrets.JFROG_RTFACT_PASSWORD }} -T $NAME-static-fe-$BUILD_VERSION.tar.gz "$DIST_URL/$NAME-static-fe-$BUILD_VERSION.tar.gz"
+
+  frontend-pack:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 14.x # Current LTS
+    - uses: actions/cache@v2
+      with:
+        path: '**/node_modules'
+        key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+    - run: |
+        cd web-app/
+        sed -i "s/1.0.0-dev.0/$BUILD_VERSION/1" package.json
+        npm config set registry $NPM_REGISTRY_URL
+        echo '_auth = ${{ secrets.JFROG_RTFACT_NPM_AUTH }}' > ~/.npmrc
+        echo 'email = prince.chrismc@gmail.com' >> ~/.npmrc
+        echo 'always-auth = true' >> ~/.npmrc
+        npm pack
+        npm publish --registry $NPM_REGISTRY_URL $NAME-$BUILD_VERSION.tgz
+
+  test:
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: ~/.conan/data
+        key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - uses: ./.github/actions/setup-conan
+    - name: Gather deps
+      run: |
+        conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
+        conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+        conan install $NAME/$BUILD_VERSION@
+        curl -L -uprince-chrismc:${{ secrets.JFROG_RTFACT_PASSWORD }} -O "$DIST_URL/$NAME-static-fe-$BUILD_VERSION.tar.gz"
+        mv $NAME-static-fe-$BUILD_VERSION.tar.gz bin/web-app.tar.gz
+        echo "Gathered all Deps for build"
+    - name: Run tests
+      run: |
+        docker build . --file Dockerfile.alt --tag $NAME
+        docker run --name test -p 8443:8443 --rm -d $NAME
+        docker ps | grep test
+        curl -s -k --key backend/certs/key.pem --cert backend/certs/server.pem -o output.log --url https://localhost:8443/index.html
+        cat output.log | grep -q "<title>User Management</title>"
+        docker kill test
+    - run: |
+        echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
+        docker tag $NAME $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
+        docker push $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
+
+  push:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        id: download
+        with:
+          path: build/
+      - name: Log into registry
+        run: echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
+      - name: Pull image
+        run: docker pull $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
+      - name: Push image
+        run: |
+          IMAGE_ID=$DOCKER_REGISTRY/$NAME
+          
+          RELEASE=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,') # Strip git ref prefix from version
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && RELEASE=$(echo $RELEASE | sed -e 's/^v//') # Strip "v" prefix from tag name
+          [ "$RELEASE" == "master" ] && RELEASE=latest  # Use Docker `latest` tag convention
+
+          echo IMAGE_ID=$IMAGE_ID
+          echo RELEASE=$RELEASE
+
+          docker tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION $IMAGE_ID:$RELEASE
+          docker push $IMAGE_ID:$RELEASE
