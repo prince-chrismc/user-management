@@ -27,14 +27,20 @@ jobs:
       with:
         python-version: 3.8
 
-    - name: setup conan
-      uses: ./.github/actions/setup-conan
-
     - name: cache conan data
       uses: actions/cache@v2
       with:
         path: ~/.conan/data
-        key: ${{ runner.os }}-${{ hashFiles('**/conanfile.py') }}
+        key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
+
+    - name: cache pip data
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+
+    - name: setup conan
+      uses: ./.github/actions/setup-conan
 
     - name: install cmake
       uses: lukka/get-cmake@latest

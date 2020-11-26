@@ -2,7 +2,7 @@ from conans import ConanFile, CMake
 from os import path, getcwd
 
 
-class UserManagement(ConanFile):
+class UserManagementConanFile(ConanFile):
     name = "user-management"
     license = "MIT"
     url = "https://github.com/prince-chrismc/user-management"
@@ -17,10 +17,10 @@ class UserManagement(ConanFile):
         self.copy("api/schema/*.json", src=schema_source)
 
     def build_requirements(self):
-        self.build_requires("catch2/2.13.0")
+        self.build_requires("catch2/2.13.3")
 
     def requirements(self):
-        self.requires("restinio/0.6.10")
+        self.requires("restinio/0.6.12")
         self.requires("json-schema-validator/2.1.0")
         self.requires("lyra/1.5.0")
 
