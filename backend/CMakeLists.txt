@@ -10,7 +10,7 @@ set(CONSOLE "console")
 set(SYSLOG "syslog")
 set(LOGGING_OPTIONS ${CONSOLE} ${SYSLOG})
 
-options(LOGGING ${SYSLOG} "the desired logging mechanism to use" ${LOGGING_OPTIONS})
+options(LOGGING ${SYSLOG} "the desired logging mechanism to use" "${LOGGING_OPTIONS}")
 set(SCHEMAS_ROOT ".." CACHE STRING "root directoy where to find the JSON schemas (absolute or relative path)")
 option(CONAN_SETUP "use conan to setup all the dependencies" ON)
 option(BUILD_WEB_SERVER "build the web server for this application" ON)
