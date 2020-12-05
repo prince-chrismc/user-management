@@ -40,8 +40,10 @@ jobs:
         cd backend
         conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
         conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
-        conan create . $BUILD_VERSION@
-        conan create . $BUILD_VERSION@ -s build_type=Debug
+        conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/release.lock -s build_type=Release -s compiler.libcxx=libstdc++11
+        conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/release.lock
+        conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/debug.lock -s build_type=Debug -s compiler.libcxx=libstdc++11
+        conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/debug.lock
         conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
 
   frontend:
