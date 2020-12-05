@@ -2,20 +2,26 @@ cmake_minimum_required(VERSION 3.8) # using cxx_std_17
 
 project(user-management)
 
-set(SCHEMAS_ROOT ".." CACHE STRING "root directoy where to find the JSON schemas")
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_BINARY_DIR})
+
+include("options")
+
+set(CONSOLE "console")
+set(SYSLOG "syslog")
+
+options(LOGGING "${SYSLOG}" "the desired logging mechanism to use" "${CONSOLE};${SYSLOG}")
+set(SCHEMAS_ROOT ".." CACHE STRING "root directoy where to find the JSON schemas (absolute or relative path)")
 option(CONAN_SETUP "use conan to setup all the dependencies" ON)
 option(BUILD_WEB_SERVER "build the web server for this application" ON)
 option(BUILD_TESTS "build the tests for this application" OFF)
 option(RUN_TIDY "run clang-tidy" OFF)
 option(COVERAGE "Enable code coverage testing" OFF)
 
-if(${COVERAGE})
+if(COVERAGE)
   cmake_policy(SET CMP0079 NEW)
 endif()
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_BINARY_DIR})
-
-if(${CONAN_SETUP})
+if(CONAN_SETUP)
   include("conan-setup")
 endif()
 
@@ -36,7 +42,7 @@ target_compile_features(user_management PUBLIC cxx_std_14)
 target_include_directories(user_management PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(user_management PUBLIC schemas nlohmann_json_schema_validator::nlohmann_json_schema_validator)
 
-if(${RUN_TIDY})
+if(RUN_TIDY)
   include("clang-tidy")
   setup_clang_tidy(user_management)
 

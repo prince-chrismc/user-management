@@ -6,12 +6,20 @@ find_package(spdlog 1.8.0 REQUIRED)
 add_library(app_args "app_args.hpp" "app_args.cpp")
 target_include_directories(app_args PUBLIC "..")
 set_target_properties(app_args PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(app_args PUBLIC bfg::lyra fmt::fmt nonstd::expected-lite)
+target_link_libraries(app_args PUBLIC nonstd::expected-lite PRIVATE bfg::lyra fmt::fmt)
 
 add_library(server_logger "server_logger.hpp")
 target_include_directories(server_logger PUBLIC "..")
 set_target_properties(server_logger PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(server_logger PUBLIC spdlog::spdlog)
+
+if(${LOGGING} MATCHES ${CONSOLE})
+  target_compile_definitions(server_logger PUBLIC CONSOLE_LOGGING)
+endif()
+
+if(${LOGGING} MATCHES ${SYSLOG})
+target_compile_definitions(server_logger PUBLIC SYSLOG_LOGGING)
+endif()
 
 if(${RUN_TIDY})
   include("clang-tidy")
