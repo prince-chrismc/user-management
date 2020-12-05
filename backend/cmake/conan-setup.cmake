@@ -15,7 +15,7 @@ else()
   # Create the complete lockfile
   execute_process(
     COMMAND
-      conan lock create ${CMAKE_CURRENT_SOURCE_DIR}/conanfile.py -u -l ${CMAKE_CURRENT_SOURCE_DIR}/conan.lock
+      conan lock create ${CMAKE_CURRENT_SOURCE_DIR}/conanfile.py -l ${CMAKE_CURRENT_SOURCE_DIR}/conan.lock
       --lockfile-out=${CMAKE_CURRENT_BINARY_DIR}/conan.lock -s build_type=${CMAKE_BUILD_TYPE} -s
       compiler.libcxx=libstdc++11
     RESULT_VARIABLE STATUS)
