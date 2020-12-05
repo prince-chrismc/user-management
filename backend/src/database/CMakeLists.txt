@@ -1,4 +1,4 @@
-find_package(fmt 7.0 REQUIRED)
+find_package(fmt 7.1.2 REQUIRED)
 
 add_subdirectory("encoders")
 
