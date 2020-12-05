@@ -17,9 +17,19 @@ else()
     COMMAND
       conan lock create ${CMAKE_CURRENT_SOURCE_DIR}/conanfile.py -u -l ${CMAKE_CURRENT_SOURCE_DIR}/conan.lock
       --lockfile-out=${CMAKE_CURRENT_BINARY_DIR}/conan.lock -s build_type=${CMAKE_BUILD_TYPE} -s
-      compiler.libcxx=libstdc++11)
+      compiler.libcxx=libstdc++11
+    RESULT_VARIABLE STATUS)
+
+  if(STATUS AND NOT STATUS EQUAL 0)
+    message(FATAL_ERROR "Conan Setup: failed to generate full lockfile!")
+  endif()
 
   # Populate the 'build' folder with the correct file to locate dependencies
-  execute_process(COMMAND conan install ${CMAKE_CURRENT_SOURCE_DIR}/conanfile.py -l
-                          ${CMAKE_CURRENT_BINARY_DIR}/conan.lock WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+  execute_process(
+    COMMAND conan install ${CMAKE_CURRENT_SOURCE_DIR}/conanfile.py -l ${CMAKE_CURRENT_BINARY_DIR}/conan.lock
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} RESULT_VARIABLE STATUS)
+
+  if(STATUS AND NOT STATUS EQUAL 0)
+    message(FATAL_ERROR "Conan Setup: failed to install requirements!")
+  endif()
 endif()
