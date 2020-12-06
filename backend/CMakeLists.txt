@@ -37,7 +37,6 @@ pack_schemas("${SCHEMA_LIST}" schemas)
 
 add_library(user_management "include/um/user_management.hpp")
 add_library(user_management::user_management ALIAS user_management)
-
 set_target_properties(user_management PROPERTIES LINKER_LANGUAGE CXX)
 target_compile_features(user_management PUBLIC cxx_std_14)
 target_include_directories(user_management PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

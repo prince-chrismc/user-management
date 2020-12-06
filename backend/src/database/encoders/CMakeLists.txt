@@ -5,7 +5,7 @@ target_include_directories(encoders PUBLIC "..")
 set_target_properties(encoders PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(encoders PUBLIC OpenSSL::OpenSSL)
 
-if(${RUN_TIDY})
+if(RUN_TIDY)
   include("clang-tidy")
   setup_clang_tidy(encoders)
 

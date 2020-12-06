@@ -15,7 +15,7 @@ target_include_directories(web_app PUBLIC "..")
 set_target_properties(web_app PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(web_app PUBLIC routing PRIVATE content_type add_headers)
 
-if(${RUN_TIDY})
+if(RUN_TIDY)
   include("clang-tidy")
   setup_clang_tidy(user_routes)
   setup_clang_tidy(serve_files)

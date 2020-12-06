@@ -3,9 +3,9 @@ find_package(spdlog 1.8.1 REQUIRED)
 add_library(database_logger "database_logger.hpp")
 target_include_directories(database_logger PUBLIC "..")
 set_target_properties(database_logger PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(database_logger PUBLIC spdlog::spdlog)
+target_link_libraries(database_logger PUBLIC logging spdlog::spdlog)
 
-if(${RUN_TIDY})
+if(RUN_TIDY)
   include("clang-tidy")
   setup_clang_tidy(database_logger)
 

@@ -21,7 +21,7 @@ target_include_directories(content_type PUBLIC "..")
 set_target_properties(content_type PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(content_type PUBLIC nonstd::string-view-lite)
 
-if(${RUN_TIDY})
+if(RUN_TIDY)
   include("clang-tidy")
   setup_clang_tidy(routing)
   setup_clang_tidy(add_headers)

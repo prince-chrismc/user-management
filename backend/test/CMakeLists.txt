@@ -16,7 +16,7 @@ if(${COVERAGE})
   setup_target_for_coverage_lcov(NAME coverage EXECUTABLE ${CMAKE_CURRENT_BINARY_DIR}/user_tests)
 endif()
 
-if(${RUN_TIDY})
+if(RUN_TIDY)
   include("clang-tidy")
   # setup_clang_tidy(tester) # Very annoying warnings because of catch2
 

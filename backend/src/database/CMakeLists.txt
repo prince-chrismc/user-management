@@ -8,7 +8,7 @@ target_include_directories(users_databse PUBLIC "..")
 set_target_properties(users_databse PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(users_databse PUBLIC user_management database_logger PRIVATE encoders fmt::fmt)
 
-if(${RUN_TIDY})
+if(RUN_TIDY)
   include("clang-tidy")
   setup_clang_tidy(users_databse)
 
