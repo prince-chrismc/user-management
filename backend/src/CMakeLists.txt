@@ -1,12 +1,4 @@
-add_library(logging INTERFACE)
-if(${LOGGING} MATCHES ${CONSOLE})
-  target_compile_definitions(logging INTERFACE CONSOLE_LOGGING)
-endif()
-
-if(${LOGGING} MATCHES ${SYSLOG})
-  target_compile_definitions(logging INTERFACE SYSLOG_LOGGING)
-endif()
-
+add_subdirectory("logging") # Needs to be first
 add_subdirectory("database")
 add_subdirectory("handlers")
 add_subdirectory("utility")
@@ -15,12 +7,7 @@ add_executable(user_database_app "main.cpp")
 target_link_libraries(user_database_app PRIVATE user_routes serve_files web_app app_args server_logger)
 
 if(RUN_TIDY)
-  include("clang-tidy")
   setup_clang_tidy(user_database_app)
-
-  include("clang-format")
   setup_clang_format(user_database_app)
-
-  include("cmake-format")
-  setup_cmake_format(src "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
+  setup_cmake_format(src ${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt)
 endif()

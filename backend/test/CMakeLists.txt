@@ -2,9 +2,9 @@ find_package(Catch2 2.13.0 REQUIRED)
 
 include("unit-test-helper")
 add_executable(user_tests "main.cpp" "user_management.cpp" "user_routes.cpp" "user_database.cpp" "encoders.cpp")
-target_link_libraries(user_tests PRIVATE user_routes unit_test_helper Catch2::Catch2)
+target_link_libraries(user_tests user_routes encoders unit_test_helper Catch2::Catch2)
 
-if(${COVERAGE})
+if(COVERAGE)
   include("code-coverage")
   setup_coverage(user_tests)
   setup_coverage(user_routes)
@@ -17,12 +17,7 @@ if(${COVERAGE})
 endif()
 
 if(RUN_TIDY)
-  include("clang-tidy")
   # setup_clang_tidy(tester) # Very annoying warnings because of catch2
-
-  include("clang-format")
   setup_clang_format(user_tests)
-
-  include("cmake-format")
-  setup_cmake_format(tests "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
+  setup_cmake_format(tests ${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt)
 endif()

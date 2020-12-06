@@ -11,17 +11,14 @@ target_link_libraries(app_args PUBLIC nonstd::expected-lite PRIVATE bfg::lyra fm
 add_library(server_logger "server_logger.hpp")
 target_include_directories(server_logger PUBLIC "..")
 set_target_properties(server_logger PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(server_logger PUBLIC logging spdlog::spdlog)
+target_link_libraries(server_logger PUBLIC logger)
 
 if(RUN_TIDY)
-  include("clang-tidy")
   setup_clang_tidy(app_args)
   setup_clang_tidy(server_logger)
 
-  include("clang-format")
   setup_clang_format(app_args)
   setup_clang_format(server_logger)
 
-  include("cmake-format")
-  setup_cmake_format(src-utility "${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt")
+  setup_cmake_format(src-utility ${CMAKE_CURRENT_LIST_DIR}/CMakeLists.txt)
 endif()
