@@ -1,11 +1,12 @@
 find_package(fmt 7.1.2 REQUIRED)
 
 add_subdirectory("encoders")
+add_subdirectory("logging")
 
 add_library(users_databse "users.hpp" "users.cpp")
 target_include_directories(users_databse PUBLIC "..")
 set_target_properties(users_databse PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(users_databse PUBLIC user_management encoders fmt::fmt)
+target_link_libraries(users_databse PUBLIC user_management database_logger PRIVATE encoders fmt::fmt)
 
 if(${RUN_TIDY})
   include("clang-tidy")

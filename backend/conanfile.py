@@ -11,7 +11,7 @@ class UserManagementConanFile(ConanFile):
     generators = "cmake_find_package"
     exports_sources = "CMakeLists.txt", "cmake/*", "src/*", "include/*"
     options = {"logging": ["console", "syslog"]}
-    default_options = {"logging": "syslog","restinio:with_openssl": True}
+    default_options = {"logging": "syslog", "restinio:with_openssl": True}
 
     def export_sources(self):
         schema_source = path.normpath(path.join(getcwd(), ".."))

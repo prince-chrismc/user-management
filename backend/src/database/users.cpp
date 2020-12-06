@@ -17,6 +17,8 @@ std::string make_etag(const database::user::json& json) {
 }  // namespace
 
 namespace database {
+using raw = user::json;
+
 user::time_point user::last_modified() const {
   if (count() > 0) {
     const auto last_modified = std::max_element(users_last_modified.begin(), users_last_modified.end());
@@ -33,6 +35,8 @@ user::entry& user::add(const json& json) {
   database_last_modified = clock::now();
   auto& user = user_management::list_modifier{*this}.add(json);
   users_last_modified[user.id] = clock::now();
+  log.info("created new user ({:d})", user.id);
+  log.trace("{}", raw{user});
   return user;
 }
 user::entry& user::edit(key id, const json& json) {
@@ -40,12 +44,16 @@ user::entry& user::edit(key id, const json& json) {
   auto& user = get(id);
   user_management::user_modifier{user}.apply(json);
   users_last_modified[id] = clock::now();
+  log.info("modified user ({:d})", id);
+  log.trace("{}", raw{user});
   return user;
 }
 user::entry user::remove(key id) {
   database_last_modified = clock::now();
   auto user = user_management::user_list::remove(id);
   users_last_modified[id] = clock::now();
+  log.info("removed user ({:d})", id);
+  log.trace("{}", raw{user});
   return user;
 }
 }  // namespace database
