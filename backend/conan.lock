@@ -6,10 +6,11 @@
     "requires": [
      "1",
      "10",
-     "12"
+     "12",
+     "13"
     ],
     "build_requires": [
-     "13"
+     "14"
     ],
     "path": "conanfile.py",
     "context": "host"
@@ -76,6 +77,13 @@
     "context": "host"
    },
    "13": {
+    "ref": "spdlog/1.8.1#bc83c6710733bf9bee8c664389158565",
+    "requires": [
+     "3"
+    ],
+    "context": "host"
+   },
+   "14": {
     "ref": "catch2/2.13.3#a4f1ed8fa355ba5a76c422fdfe94724d",
     "context": "host"
    }

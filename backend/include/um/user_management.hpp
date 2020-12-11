@@ -15,6 +15,8 @@
 #include "schemas.hpp"
 
 namespace user_management {
+constexpr auto version = "1.0.0-dev.0";
+
 using json = api::json;
 using user_key = size_t;
 struct user {

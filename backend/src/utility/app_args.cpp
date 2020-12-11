@@ -3,33 +3,36 @@
 #include "app_args.hpp"
 
 #include <fmt/format.h>
-#include <lyra/lyra.hpp>
+#include <fmt/printf.h>
 
 #include <iostream>
+#include <lyra/lyra.hpp>
 
-using namespace lyra;  // NOLINT(google-build-using-namespace)
+nonstd::expected<app_args_t, app_args_t::result> app_args_t::parse(
+    int argc, const char *argv[]) {  // NOLINT(hicpp-avoid-c-arrays, modernize-avoid-c-arrays)
+  bool help = false;
+  app_args_t args;
 
-app_args_t app_args_t::parse(int argc, const char *argv[]) {  // NOLINT(hicpp-avoid-c-arrays, modernize-avoid-c-arrays)
-  app_args_t result;
+  auto cli =
+      lyra::help(help) |
+      lyra::opt(args.address,
+                "address")["-a"]["--address"](fmt::format("address to listen (default: {})", args.address)) |
+      lyra::opt(args.port, "port")["-p"]["--port"](fmt::format("port to listen (default: {})", args.port)) |
+      lyra::opt(args.pool_size, "thread-pool size")["-n"]["--thread-pool-size"](
+          fmt::format("The size of a thread pool to run server (default: {})", args.pool_size)) |
+      lyra::arg(args.root_dir, "root-dir")("root directory for the server to obtain requested files").required() |
+      lyra::arg(args.certs_dir, "certs-dir")("directory containing certificate(s) and key(s) to host the HTTP endpoint").required();
 
-  auto cli = cli_parser() |
-             opt(result.address,
-                 "address")["-a"]["--address"](fmt::format("address to listen (default: {})", result.address)) |
-             opt(result.port, "port")["-p"]["--port"](fmt::format("port to listen (default: {})", result.port)) |
-             opt(result.pool_size, "thread-pool size")["-n"]["--thread-pool-size"](
-                 fmt::format("The size of a thread pool to run server (default: {})", result.pool_size)) |
-             arg(result.root_dir, "root-dir")(fmt::format("server root dir (default: '{}')", result.root_dir)) |
-             arg(result.certs_dir, "certs-dir")(fmt::format("server certs dir (default: '{}')", result.certs_dir)) |
-             lyra::help(result.help);
-
-  auto parse_result = cli.parse({argc, argv});
-  if (!parse_result) {
-    throw std::runtime_error(fmt::format("Invalid command-line arguments: {}", parse_result.errorMessage()));
+  const auto parse_args = cli.parse({argc, argv});
+  if (!parse_args) {
+    fmt::print("Invalid command-line arguments: {}\n", parse_args.errorMessage());
+    return nonstd::make_unexpected(app_args_t::result::error);
   }
 
-  if (result.help) {
-    std::cout << cli << std::endl;
+  if (help) {
+    fmt::print("{}\n", cli);
+    return nonstd::make_unexpected(app_args_t::result::help);
   }
 
-  return result;
+  return args;
 }

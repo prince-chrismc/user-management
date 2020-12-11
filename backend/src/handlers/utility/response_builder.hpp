@@ -11,13 +11,6 @@ namespace response {
 using http_field = restinio::http_field;
 using http_status_line = restinio::http_status_line_t;
 
-class builder;
-namespace impl {
-void add_generic_headers(builder& builder);
-void add_cors_headers(builder& builder);
-void add_api_headers(builder& builder);
-}  // namespace impl
-
 class builder {
   restinio::response_builder_t<restinio::restinio_controlled_output_t> builder_;
 

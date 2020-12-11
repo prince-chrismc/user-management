@@ -1,14 +1,16 @@
 // MIT License
 
+#include <nonstd/expected.hpp>
+
 #include <string>
 
 struct app_args_t {
-  bool help{false};
   std::string address{"localhost"};
   std::uint16_t port{8080};
   std::size_t pool_size{1};
-  std::string root_dir{"."};
-  std::string certs_dir{"."};
+  std::string root_dir;
+  std::string certs_dir;
 
-  static app_args_t parse(int argc, const char *argv[]);
+  enum class result { help, error };
+  static nonstd::expected<app_args_t, result> parse(int argc, const char *argv[]);
 };
