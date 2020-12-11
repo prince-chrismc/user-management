@@ -6,6 +6,7 @@
 #include <restinio/helpers/http_field_parsers/content-type.hpp>
 #include <utility>
 
+#include "logging/logger.hpp"
 #include "utility/response_builder.hpp"
 
 class unsupported_media_type : public std::runtime_error {
@@ -71,6 +72,8 @@ using user_management::user_key;
 
 namespace handler {
 namespace user {
+static const logger log{"handler_user_routes"};
+
 namespace fill {
 void list(router &router, database &db) {
   router.http_get(route::list, get_list{db});
@@ -86,63 +89,82 @@ void user(router &router, database &db) {
 }  // namespace fill
 
 request_status add::operator()(const request_handle &req, route_params /*params*/) {
+  log.trace("processing add operation");
   try {
     verify_application_json(req);
     const auto user = db_.add(json::parse(req->body()));
+    log.info("add operation completed");
     return response::builders::list(req, restinio::status_created())
         .append_header(http_field::etag, db_.etag(user.id))
         .set_body(json(user).dump())
         .done();
   } catch (const unsupported_media_type &e) {
+    log.warn("add operation block by unsupported media type");
     return response::unsupported_media_type(req).set_body(e).done();
   } catch (const std::exception &e) {
+    log.error("add operation failed");
     return response::error_builder<std::exception>(req).set_body(e).done();
   }
 }
 
 request_status remove::operator()(const request_handle &req, route_params params) {
+  log.trace("processing remove operation");
   try {
     const auto id = restinio::cast_to<user_key>(params["id"]);
     verify_etag(req, id, db_.etag(id));
     db_.remove(id);
+    log.info("remove operation completed");
     return response::builders::user(req, restinio::status_no_content()).done();
   } catch (const precondition_required &e) {
+    log.warn("remove operation block by missing precondition");
     return response::precondition_required(req).set_body(e).done();
   } catch (const precondition_failed &e) {
+    log.warn("remove operation block by failed precondition");
     return response::precondition_failed(req).set_body(e).done();
   } catch (const user_does_not_exist &e) {
+    log.warn("remove operation block by invalid user id");
     return response::not_found(req).set_body(e).done();
   }
 }
 
 request_status edit::operator()(const request_handle &req, route_params params) {
+  log.trace("processing edit operation");
   try {
     verify_application_json(req);
     const auto id = restinio::cast_to<user_key>(params["id"]);
     verify_etag(req, id, db_.etag(id));
     const auto user = db_.edit(id, json::parse(req->body()));
+    log.info("edit operation completed");
     return response::builders::user(req, restinio::status_accepted())
         .append_header(http_field::last_modified, db_.last_modified(user.id))
         .append_header(http_field::etag, db_.etag(user.id))
         .set_body(json(user).dump())
         .done();
   } catch (const unsupported_media_type &e) {
+    log.warn("edit operation block by unsupported media type");
     return response::unsupported_media_type(req).set_body(e).done();
   } catch (const precondition_required &e) {
+    log.warn("edit operation block by missing precondition");
     return response::precondition_required(req).set_body(e).done();
   } catch (const precondition_failed &e) {
+    log.warn("edit operation block by failed precondition");
     return response::precondition_failed(req).set_body(e).done();
   } catch (const user_does_not_exist &e) {
+    log.warn("edit operation block by invalid user id");
     return response::not_found(req).set_body(e).done();
   } catch (const std::exception &e) {
+    log.error("edit operation failed");
     return response::error_builder<std::exception>(req).set_body(e).done();
   }
 }
 
 request_status get_user::operator()(const request_handle &req, route_params params) {
+  log.trace("processing get user operation");
   try {
     const auto user = db_.get(restinio::cast_to<size_t>(params["id"]));
+    log.info("get user operation completed");
     if (conditional_matching(req, http_field::if_none_match, db_.etag(user.id))) {
+      log.trace("get user operation cache hit");
       return response::builders::user(req, restinio::status_not_modified())
           .append_header(http_field::etag, db_.etag(user.id))
           .append_header(http_field::last_modified, db_.last_modified(user.id))
@@ -154,12 +176,15 @@ request_status get_user::operator()(const request_handle &req, route_params para
         .set_body(json(user).dump())
         .done();
   } catch (const user_does_not_exist &e) {
+    log.warn("get user operation block by invalid user id");
     return response::not_found(req).set_body(e).done();
   }
 }
 
 request_status get_list::operator()(const request_handle &req, route_params /*params*/) {
+  log.trace("processing get list operation");
   if (conditional_matching(req, http_field::if_none_match, db_.etag())) {
+    log.trace("get list operation cache hit");
     return response::builders::list(req, restinio::status_not_modified()).done();
   }
   return response::builders::list(req)
@@ -171,6 +196,7 @@ request_status get_list::operator()(const request_handle &req, route_params /*pa
 
 namespace preflight {
 request_status list(const request_handle &req, route_params /*params*/) {
+  log.trace("returning list preflight response");
   return req->create_response(restinio::status_no_content())
       .append_header(http_field::access_control_allow_origin, "*")
       .append_header(http_field::access_control_allow_methods, "GET, PUT")
@@ -179,6 +205,7 @@ request_status list(const request_handle &req, route_params /*params*/) {
       .done();
 }
 request_status user(const request_handle &req, route_params /*params*/) {
+  log.trace("returning user preflight response");
   return req->create_response(restinio::status_no_content())
       .append_header(http_field::access_control_allow_origin, "*")
       .append_header(http_field::access_control_allow_methods, "GET, PATCH, DELETE")

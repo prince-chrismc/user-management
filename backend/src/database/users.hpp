@@ -7,8 +7,6 @@
 
 #include "um/user_management.hpp"
 
-#include "logging/logger.hpp"
-
 namespace database {
 class user : public user_management::user_list {
  public:
@@ -29,7 +27,6 @@ class user : public user_management::user_list {
   entry remove(key id);
 
  private:
-  const logger log{"database"};
   time_point database_last_modified{time_point::duration{0}};
   std::unordered_map<key, time_point> users_last_modified;
 };

@@ -8,6 +8,7 @@
 
 #include "encoders/base64.hpp"
 #include "encoders/sha256.hpp"
+#include "logging/logger.hpp"
 
 namespace {
 std::string make_etag(const database::user::json& json) {
@@ -17,6 +18,8 @@ std::string make_etag(const database::user::json& json) {
 }  // namespace
 
 namespace database {
+static const logger log{"database"};
+
 using raw = user::json;
 
 user::time_point user::last_modified() const {
