@@ -59,7 +59,7 @@ jobs:
     - run: |
         mkdir backend/build
         cd backend/build
-        cmake .. -DCMAKE_BUILD_TYPE=Debug -DLOGGING:STRING=logging
+        cmake .. -DCMAKE_BUILD_TYPE=Debug -DLOGGING:STRING=console
         cmake --build .
     - uses: actions/upload-artifact@v2
       with:
