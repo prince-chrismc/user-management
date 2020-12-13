@@ -19,6 +19,11 @@ env:
 
 jobs:
   backend:
+    strategy:
+      fail-fast: true
+      matrix:
+        build-type: [Release, Debug]
+        logging: [syslog, console]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -40,15 +45,9 @@ jobs:
         cd backend
         conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
         conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
-
-        conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/release.lock -s build_type=Release -s compiler.libcxx=libstdc++11
-        conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/release.lock
-
-        conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/debug.lock -s build_type=Debug -s compiler.libcxx=libstdc++11
-        conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/debug.lock
-
-        conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/console.lock -s build_type=Debug -s compiler.libcxx=libstdc++11 -o user-management:logging=console
-        conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/console.lock
+        
+        conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=${{ matrix.build-type }} -s compiler.libcxx=libstdc++11 -o user-management:logging=${{ matrix.logging }}
+        conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock
 
         conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
 
