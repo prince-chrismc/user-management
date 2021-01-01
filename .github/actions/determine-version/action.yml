@@ -16,7 +16,8 @@ runs:
     - run: |
         [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//') # Strip "v" prefix from tag name
       shell: bash
-    - run: [ "$VERSION" == "master" ] && VERSION=latest  # Use Docker `latest` tag convention
+    - run: |
+        [ "$VERSION" == "master" ] && VERSION=latest  # Use Docker `latest` tag convention
       shell: bash
     - id: cal
       run: echo "::set-output name=build-version::$(echo $VERSION)"
