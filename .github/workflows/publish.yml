@@ -18,8 +18,8 @@ jobs:
       build-version: ${{ steps.version.outputs.build-version }} 
     steps:
     - uses: actions/checkout@v2
-    - uses: ./github/actions/determine-version
-      id: version
+    - id: version
+      uses: .github/actions/determine-version
       with:
         github-ref: ${{ github.ref }}
     - run: echo build-version ${{ steps.version.outputs.build-version }} 
