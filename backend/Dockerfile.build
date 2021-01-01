@@ -12,6 +12,8 @@ RUN apk update && apk add --no-cache \
         gcc g++ build-base \
         cmake bash libstdc++ \
         py-pip && pip install conan && \
-    conan config set general.revisions_enabled=1
+    conan config set general.revisions_enabled=1 && \
+    conan profile new default --detect && \
+    conan profile update settings.compiler.libcxx=${{ inputs.libcxx }} default
 
 ENTRYPOINT [ "bash", "-c" ]
