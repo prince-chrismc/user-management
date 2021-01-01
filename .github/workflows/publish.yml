@@ -32,7 +32,9 @@ jobs:
     - run: echo build-version ${{ needs.setup.outputs.build-version }}
     - run: docker build backend --file=Dockerfile.build --tag docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME-backend-alpine-build:latest
     - run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-    - run: docker push docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME-backend-alpine-build:latest
+    - name: push
+      if: github.event_name == 'push'
+      run: docker push docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME-backend-alpine-build:latest
 
   backend:
     runs-on: ubuntu-latest
