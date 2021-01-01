@@ -1,0 +1,18 @@
+# https://raw.githubusercontent.com/madduci/docker-cpp-env/94327c1234de5aabf25a83c90fd32716419c4a3f/Dockerfile
+# MIT: Copyright (c) 2018-current Michele Adduci
+# https://raw.githubusercontent.com/madduci/docker-cpp-env/94327c1234de5aabf25a83c90fd32716419c4a3f/LICENSE
+
+FROM alpine:3.12
+
+VOLUME "/um"
+VOLUME "/conan"
+WORKDIR "/um"
+
+RUN apk update && apk upgrade && \
+    apk --update add \
+        gcc g++ build-base \
+        cmake bash libstdc++ \
+        py-pip && pip install conan && \
+    rm -rf /var/cache/apk/*
+
+ENTRYPOINT [ "bash", "-c" ]
