@@ -12,6 +12,14 @@ env:
   IMAGE_NAME: user-management
 
 jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: docker build backend --file=Dockerfile.build --tag docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME-backend-alpine-build:latest
+    - run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+    - run: docker push docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME-backend-alpine-build:latest
+
   backend:
     runs-on: ubuntu-latest
     steps:
