@@ -8,11 +8,10 @@ VOLUME "/um"
 VOLUME "/conan"
 WORKDIR "/um"
 
-RUN apk update && apk upgrade && \
-    apk --update add \
+RUN apk update && apk add --no-cache \ 
         gcc g++ build-base \
         cmake bash libstdc++ \
         py-pip && pip install conan && \
-    rm -rf /var/cache/apk/*
+    conan config set general.revisions_enabled=1
 
 ENTRYPOINT [ "bash", "-c" ]
