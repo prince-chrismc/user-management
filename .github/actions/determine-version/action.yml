@@ -1,5 +1,5 @@
 name: 'Determine Version'
-description: 'Calculates the version tag based off the action and git/ref'
+description: 'Calculates the version tag based off the git reference. SemVer tags are presevered, default branch is latest, other branch are untouched, PRs output merge'
 inputs:
   github-ref:
     description: 'The current reference point for the version'
@@ -13,12 +13,8 @@ runs:
   steps:
   - id: cal
     run: |
-      echo "input ${{ inputs.github-ref }}"
       VERSION=$(echo "${{ inputs.github-ref }}" | sed -e 's,.*/\(.*\),\1,')
-      echo "stripped $VERSION"
       [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-      echo "tagged $VERSION"
       [ "$VERSION" == "master" ] && VERSION=latest
-      echo "main $VERSION"
       echo "::set-output name=version::$(echo $VERSION)"
     shell: bash
