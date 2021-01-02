@@ -15,6 +15,4 @@ RUN apk update && apk add --no-cache \
     conan config set general.revisions_enabled=1 && \
     conan config set storage.path=/data && \
     conan profile new default --detect && \
-    conan profile update settings.compiler.libcxx=${{ inputs.libcxx }} default
-
-ENTRYPOINT [ "bash", "-c" ]
+    conan profile update settings.compiler.libcxx=libstdc++11 default
