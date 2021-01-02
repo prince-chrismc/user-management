@@ -10,7 +10,6 @@ on:
 
 env:
   IMAGE_NAME: user-management
-  BUILD_IMAGE: user-management-backend-build-alpine
 
 jobs:
   setup:
@@ -28,20 +27,20 @@ jobs:
     needs: [setup]
     runs-on: ubuntu-latest
     env:
-      name: docker.pkg.github.com/${{ github.repository }}/${{ env.BUILD_IMAGE }}:${{ github.sha }} # ${{ needs.setup.outputs.build-version }}
+      name: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ github.sha }} # ${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
     - run: docker build . --file=backend/Dockerfile.build --tag ${{ env.name }}
     - run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
     - name: push
-      if: github.event_name == 'push'
+      #if: github.event_name == 'push'
       run: docker push ${{ env.name }}
   
   alpine-backend:
     needs: [build-image]
     runs-on: ubuntu-latest
     container: 
-      image: docker.pkg.github.com/${{ github.repository }}/${{ env.BUILD_IMAGE }}:${{ github.sha }}
+      image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ github.sha }}
       credentials:
         username: ${{ github.actor }}
         password: ${{ github.token }}
