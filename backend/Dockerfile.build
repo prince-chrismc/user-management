@@ -1,6 +1,6 @@
 FROM alpine:3.12
 
 RUN apk update && apk add --no-cache \ 
-        gcc g++ build-base \
+        gcc g++ build-base linux-headers \
         cmake bash libstdc++ \
         py-pip && pip install conan
