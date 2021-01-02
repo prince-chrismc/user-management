@@ -11,22 +11,10 @@ outputs:
 runs:
   using: "composite"
   steps:
-  - run: echo "Starting with ${{ inputs.github-ref }}"
-    shell: bash
-  - run: VERSION=$(echo "${{ inputs.github-ref }}" | sed -e 's,.*/\(.*\),\1,') # Strip git ref prefix from version
-    shell: bash
-  - run: echo "initial version $VERSION"
-    shell: bash
-  - run: |
-      [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//') # Strip "v" prefix from tag name
-    shell: bash
-  - run: echo "after tag processing $VERSION"
-    shell: bash
-  - run: |
-      [ "$VERSION" == "master" ] && VERSION=latest  # Use `latest` tag convention
-    shell: bash
-  - run: echo "after main processing $VERSION"
-    shell: bash
   - id: cal
-    run: echo "::set-output name=version::$(echo $VERSION)"
+    run: |
+      VERSION=$(echo "${{ inputs.github-ref }}" | sed -e 's,.*/\(.*\),\1,')
+      [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+      [ "$VERSION" == "master" ] && VERSION=latest
+      echo "::set-output name=version::$(echo $VERSION)"
     shell: bash
