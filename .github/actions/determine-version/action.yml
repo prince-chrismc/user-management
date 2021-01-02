@@ -11,7 +11,7 @@ outputs:
 runs:
   using: "composite"
   steps:
-  - run: echo "Starting with {{ inputs.github-ref }}"
+  - run: echo "Starting with ${{ inputs.github-ref }}"
     shell: bash
   - run: VERSION=$(echo "${{ inputs.github-ref }}" | sed -e 's,.*/\(.*\),\1,') # Strip git ref prefix from version
     shell: bash
