@@ -45,8 +45,6 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ github.token }}
-      volumes: 
-        - ${{ github.workspace }}/backend:/um
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
@@ -57,6 +55,7 @@ jobs:
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+    - uses: ./.github/actions/setup-conan
     - name: build
       run: |
         mkdir backend/build
