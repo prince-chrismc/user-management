@@ -13,8 +13,12 @@ runs:
   steps:
   - id: cal
     run: |
+      echo "input ${{ inputs.github-ref }}"
       VERSION=$(echo "${{ inputs.github-ref }}" | sed -e 's,.*/\(.*\),\1,')
+      echo "stripped $VERSION"
       [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+      echo "tagged $VERSION"
       [ "$VERSION" == "master" ] && VERSION=latest
+      echo "main $VERSION"
       echo "::set-output name=version::$(echo $VERSION)"
     shell: bash
