@@ -2,19 +2,22 @@
 # MIT: Copyright (c) 2018-current Michele Adduci
 # https://raw.githubusercontent.com/madduci/docker-cpp-env/94327c1234de5aabf25a83c90fd32716419c4a3f/LICENSE
 # https://stackoverflow.com/a/27703359/8480874
+# https://stackoverflow.com/a/59022865/8480874
 
 FROM alpine:3.12
 
 VOLUME "/um"
 
-RUN adduser --system -D -h /home/agent agent root
-USER agent
+RUN addgroup -S agent && adduser -S -G agent agent
 
 RUN apk update && apk add --no-cache \ 
         gcc g++ build-base \
         cmake bash libstdc++ \
-        py-pip && pip install conan && \
-    conan config set general.revisions_enabled=1 && \
+        py-pip && pip install conan
+
+USER agent
+
+RUN conan config set general.revisions_enabled=1 && \
     conan profile new default --detect && \
     conan profile update settings.compiler.libcxx=libstdc++11 default
 
