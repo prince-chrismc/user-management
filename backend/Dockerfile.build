@@ -7,7 +7,7 @@ FROM alpine:3.12
 
 VOLUME "/um"
 
-RUN adduser -D -h /home/agent agent
+RUN adduser --system -D -h /home/agent agent
 USER agent
 
 RUN apk update && apk add --no-cache \ 
