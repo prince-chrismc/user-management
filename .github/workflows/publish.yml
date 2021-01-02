@@ -28,7 +28,7 @@ jobs:
     needs: [setup]
     runs-on: ubuntu-latest
     env:
-      name: docker.pkg.github.com/${{ github.repository }}/$BUILD_IMAGE:${{ needs.setup.outputs.build-version }}
+      name: docker.pkg.github.com/${{ github.repository }}/${{ env.BUILD_IMAGE }}:${{ github.sha }} # ${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
     - run: docker build . --file=backend/Dockerfile.build --tag ${{ env.name }}
@@ -41,7 +41,7 @@ jobs:
     needs: [build-image]
     runs-on: ubuntu-latest
     container: 
-      image: docker.pkg.github.com/${{ github.repository }}/$BUILD_IMAGE:latest
+      image: docker.pkg.github.com/${{ github.repository }}/${{ env.BUILD_IMAGE }}:${{ github.sha }}
       credentials:
         username: ${{ github.actor }}
         password: ${{ github.token }}
