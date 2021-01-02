@@ -5,7 +5,6 @@
 FROM alpine:3.12
 
 VOLUME "/um"
-VOLUME "/data"
 WORKDIR "/um"
 
 RUN apk update && apk add --no-cache \ 
@@ -13,6 +12,5 @@ RUN apk update && apk add --no-cache \
         cmake bash libstdc++ \
         py-pip && pip install conan && \
     conan config set general.revisions_enabled=1 && \
-    conan config set storage.path=/data && \
     conan profile new default --detect && \
     conan profile update settings.compiler.libcxx=libstdc++11 default
