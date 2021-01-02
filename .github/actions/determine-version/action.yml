@@ -1,8 +1,11 @@
 name: 'Determine Version'
-description: 'Calculates the version tag based off the git reference. SemVer tags are presevered, default branch is latest, other branch are untouched, PRs output merge'
+description: 'Calculates the version tag based off the git reference. SemVer tags are presevered, default branch is latest, other branch are untouched, PRs output alternate ID'
 inputs:
   github-ref:
     description: 'The current reference point for the version'
+    required: true
+  unique-alt-id:
+    description: 'The version to return when it is pull request'
     required: true
 outputs:
   build-version: 
@@ -14,7 +17,8 @@ runs:
   - id: cal
     run: |
       VERSION=$(echo "${{ inputs.github-ref }}" | sed -e 's,.*/\(.*\),\1,')
-      [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+      [[ "${{ inputs.github-ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
       [ "$VERSION" == "master" ] && VERSION=latest
+      [ "$VERSION" == "merge" ] && VERSION=$(echo "${{ inputs.unique-alt-id }}")
       echo "::set-output name=version::$(echo $VERSION)"
     shell: bash
