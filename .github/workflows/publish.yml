@@ -57,12 +57,8 @@ jobs:
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-    - uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-    - uses: ./.github/actions/setup-conan
-    - uses: lukka/get-cmake@latest
-    - run: |
+    - name: build
+      run: |
         mkdir backend/build
         cd backend/build
         cmake .. -DCMAKE_BUILD_TYPE=Release
