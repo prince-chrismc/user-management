@@ -8,6 +8,7 @@ class UserManagementConanFile(ConanFile):
     url = "https://github.com/prince-chrismc/user-management"
     description = "An open-source application delivering a responsive user management experience."
     settings = "os", "compiler", "build_type", "arch"
+    build_policy = "missing"
     generators = "cmake_find_package"
     exports_sources = "CMakeLists.txt", "cmake/*", "src/*", "include/*"
     options = {"logging": ["console", "syslog"]}
