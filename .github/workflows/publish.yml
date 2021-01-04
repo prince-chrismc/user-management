@@ -59,10 +59,10 @@ jobs:
     - name: build
       run: |
         conan config install backend/.conan/settings.yml
-        conan profile update settings.compiler.libc=musl default
-        conan profile update settings.compiler.libc.musl=1.2 default
+        conan profile update settings.compiler.musl=1.2 default
         mkdir backend/build
         cd backend/build
+        conan install ../conanfile.py --build missing
         cmake .. -DCMAKE_BUILD_TYPE=Release
         cmake --build .
 
