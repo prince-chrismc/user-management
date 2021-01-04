@@ -16,7 +16,7 @@
     "context": "host"
    },
    "1": {
-    "ref": "restinio/0.6.12#f9314f8afdfe86de98f6fac66020c517",
+    "ref": "restinio/0.6.13#d6e07d537b9a2eacb7e5c5a387fbb122",
     "requires": [
      "2",
      "3",
@@ -34,7 +34,7 @@
     "context": "host"
    },
    "3": {
-    "ref": "fmt/7.1.2#a2b90b112a5e19a9569dcb45faf58071",
+    "ref": "fmt/7.1.3#a803168964c997f1f74def0499a0bba2",
     "context": "host"
    },
    "4": {
@@ -54,11 +54,11 @@
     "context": "host"
    },
    "8": {
-    "ref": "asio/1.18.0#2368903d2afbf746207f98c4baf20d27",
+    "ref": "asio/1.18.1#358023b3793c02a2b62a085c6e906056",
     "context": "host"
    },
    "9": {
-    "ref": "openssl/1.1.1h#a54ec92b792d10b6595c581a15ad2cd7",
+    "ref": "openssl/1.1.1i#55d4cf80244573060fbd973268276e3e",
     "context": "host"
    },
    "10": {
@@ -84,7 +84,7 @@
     "context": "host"
    },
    "14": {
-    "ref": "catch2/2.13.3#a4f1ed8fa355ba5a76c422fdfe94724d",
+    "ref": "catch2/2.13.4#5693be36c9806ce8c4a7b57aa66f242a",
     "context": "host"
    }
   },
