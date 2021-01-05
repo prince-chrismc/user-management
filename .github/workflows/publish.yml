@@ -56,6 +56,10 @@ jobs:
         conan install ../conanfile.py --build missing
         cmake .. -DCMAKE_BUILD_TYPE=Release
         cmake --build .
+    - uses: actions/upload-artifact@v2
+      with:
+         name: user_database_app
+         path: backend/build/src/user_database_app
 
   ubuntu-backend:
     runs-on: ubuntu-latest
@@ -81,7 +85,7 @@ jobs:
         cmake --build .
     - uses: actions/upload-artifact@v2
       with:
-         name: user_database_app
+         name: user_database_app_ubuntu
          path: backend/build/src/user_database_app
 
   frontend:
@@ -106,7 +110,7 @@ jobs:
         path: web-app/web-app.tar.gz
 
   test:
-    needs: [ubuntu-backend, frontend]
+    needs: [alpine-backend, frontend]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
