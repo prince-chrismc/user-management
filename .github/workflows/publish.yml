@@ -51,14 +51,9 @@ jobs:
       with:
         path: ~/.conan/data
         key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
-    - uses: actions/cache@v2
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
     - uses: ./.github/actions/setup-conan
     - name: build
       run: |
-        conan config install backend/.conan/settings.yml
         conan profile update settings.compiler.musl=1.2 default
         mkdir backend/build
         cd backend/build
@@ -66,7 +61,7 @@ jobs:
         cmake .. -DCMAKE_BUILD_TYPE=Release
         cmake --build .
 
-  backend:
+  ubuntu-backend:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -90,7 +85,7 @@ jobs:
         cmake --build .
     - uses: actions/upload-artifact@v2
       with:
-         name: user_database_app
+         name: user_database_app_ubuntu
          path: backend/build/src/user_database_app
 
   frontend:
@@ -115,7 +110,7 @@ jobs:
         path: web-app/web-app.tar.gz
 
   test:
-    needs: [backend, frontend]
+    needs: [ubuntu-backend, frontend]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
