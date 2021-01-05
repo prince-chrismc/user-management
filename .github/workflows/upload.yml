@@ -18,6 +18,59 @@ env:
   DOCKER_REGISTRY: princechrismc.jfrog.io/user-management-docker
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      build-version: ${{ steps.version.outputs.build-version }} 
+    steps:
+    - uses: actions/checkout@v2
+    - id: version
+      uses: ./.github/actions/determine-version
+      with:
+        github-ref: ${{ github.ref }}
+        unique-alt-id: ${{ github.sha }}
+      
+  build-image:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    env:
+      name: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
+    steps:
+    - uses: actions/checkout@v2
+    - run: docker build . --file=backend/Dockerfile.build --tag ${{ env.name }}
+    - run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+    - name: push
+      run: docker push ${{ env.name }}
+  
+  alpine-backend:
+    needs: [setup, build-image]
+    runs-on: ubuntu-latest
+    container: 
+      image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: ~/.conan/data
+        key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
+    - uses: ./.github/actions/setup-conan
+    - name: build
+      run: |
+        conan profile update settings.compiler.musl=1.2 default
+
+        cd backend
+        conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
+        conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+        
+        conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=${{ matrix.build-type }} -s compiler.libcxx=libstdc++11 -o user-management:logging=${{ matrix.logging }}
+        conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock --json create.json
+    - name: upload
+      run: |
+        cat create.json
+
   backend:
     strategy:
       fail-fast: true
@@ -48,7 +101,8 @@ jobs:
         
         conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=${{ matrix.build-type }} -s compiler.libcxx=libstdc++11 -o user-management:logging=${{ matrix.logging }}
         conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock
-
+    - if: github.event_name == 'push' || matrix.build-type == 'Release'
+      run: |
         conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
 
   frontend:
@@ -123,13 +177,14 @@ jobs:
         curl -s -k --key backend/certs/key.pem --cert backend/certs/server.pem -o output.log --url https://localhost:8443/index.html
         cat output.log | grep -q "<title>User Management</title>"
         docker kill test
-    - run: |
+    - if: github.event_name == 'push'
+      run: |
         echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
         docker tag $NAME $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
         docker push $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
 
   push:
-    needs: test
+    needs: [setup, test]
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     steps:
@@ -144,14 +199,5 @@ jobs:
         run: docker pull $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
       - name: Push image
         run: |
-          IMAGE_ID=$DOCKER_REGISTRY/$NAME
-          
-          RELEASE=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,') # Strip git ref prefix from version
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && RELEASE=$(echo $RELEASE | sed -e 's/^v//') # Strip "v" prefix from tag name
-          [ "$RELEASE" == "master" ] && RELEASE=latest  # Use Docker `latest` tag convention
-
-          echo IMAGE_ID=$IMAGE_ID
-          echo RELEASE=$RELEASE
-
-          docker tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION $IMAGE_ID:$RELEASE
-          docker push $IMAGE_ID:$RELEASE
+          docker tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION $DOCKER_REGISTRY/$NAME:${{ needs.setup.outputs.build-version }}
+          docker push $IMAGE_ID:${{ needs.setup.outputs.build-version }}
