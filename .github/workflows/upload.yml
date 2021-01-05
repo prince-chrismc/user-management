@@ -66,7 +66,7 @@ jobs:
         conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
         
         conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=Release
-        conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock --json create.json
+        conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock --json create.json --build missing
     - name: upload
       run: |
         cat create.json
