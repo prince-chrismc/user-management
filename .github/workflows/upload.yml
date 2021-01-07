@@ -69,7 +69,7 @@ jobs:
         conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock --json create.json --build missing
     - name: upload
       run: |
-        cat create.json
+        cat backend/create.json
 
   backend:
     strategy:
