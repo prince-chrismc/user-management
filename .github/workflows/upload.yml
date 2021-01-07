@@ -73,7 +73,7 @@ jobs:
     - name: upload
       run: |
         cat backend/create.json
-        echo "\n--------------------\n
+        echo "\n--------------------\n"
         cat backend/build_order.json
 
   backend:
