@@ -42,7 +42,7 @@ jobs:
     - name: push
       run: docker push ${{ env.name }}
   
-  alpine-backend:
+  calc-deps:
     needs: [setup, build-image]
     runs-on: ubuntu-latest
     container: 
@@ -50,6 +50,42 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ github.token }}
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: ~/.conan/data
+        key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
+    - uses: ./.github/actions/setup-conan
+    - name: calc
+      run: |
+        conan profile update settings.compiler.musl=1.2 default
+
+        cd backend
+        
+        conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=Release        
+        conan lock build-order locks/conan.lock --json=build_order.json
+    - id: set-matrix
+      name: output
+      run: |
+        cat backend/build_order.json
+        cd backend
+        python3 build-order-to-matrix.py
+        cat matrix.json
+        echo "::set-output name=matrix::$(cat matrix.json)"
+  
+  build-deps:
+    needs: [setup, calc-deps]
+    runs-on: ubuntu-latest
+    container: 
+      image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+    strategy:
+      matrix: ${{ fromJson(needs.calc-deps.outputs.matrix) }}
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
@@ -60,21 +96,49 @@ jobs:
     - name: build
       run: |
         conan profile update settings.compiler.musl=1.2 default
-
+        
+        conan lock create --reference=${{ matrix.reference }}
+    - name: upload
+      run: |
+        conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
+        conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+                
+        conan upload ${{ matrix.reference }} -r $CONAN_REMOTE --all
+  
+  alpine-backend:
+    needs: [setup, build-deps]
+    runs-on: ubuntu-latest
+    container: 
+      image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+    strategy:
+      matrix: ${{fromJson(needs.calc-deps.outputs.matrix)}}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: ~/.conan/data
+        key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
+    - uses: ./.github/actions/setup-conan
+    - name: build
+      run: |
+        conan profile update settings.compiler.musl=1.2 default
+        
         cd backend
         conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
         conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
         
         conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=Release
         
-        conan lock build-order locks/conan.lock --json=build_order.json
-        
-        conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock --json create.json --build missing
+        conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock
     - name: upload
       run: |
-        cat backend/create.json
-        echo "\n--------------------\n"
-        cat backend/build_order.json
+        conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
+        conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+                
+        conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
 
   backend:
     strategy:
@@ -101,13 +165,14 @@ jobs:
     - name: build and upload
       run: |
         cd backend
-        conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
-        conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
         
         conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=${{ matrix.build-type }} -s compiler.libcxx=libstdc++11 -o user-management:logging=${{ matrix.logging }}
         conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock
     - if: github.event_name == 'push' || matrix.build-type == 'Release'
       run: |
+        conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
+        conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+        
         conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
 
   frontend:
