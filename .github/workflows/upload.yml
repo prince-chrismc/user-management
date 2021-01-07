@@ -73,8 +73,9 @@ jobs:
         echo $(cat backend/build_order.json)
         cd backend
         python3 build-order-to-matrix.py
-        cat matrix.json | sed 's/"/\\"/g' >> content
-        echo "::set-output name=matrix::$(cat content)"
+        MATRIX=$(cat matrix.yml)
+        echo "${MATRIX}"
+        echo "::set-output name=matrix::${MATRIX}"
   
   list-deps:
     needs: [setup, calc-deps]
