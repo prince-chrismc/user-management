@@ -73,7 +73,7 @@ jobs:
         echo $(cat backend/build_order.json)
         cd backend
         python3 build-order-to-matrix.py
-        MATRIX=$(cat matrix.yml)
+        MATRIX=$(cat matrix.json)
         echo "${MATRIX}"
         echo "::set-output name=matrix::${MATRIX}"
   
