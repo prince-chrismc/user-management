@@ -105,7 +105,7 @@ jobs:
       run: |
         conan profile update settings.compiler.musl=1.2 default
         
-        conan lock create --reference=${{ matrix.reference }}
+        conan create --reference=${{ matrix.reference }} -b missing
     - name: upload
       run: |
         conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
