@@ -76,6 +76,13 @@ jobs:
         cat matrix.json
         echo "::set-output name=matrix::$(cat matrix.json)"
   
+  list-deps:
+    needs: [setup, calc-deps]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "${{ needs.calc-deps.outputs.matrix }}"
+      - run: echo "${{ fromJson(needs.calc-deps.outputs.matrix) }}"
+
   build-deps:
     needs: [setup, calc-deps]
     runs-on: ubuntu-latest
