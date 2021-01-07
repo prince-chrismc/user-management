@@ -64,6 +64,8 @@ jobs:
         conan profile update settings.compiler.musl=1.2 default
 
         cd backend
+        conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
+        conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
         
         conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=Release        
         conan lock build-order locks/conan.lock --json=build_order.json
@@ -141,11 +143,7 @@ jobs:
         
         conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock
     - name: upload
-      run: |
-        conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
-        conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
-                
-        conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
+      run: conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
 
   backend:
     strategy:
