@@ -52,6 +52,7 @@ jobs:
         password: ${{ github.token }}
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      empty_matrix: ${{ steps.check-matrix.outputs.empty_matrix }}
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
@@ -78,16 +79,26 @@ jobs:
         MATRIX=$(cat matrix.json)
         echo "${MATRIX}"
         echo "::set-output name=matrix::${MATRIX}"
+    - id: check-matrix
+      name: Check matrix      
+      run: |
+        if [[ ${{ steps.set-matrix.outputs.matrix }} == *"[]"* ]]; then
+          echo "::set-output name=empty_matrix::true"
+        else
+          echo "::set-output name=empty_matrix::false"        
+        fi
   
   list-deps:
     needs: [setup, calc-deps]
     runs-on: ubuntu-latest
     steps:
+      - run: echo "${{ needs.calc-deps.outputs.empty_matrix }}"
       - run: echo "${{ needs.calc-deps.outputs.matrix }}"
       - run: echo "${{ fromJson(needs.calc-deps.outputs.matrix) }}"
 
   build-deps:
     needs: [setup, calc-deps]
+    if: ${{ needs.calc-deps.outputs.empty_matrix == 'false' }}
     runs-on: ubuntu-latest
     container: 
       image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
@@ -118,6 +129,7 @@ jobs:
   
   alpine-backend:
     needs: [setup, build-deps]
+    if: always()
     runs-on: ubuntu-latest
     container: 
       image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
