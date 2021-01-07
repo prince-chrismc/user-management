@@ -21,7 +21,7 @@ jobs:
         github-ref: ${{ github.ref }}
         unique-alt-id: ${{ github.sha }}
 
-  ubuntu-backend:
+  backend:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -70,7 +70,7 @@ jobs:
         path: web-app/web-app.tar.gz
 
   test:
-    needs: [ubuntu-backend, frontend]
+    needs: [backend, frontend]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
