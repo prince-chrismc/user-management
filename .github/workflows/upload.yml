@@ -156,6 +156,32 @@ jobs:
         conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock
     - name: upload
       run: conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
+  
+  
+  install-backend:
+    needs: [setup, build-deps]
+    if: always()
+    runs-on: ubuntu-latest
+    container: 
+      image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: ~/.conan/data
+        key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
+    - uses: ./.github/actions/setup-conan
+    - name: build
+      run: |
+        conan profile update settings.compiler.musl=1.2 default
+        
+        conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
+        conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+        conan install $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE
+        ls bin
 
   backend:
     strategy:
