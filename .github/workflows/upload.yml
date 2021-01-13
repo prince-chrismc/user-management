@@ -109,21 +109,21 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
-      if: ${{ matrix.reference == 'null' }}
+      if: ${{ matrix.reference != 'null' }}
       with:
         path: ~/.conan/data
         key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
     - uses: ./.github/actions/setup-conan
-      if: ${{ matrix.reference == 'null' }}
+      if: ${{ matrix.reference != 'null' }}
     - name: build
-      if: ${{ matrix.reference == 'null' }}
+      if: ${{ matrix.reference != 'null' }}
       run: |
         conan profile update settings.compiler.musl=1.2 default
         
         conan lock create --reference=${{ matrix.reference }}
         conan install ${{ matrix.reference }} -l conan.lock -b missing
     - name: upload
-      if: ${{ matrix.reference == 'null' }}
+      if: ${{ matrix.reference != 'null' }}
       run: |
         conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
         conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
