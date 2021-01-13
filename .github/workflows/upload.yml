@@ -28,7 +28,7 @@ jobs:
       uses: ./.github/actions/determine-version
       with:
         github-ref: ${{ github.ref }}
-        unique-alt-id: $BUILD_VERSION
+        unique-alt-id: ${{ github.sha }}
       
   build-image:
     needs: [setup]
