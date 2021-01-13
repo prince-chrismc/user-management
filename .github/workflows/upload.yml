@@ -28,7 +28,7 @@ jobs:
       uses: ./.github/actions/determine-version
       with:
         github-ref: ${{ github.ref }}
-        unique-alt-id: ${{ github.sha }}
+        unique-alt-id: $BUILD_VERSION
       
   build-image:
     needs: [setup]
@@ -158,7 +158,7 @@ jobs:
       run: conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
   
   
-  install-backend:
+  install-image:
     needs: [setup, alpine-backend]
     if: always()
     runs-on: ubuntu-latest
@@ -174,14 +174,27 @@ jobs:
         path: ~/.conan/data
         key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
     - uses: ./.github/actions/setup-conan
-    - name: build
+    - name: download
       run: |
         conan profile update settings.compiler.musl=1.2 default
         
         conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
         conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
         conan install $NAME/$BUILD_VERSION@
-        ls bin
+    - name: build
+      run: |
+        # https://stackoverflow.com/a/57868193/8480874
+        apk add --update docker openrc
+        rc-update add docker boot
+        
+        cd backend
+        docker build . --file Dockerfile --tag $NAME
+    - if: github.event_name == 'push'
+      name: upload
+      run: |
+        echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
+        docker tag $NAME $DOCKER_REGISTRY/$NAME-backend:${{ needs.setup.outputs.build-version }}
+        docker push $DOCKER_REGISTRY/$NAME-backend:${{ needs.setup.outputs.build-version }}
 
   backend:
     strategy:
