@@ -98,7 +98,6 @@ jobs:
 
   build-deps:
     needs: [setup, calc-deps]
-    if: ${{ needs.calc-deps.outputs.empty_matrix == 'false' }}
     runs-on: ubuntu-latest
     container: 
       image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
@@ -110,26 +109,30 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
+      if: ${{ needs.calc-deps.outputs.empty_matrix == 'false' }}
       with:
         path: ~/.conan/data
         key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
     - uses: ./.github/actions/setup-conan
+      if: ${{ needs.calc-deps.outputs.empty_matrix == 'false' }}
     - name: build
+      if: ${{ needs.calc-deps.outputs.empty_matrix == 'false' }}
       run: |
         conan profile update settings.compiler.musl=1.2 default
         
         conan lock create --reference=${{ matrix.reference }}
         conan install ${{ matrix.reference }} -l conan.lock -b missing
     - name: upload
+      if: ${{ needs.calc-deps.outputs.empty_matrix == 'false' }}
       run: |
         conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
         conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
                 
         conan upload ${{ matrix.reference }} -r $CONAN_REMOTE --all
+    - run: exit 0
   
   alpine-backend:
     needs: [setup, build-deps]
-    if: always()
     runs-on: ubuntu-latest
     container: 
       image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
@@ -160,7 +163,6 @@ jobs:
   
   install-image:
     needs: [setup, alpine-backend]
-    if: always()
     runs-on: ubuntu-latest
     container: 
       image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
