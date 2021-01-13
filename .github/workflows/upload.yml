@@ -180,9 +180,13 @@ jobs:
         
         conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
         conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+        
+        cd backend
         conan install $NAME/$BUILD_VERSION@
     - name: build
       run: |
+        ls -laR
+        ls -la bin/
         # https://stackoverflow.com/a/57868193/8480874
         apk add --update docker openrc
         rc-update add docker boot
