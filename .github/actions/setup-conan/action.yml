@@ -12,6 +12,8 @@ runs:
       shell: bash
     - run: conan config set general.revisions_enabled=1
       shell: bash
+    - run: conan config install backend/.conan/settings.yml
+      shell: bash
     - run: conan profile new default --detect
       shell: bash
     - run: conan profile update settings.compiler.libcxx=${{ inputs.libcxx }} default

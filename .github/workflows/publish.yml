@@ -8,10 +8,19 @@ on:
       - v* # semver release
   pull_request: # runs tests
 
-env:
-  IMAGE_NAME: user-management
-
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      build-version: ${{ steps.version.outputs.build-version }} 
+    steps:
+    - uses: actions/checkout@v2
+    - id: version
+      uses: ./.github/actions/determine-version
+      with:
+        github-ref: ${{ github.ref }}
+        unique-alt-id: ${{ github.sha }}
+
   backend:
     runs-on: ubuntu-latest
     steps:
@@ -79,9 +88,11 @@ jobs:
           docker kill test
 
   push:
-    needs: test
+    needs: [setup, test]
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
+    env:
+      name: docker.pkg.github.com/${{ github.repository }}/user-management:${{ needs.setup.outputs.build-version }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
@@ -89,20 +100,8 @@ jobs:
         with:
           path: build/
       - name: Build image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+        run: docker build . --file Dockerfile --tag ${{ env.name }}
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
       - name: Push image
-        run: |
-          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]') # Change all uppercase to lowercase
-          
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,') # Strip git ref prefix from version
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//') # Strip "v" prefix from tag name
-          [ "$VERSION" == "master" ] && VERSION=latest  # Use Docker `latest` tag convention
-
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
+        run: docker push ${{ env.name }}
