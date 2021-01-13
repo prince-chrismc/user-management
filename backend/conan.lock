@@ -5,6 +5,7 @@
     "ref": "user-management/1.0.0-dev.0",
     "requires": [
      "1",
+     "3",
      "10",
      "12",
      "13"
