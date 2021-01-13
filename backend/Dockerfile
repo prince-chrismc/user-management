@@ -3,7 +3,7 @@ FROM alpine:3.12
 RUN apk update && apk add --no-cache libstdc++
 
 ADD bin/user_database_app /usr/local/bin
-ADD backend/certs /opt/um/certs
+ADD certs /opt/um/certs
 
 WORKDIR /opt/um
 
