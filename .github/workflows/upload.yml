@@ -180,7 +180,7 @@ jobs:
         
         conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
         conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
-        conan install $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE
+        conan install $NAME/$BUILD_VERSION@
         ls bin
 
   backend:
