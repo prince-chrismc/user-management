@@ -34,7 +34,7 @@ jobs:
     needs: [setup]
     runs-on: ubuntu-latest
     env:
-      name: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
+      name: docker.pkg.github.com/${{ github.action }}/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
     - run: docker build . --file=backend/Dockerfile.build --tag ${{ env.name }}
@@ -46,7 +46,7 @@ jobs:
     needs: [setup, build-image]
     runs-on: ubuntu-latest
     container: 
-      image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
+      image: docker.pkg.github.com/${{ github.action }}/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
       credentials:
         username: ${{ github.actor }}
         password: ${{ github.token }}
@@ -101,7 +101,7 @@ jobs:
     if: ${{ needs.calc-deps.outputs.empty_matrix == 'false' }}
     runs-on: ubuntu-latest
     container: 
-      image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
+      image: docker.pkg.github.com/${{ github.action }}/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
       credentials:
         username: ${{ github.actor }}
         password: ${{ github.token }}
@@ -132,7 +132,7 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     container: 
-      image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
+      image: docker.pkg.github.com/${{ github.action }}/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
       credentials:
         username: ${{ github.actor }}
         password: ${{ github.token }}
@@ -163,7 +163,7 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     container: 
-      image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
+      image: docker.pkg.github.com/${{ github.action }}/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
       credentials:
         username: ${{ github.actor }}
         password: ${{ github.token }}
