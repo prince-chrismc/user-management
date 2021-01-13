@@ -185,8 +185,6 @@ jobs:
         conan install $NAME/$BUILD_VERSION@
     - name: build
       run: |
-        ls -laR
-        ls -la bin/
         # https://stackoverflow.com/a/57868193/8480874
         apk add --update docker openrc
         rc-update add docker boot
