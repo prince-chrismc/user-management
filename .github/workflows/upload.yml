@@ -312,7 +312,6 @@ jobs:
       run: |
         curl -s -k --key backend/certs/key.pem --cert backend/certs/server.pem -o output.log --url https://localhost:8443/index.html
         cat output.log | grep -q "<title>User Management</title>"
-        docker kill test
     - name: stop
       run: docker kill test
     - if: github.event_name == 'push'
