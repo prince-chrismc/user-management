@@ -319,4 +319,4 @@ jobs:
       - name: Push image
         run: |
           docker tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION $DOCKER_REGISTRY/$NAME:${{ needs.setup.outputs.build-version }}
-          docker push $IMAGE_ID:${{ needs.setup.outputs.build-version }}
+          docker push $DOCKER_REGISTRY/$NAME:{{ needs.setup.outputs.build-version }}
