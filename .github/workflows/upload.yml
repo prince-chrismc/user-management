@@ -38,6 +38,8 @@ jobs:
       name: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
+    - uses: satackey/action-docker-layer-caching@v0.0.11
+      continue-on-error: true
     - uses: docker/login-action@v1
       with:
         registry: docker.pkg.github.com
@@ -306,14 +308,7 @@ jobs:
         mkdir -p bin
         mv $NAME-static-fe-$BUILD_VERSION.tar.gz bin/web-app.tar.gz
     - name: build
-      uses: docker/build-push-action@v2
-      with:
-        push: false
-        file: Dockerfile.alt
-        tags: |
-          test-image
-          ${{ env.output-name }}
-          ${{ env.DOCKER_REGISTRY }}/${{ env.NAME }}:${{ env.BUILD_VERSION }}
+      run: docker build . --file Dockerfile.alt --tag test-image --tag ${{ env.output-name }} --tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
     - name: run
       run: |
         docker run --name test -p 8443:8443 --rm -d test-image
