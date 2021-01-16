@@ -170,7 +170,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ github.token }}
     env:
-      name: docker.pkg.github.com/${{ github.repository }}/${{ env.NAME }}-backend:${{ needs.setup.outputs.build-version }}
+      name: docker.pkg.github.com/${{ github.repository }}/user-management-backend:${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
@@ -282,7 +282,7 @@ jobs:
     needs: [setup, install-image, frontend]
     runs-on: ubuntu-latest    
     env:
-      name: docker.pkg.github.com/${{ github.repository }}/${{ env.NAME }}-backend:${{ needs.setup.outputs.build-version }}
+      name: docker.pkg.github.com/${{ github.repository }}/user-management-backend:${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
     - run: echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
