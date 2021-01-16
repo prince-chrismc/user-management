@@ -7,6 +7,7 @@ on:
     tags:
       - v* # semver release
   pull_request: # runs tests
+  workflow_dispatch: {}
 
 env:
   NAME: user-management
@@ -37,10 +38,18 @@ jobs:
       name: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
-    - run: docker build . --file=backend/Dockerfile.build --tag ${{ env.name }}
-    - run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-    - name: push
-      run: docker push ${{ env.name }}
+    - uses: satackey/action-docker-layer-caching@v0.0.11
+      continue-on-error: true
+    - uses: docker/login-action@v1
+      with:
+        registry: docker.pkg.github.com
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - uses: docker/build-push-action@v2
+      with:
+        push: true
+        file: backend/Dockerfile.build
+        tags: ${{ env.name }}
   
   calc-deps:
     needs: [setup, build-image]
@@ -48,7 +57,7 @@ jobs:
     container: 
       image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
       credentials:
-        username: ${{ github.actor }}
+        username: ${{ github.repository_owner }}
         password: ${{ github.token }}
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -102,7 +111,7 @@ jobs:
     container: 
       image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
       credentials:
-        username: ${{ github.actor }}
+        username: ${{ github.repository_owner }}
         password: ${{ github.token }}
     strategy:
       matrix: ${{ fromJson(needs.calc-deps.outputs.matrix) }}
@@ -137,7 +146,7 @@ jobs:
     container: 
       image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
       credentials:
-        username: ${{ github.actor }}
+        username: ${{ github.repository_owner }}
         password: ${{ github.token }}
     steps:
     - uses: actions/checkout@v2
@@ -160,15 +169,16 @@ jobs:
     - name: upload
       run: conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
   
-  
   install-image:
     needs: [setup, alpine-backend]
     runs-on: ubuntu-latest
     container: 
       image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
       credentials:
-        username: ${{ github.actor }}
+        username: ${{ github.repository_owner }}
         password: ${{ github.token }}
+    env:
+      name: docker.pkg.github.com/${{ github.repository }}/user-management-backend:${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
@@ -192,13 +202,15 @@ jobs:
         rc-update add docker boot
         
         cd backend
-        docker build . --file Dockerfile --tag $NAME
+        docker build . --file Dockerfile --tag ${{ env.name }}
+        echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+        docker push ${{ env.name }}
     - if: github.event_name == 'push'
       name: upload
       run: |
         echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
-        docker tag $NAME $DOCKER_REGISTRY/$NAME-backend:${{ needs.setup.outputs.build-version }}
-        docker push $DOCKER_REGISTRY/$NAME-backend:${{ needs.setup.outputs.build-version }}
+        docker tag ${{ env.name }} $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
+        docker push $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
 
   backend:
     strategy:
@@ -275,43 +287,49 @@ jobs:
         npm publish --registry $NPM_REGISTRY_URL $NAME-$BUILD_VERSION.tgz
 
   test:
-    needs: [backend, frontend]
-    runs-on: ubuntu-latest
+    needs: [setup, install-image, frontend]
+    runs-on: ubuntu-latest    
+    env:
+      input-name: docker.pkg.github.com/${{ github.repository }}/user-management-backend:${{ needs.setup.outputs.build-version }}
+      output-name: docker.pkg.github.com/${{ github.repository }}/user-management:${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/cache@v2
+    - uses: docker/login-action@v1
       with:
-        path: ~/.conan/data
-        key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
-    - uses: actions/cache@v2
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-    - uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-    - uses: ./.github/actions/setup-conan
-    - name: Gather deps
+        registry: docker.pkg.github.com
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: download
       run: |
-        conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
-        conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
-        conan install $NAME/$BUILD_VERSION@
+        docker pull ${{ env.input-name }}
+        docker tag ${{ env.input-name }} $NAME-backend:latest
+
         curl -L -uprince-chrismc:${{ secrets.JFROG_RTFACT_PASSWORD }} -O "$DIST_URL/$NAME-static-fe-$BUILD_VERSION.tar.gz"
+        mkdir -p bin
         mv $NAME-static-fe-$BUILD_VERSION.tar.gz bin/web-app.tar.gz
-        echo "Gathered all Deps for build"
-    - name: Run tests
+    - name: build
+      run: docker build . --file Dockerfile.alt --tag test-image --tag ${{ env.output-name }} --tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
+    - name: run
       run: |
-        docker build . --file Dockerfile.alt --tag $NAME
-        docker run --name test -p 8443:8443 --rm -d $NAME
+        docker run --name test -p 8443:8443 --rm -d test-image
         docker ps | grep test
+    - name: test
+      run: |
         curl -s -k --key backend/certs/key.pem --cert backend/certs/server.pem -o output.log --url https://localhost:8443/index.html
         cat output.log | grep -q "<title>User Management</title>"
-        docker kill test
+    - name: stop
+      run: docker kill test
+    - name: push
+      run: docker push ${{ env.output-name }}
     - if: github.event_name == 'push'
-      run: |
-        echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
-        docker tag $NAME $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
-        docker push $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
+      uses: docker/login-action@v1
+      with:
+        registry: princechrismc.jfrog.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.JFROG_RTFACT_PASSWORD }}
+    - name: upload
+      if: github.event_name == 'push'
+      run: docker push $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
 
   push:
     needs: [setup, test]
@@ -319,15 +337,13 @@ jobs:
     if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
-        id: download
+      - uses: docker/login-action@v1
         with:
-          path: build/
-      - name: Log into registry
-        run: echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
-      - name: Pull image
-        run: docker pull $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
-      - name: Push image
+          registry: princechrismc.jfrog.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.JFROG_RTFACT_PASSWORD }}
+      - name: push
         run: |
+          docker pull $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
           docker tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION $DOCKER_REGISTRY/$NAME:${{ needs.setup.outputs.build-version }}
-          docker push $IMAGE_ID:${{ needs.setup.outputs.build-version }}
+          docker push $DOCKER_REGISTRY/$NAME:{{ needs.setup.outputs.build-version }}
