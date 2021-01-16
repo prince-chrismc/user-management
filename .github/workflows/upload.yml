@@ -38,14 +38,24 @@ jobs:
       name: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
-    - run: docker build . --file=backend/Dockerfile.build --tag ${{ env.name }}
+    - uses: docker/setup-buildx-action@v1
+    - uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: ${{ runner.os }}-buildx-
     - uses: docker/login-action@v1
       with:
         registry: docker.pkg.github.com
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - name: push
-      run: docker push ${{ env.name }}
+    - uses: docker/build-push-action@v2
+      with:
+        push: true
+        file: backend/Dockerfile.build
+        tags: ${{ env.name }}
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache
   
   calc-deps:
     needs: [setup, build-image]
@@ -286,7 +296,8 @@ jobs:
     needs: [setup, install-image, frontend]
     runs-on: ubuntu-latest    
     env:
-      name: docker.pkg.github.com/${{ github.repository }}/user-management-backend:${{ needs.setup.outputs.build-version }}
+      input-name: docker.pkg.github.com/${{ github.repository }}/user-management-backend:${{ needs.setup.outputs.build-version }}
+      output-name: docker.pkg.github.com/${{ github.repository }}/user-management:${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
     - uses: docker/login-action@v1
@@ -296,8 +307,8 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: download
       run: |
-        docker pull ${{ env.name }}
-        docker tag ${{ env.name }} $NAME-backend:latest
+        docker pull ${{ env.input-name }}
+        docker tag ${{ env.input-name }} $NAME-backend:latest
 
         curl -L -uprince-chrismc:${{ secrets.JFROG_RTFACT_PASSWORD }} -O "$DIST_URL/$NAME-static-fe-$BUILD_VERSION.tar.gz"
         mkdir -p bin
@@ -314,7 +325,12 @@ jobs:
         cat output.log | grep -q "<title>User Management</title>"
     - name: stop
       run: docker kill test
-    - if: github.event_name == 'push'
+    - name: push
+      run: |
+        docker tag $NAME ${{ env.output-name }}
+        docker push ${{ env.output-name }}
+    - name: upload
+      if: github.event_name == 'push'
       run: |
         echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
         docker tag $NAME $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
@@ -326,11 +342,13 @@ jobs:
     if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v2
-      - name: Log into registry
-        run: echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
-      - name: Pull image
-        run: docker pull $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
-      - name: Push image
+      - uses: docker/login-action@v1
+        with:
+          registry: princechrismc.jfrog.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.JFROG_RTFACT_PASSWORD }}
+      - name: push
         run: |
+          docker pull $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
           docker tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION $DOCKER_REGISTRY/$NAME:${{ needs.setup.outputs.build-version }}
           docker push $DOCKER_REGISTRY/$NAME:{{ needs.setup.outputs.build-version }}
