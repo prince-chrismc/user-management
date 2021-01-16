@@ -7,6 +7,7 @@ on:
     tags:
       - v* # semver release
   pull_request: # runs tests
+  workflow_dispatch: {}
 
 env:
   NAME: user-management
@@ -275,33 +276,25 @@ jobs:
         npm publish --registry $NPM_REGISTRY_URL $NAME-$BUILD_VERSION.tgz
 
   test:
-    needs: [backend, frontend]
+    needs: [setup, install-image, frontend]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/cache@v2
-      with:
-        path: ~/.conan/data
-        key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
-    - uses: actions/cache@v2
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-    - uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-    - uses: ./.github/actions/setup-conan
-    - name: Gather deps
+    - run: echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
+    - name: download
       run: |
-        conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
-        conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
-        conan install $NAME/$BUILD_VERSION@
+        docker pull $DOCKER_REGISTRY/$NAME-backend:${{ needs.setup.outputs.build-version }}
+        docker tag $DOCKER_REGISTRY/$NAME-backend:${{ needs.setup.outputs.build-version }} $NAME-backend:latest
+
+
         curl -L -uprince-chrismc:${{ secrets.JFROG_RTFACT_PASSWORD }} -O "$DIST_URL/$NAME-static-fe-$BUILD_VERSION.tar.gz"
         mv $NAME-static-fe-$BUILD_VERSION.tar.gz bin/web-app.tar.gz
         echo "Gathered all Deps for build"
-    - name: Run tests
+    - name: build
       run: |
         docker build . --file Dockerfile.alt --tag $NAME
+    - name: test
+      run: test
         docker run --name test -p 8443:8443 --rm -d $NAME
         docker ps | grep test
         curl -s -k --key backend/certs/key.pem --cert backend/certs/server.pem -o output.log --url https://localhost:8443/index.html
@@ -319,10 +312,6 @@ jobs:
     if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
-        id: download
-        with:
-          path: build/
       - name: Log into registry
         run: echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
       - name: Pull image
