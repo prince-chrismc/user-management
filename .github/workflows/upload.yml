@@ -313,7 +313,7 @@ jobs:
         tags: |
           test-image
           ${{ env.output-name }}
-          $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
+          ${{ env.DOCKER_REGISTRY }}/${{ env.NAME }}:${{ env.BUILD_VERSION }}
     - name: run
       run: |
         docker run --name test -p 8443:8443 --rm -d test-image
