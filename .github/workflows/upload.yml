@@ -198,8 +198,8 @@ jobs:
       name: upload
       run: |
         echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
-        docker tag $NAME $DOCKER_REGISTRY/$NAME-backend:${{ needs.setup.outputs.build-version }}
-        docker push $DOCKER_REGISTRY/$NAME-backend:${{ needs.setup.outputs.build-version }}
+        docker tag $NAME $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
+        docker push $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
 
   backend:
     strategy:
@@ -283,8 +283,8 @@ jobs:
     - run: echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
     - name: download
       run: |
-        docker pull $DOCKER_REGISTRY/$NAME-backend:${{ needs.setup.outputs.build-version }}
-        docker tag $DOCKER_REGISTRY/$NAME-backend:${{ needs.setup.outputs.build-version }} $NAME-backend:latest
+        docker pull $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
+        docker tag $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION $NAME-backend:latest
 
 
         curl -L -uprince-chrismc:${{ secrets.JFROG_RTFACT_PASSWORD }} -O "$DIST_URL/$NAME-static-fe-$BUILD_VERSION.tar.gz"
