@@ -306,10 +306,17 @@ jobs:
         mkdir -p bin
         mv $NAME-static-fe-$BUILD_VERSION.tar.gz bin/web-app.tar.gz
     - name: build
-      run: docker build . --file Dockerfile.alt --tag $NAME
+      uses: docker/build-push-action@v2
+      with:
+        push: false
+        file: Dockerfile.alt
+        tags: |
+          test-image
+          ${{ env.output-name }}
+          $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
     - name: run
       run: |
-        docker run --name test -p 8443:8443 --rm -d $NAME
+        docker run --name test -p 8443:8443 --rm -d test-image
         docker ps | grep test
     - name: test
       run: |
@@ -318,15 +325,16 @@ jobs:
     - name: stop
       run: docker kill test
     - name: push
-      run: |
-        docker tag $NAME ${{ env.output-name }}
-        docker push ${{ env.output-name }}
+      run: docker push ${{ env.output-name }}
+    - if: github.event_name == 'push'
+      uses: docker/login-action@v1
+      with:
+        registry: princechrismc.jfrog.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.JFROG_RTFACT_PASSWORD }}
     - name: upload
       if: github.event_name == 'push'
-      run: |
-        echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
-        docker tag $NAME $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
-        docker push $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
+      run: docker push $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
 
   push:
     needs: [setup, test]
