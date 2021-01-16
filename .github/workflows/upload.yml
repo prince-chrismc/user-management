@@ -303,15 +303,18 @@ jobs:
         mkdir -p bin
         mv $NAME-static-fe-$BUILD_VERSION.tar.gz bin/web-app.tar.gz
     - name: build
+      run: docker build . --file Dockerfile.alt --tag $NAME
+    - name: run
       run: |
-        docker build . --file Dockerfile.alt --tag $NAME
-    - name: test
-      run: test
         docker run --name test -p 8443:8443 --rm -d $NAME
         docker ps | grep test
+    - name: test
+      run: |
         curl -s -k --key backend/certs/key.pem --cert backend/certs/server.pem -o output.log --url https://localhost:8443/index.html
         cat output.log | grep -q "<title>User Management</title>"
         docker kill test
+    - name: stop
+      run: docker kill test
     - if: github.event_name == 'push'
       run: |
         echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
