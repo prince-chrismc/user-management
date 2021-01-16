@@ -161,7 +161,6 @@ jobs:
     - name: upload
       run: conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
   
-  
   install-image:
     needs: [setup, alpine-backend]
     runs-on: ubuntu-latest
@@ -170,6 +169,8 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ github.token }}
+    env:
+      name: docker.pkg.github.com/${{ github.repository }}/${{ env.NAME }}-backend:${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
@@ -193,12 +194,14 @@ jobs:
         rc-update add docker boot
         
         cd backend
-        docker build . --file Dockerfile --tag $NAME
+        docker build . --file Dockerfile --tag ${{ env.name }}
+        echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+        docker push ${{ env.name }}
     - if: github.event_name == 'push'
       name: upload
       run: |
         echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
-        docker tag $NAME $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
+        docker tag ${{ env.name }} $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
         docker push $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
 
   backend:
@@ -277,15 +280,16 @@ jobs:
 
   test:
     needs: [setup, install-image, frontend]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest    
+    env:
+      name: docker.pkg.github.com/${{ github.repository }}/${{ env.NAME }}-backend:${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
     - run: echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
     - name: download
       run: |
-        docker pull $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
-        docker tag $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION $NAME-backend:latest
-
+        docker pull ${{ env.name }}
+        docker tag ${{ env.name }} $NAME-backend:latest
 
         curl -L -uprince-chrismc:${{ secrets.JFROG_RTFACT_PASSWORD }} -O "$DIST_URL/$NAME-static-fe-$BUILD_VERSION.tar.gz"
         mv $NAME-static-fe-$BUILD_VERSION.tar.gz bin/web-app.tar.gz
