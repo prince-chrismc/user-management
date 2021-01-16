@@ -1,9 +1,3 @@
-FROM ubuntu:latest
+FROM user-management-backend:latest
 
-ADD bin/user_database_app /usr/local/bin
 ADD bin/web-app.tar.gz /opt/um/
-ADD backend/certs /opt/um/certs
-
-WORKDIR /opt/um
-
-ENTRYPOINT user_database_app dist certs -a "0.0.0.0" -p 8443 -n 4
