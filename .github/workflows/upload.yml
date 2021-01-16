@@ -300,8 +300,8 @@ jobs:
         docker tag ${{ env.name }} $NAME-backend:latest
 
         curl -L -uprince-chrismc:${{ secrets.JFROG_RTFACT_PASSWORD }} -O "$DIST_URL/$NAME-static-fe-$BUILD_VERSION.tar.gz"
+        mkdir -p bin
         mv $NAME-static-fe-$BUILD_VERSION.tar.gz bin/web-app.tar.gz
-        echo "Gathered all Deps for build"
     - name: build
       run: |
         docker build . --file Dockerfile.alt --tag $NAME
