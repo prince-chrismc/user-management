@@ -346,4 +346,4 @@ jobs:
         run: |
           docker pull $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
           docker tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION $DOCKER_REGISTRY/$NAME:${{ needs.setup.outputs.build-version }}
-          docker push $DOCKER_REGISTRY/$NAME:{{ needs.setup.outputs.build-version }}
+          docker push $DOCKER_REGISTRY/$NAME:${{ needs.setup.outputs.build-version }}
