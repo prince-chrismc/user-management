@@ -162,7 +162,7 @@ jobs:
         
         conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=Release
         
-        conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock
+        conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock --build missing
     - name: upload
       run: conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
   
