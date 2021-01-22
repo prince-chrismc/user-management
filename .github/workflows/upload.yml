@@ -162,9 +162,9 @@ jobs:
         
         conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=Release
         
-        conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock --build missing
+        conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock
     - name: upload
-      run: conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
+      run: conan upload '*' -r $CONAN_REMOTE --all
   
   install-image:
     needs: [setup, alpine-backend]
@@ -191,7 +191,7 @@ jobs:
         conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
         
         cd backend
-        conan install $NAME/$BUILD_VERSION@ --build missing
+        conan install $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE
     - name: build
       run: |
         # https://stackoverflow.com/a/57868193/8480874
