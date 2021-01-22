@@ -76,6 +76,10 @@ jobs:
         
         conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=Release        
         conan lock build-order locks/conan.lock --json=build_order.json
+    - uses: actions/upload-artifact@v2
+      with:
+        name: conan-lockfile
+        path: backend/locks/conan.lock
     - id: set-matrix
       name: output
       run: |
@@ -121,12 +125,16 @@ jobs:
         key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
     - uses: ./.github/actions/setup-conan
       if: ${{ matrix.reference != 'null' }}
+    - name: download
+      if: ${{ matrix.reference != 'null' }}
+      uses: actions/download-artifact@v2
+      with:
+        name: my-artifact
     - name: build
       if: ${{ matrix.reference != 'null' }}
       run: |
         conan profile update settings.compiler.musl=1.2 default
-        
-        conan lock create --reference=${{ matrix.reference }}
+        ls -R
         conan install ${{ matrix.reference }} -l conan.lock -b missing
     - name: upload
       if: ${{ matrix.reference != 'null' }}
