@@ -164,7 +164,7 @@ jobs:
         
         conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock
     - name: upload
-      run: conan upload '*' -r $CONAN_REMOTE --all
+      run: conan upload "*" --all -r $CONAN_REMOTE -c
   
   install-image:
     needs: [setup, alpine-backend]
