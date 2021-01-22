@@ -107,7 +107,7 @@ jobs:
       - run: echo "${{ fromJson(needs.calc-deps.outputs.matrix) }}"
       - uses: actions/download-artifact@v2
         with:
-          name: my-artifact
+          name: conan-lockfile
       - run: ls -R
 
   build-deps:
@@ -121,33 +121,35 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.calc-deps.outputs.matrix) }}
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v2
-      if: ${{ matrix.reference != 'null' }}
-      with:
-        path: ~/.conan/data
-        key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
-    - uses: ./.github/actions/setup-conan
-      if: ${{ matrix.reference != 'null' }}
-    - name: download
-      if: ${{ matrix.reference != 'null' }}
-      uses: actions/download-artifact@v2
-      with:
-        name: my-artifact
-    - name: build
-      if: ${{ matrix.reference != 'null' }}
-      run: |
-        conan profile update settings.compiler.musl=1.2 default
-        ls -R
-        conan install ${{ matrix.reference }} -l conan.lock -b missing
-    - name: upload
-      if: ${{ matrix.reference != 'null' }}
-      run: |
-        conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
-        conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
-                
-        conan upload ${{ matrix.reference }} -r $CONAN_REMOTE --all
-    - run: exit 0
+      - if: ${{ matrix.reference == 'null' }}
+        run: exit 0
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        if: ${{ matrix.reference != 'null' }}
+        with:
+          path: ~/.conan/data
+          key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
+      - uses: ./.github/actions/setup-conan
+        if: ${{ matrix.reference != 'null' }}
+      - name: download
+        if: ${{ matrix.reference != 'null' }}
+        uses: actions/download-artifact@v2
+        with:
+          name: conan-lockfile
+      - name: build
+        if: ${{ matrix.reference != 'null' }}
+        run: |
+          conan profile update settings.compiler.musl=1.2 default
+          ls -R
+          conan install ${{ matrix.reference }} -l conan.lock -b missing
+      - name: upload
+        if: ${{ matrix.reference != 'null' }}
+        run: |
+          conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
+          conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+
+          conan upload ${{ matrix.reference }} -r $CONAN_REMOTE --all
+      - run: exit 0
   
   alpine-backend:
     needs: [setup, build-deps]
