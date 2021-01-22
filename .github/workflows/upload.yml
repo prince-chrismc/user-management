@@ -207,14 +207,14 @@ jobs:
           conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
           conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
 
-          conan install $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE -l conan.lock -if /tmp/um
+          conan install $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE -l conan.lock -if backend
       - name: build
         run: |
           # https://stackoverflow.com/a/57868193/8480874
           apk add --update docker openrc
           rc-update add docker boot
 
-          docker build /tmp/um --file backend/Dockerfile --tag ${{ env.name }}
+          docker build backend --file backend/Dockerfile --tag ${{ env.name }}
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
           docker push ${{ env.name }}
       - if: github.event_name == 'push'
