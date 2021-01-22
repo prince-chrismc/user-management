@@ -38,8 +38,6 @@ jobs:
       name: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
-    - uses: satackey/action-docker-layer-caching@v0.0.11
-      continue-on-error: true
     - uses: docker/login-action@v1
       with:
         registry: docker.pkg.github.com
@@ -180,7 +178,7 @@ jobs:
       - name: upload
         run: conan upload "*" --all -r $CONAN_REMOTE -c
   
-  install-image:
+  backend-image:
     needs: [setup, alpine-backend]
     runs-on: ubuntu-latest
     container: 
@@ -310,7 +308,6 @@ jobs:
         echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
         docker tag ${{ env.name }} $DOCKER_REGISTRY/$NAME-frontend:$BUILD_VERSION
         docker push $DOCKER_REGISTRY/$NAME-frontend:$BUILD_VERSION
-        
 
   frontend-pack:
     runs-on: ubuntu-latest
@@ -334,11 +331,12 @@ jobs:
         npm publish --registry $NPM_REGISTRY_URL $NAME-$BUILD_VERSION.tgz
 
   test:
-    needs: [setup, install-image, frontend]
+    needs: [setup, backend-image, frontend-image]
     runs-on: ubuntu-latest    
     env:
-      input-name: docker.pkg.github.com/${{ github.repository }}/user-management-backend:${{ needs.setup.outputs.build-version }}
-      output-name: docker.pkg.github.com/${{ github.repository }}/user-management:${{ needs.setup.outputs.build-version }}
+      backend-image: docker.pkg.github.com/${{ github.repository }}/user-management-backend:${{ needs.setup.outputs.build-version }}
+      frontend-image: docker.pkg.github.com/${{ github.repository }}/user-management-frontend:${{ needs.setup.outputs.build-version }}
+      um-image: docker.pkg.github.com/${{ github.repository }}/user-management:${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
     - uses: docker/login-action@v1
@@ -348,26 +346,19 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: download
       run: |
-        docker pull ${{ env.input-name }}
-        docker tag ${{ env.input-name }} $NAME-backend:latest
-
-        curl -L -uprince-chrismc:${{ secrets.JFROG_RTFACT_PASSWORD }} -O "$DIST_URL/$NAME-static-fe-$BUILD_VERSION.tar.gz"
-        mkdir -p bin
-        mv $NAME-static-fe-$BUILD_VERSION.tar.gz bin/web-app.tar.gz
-    - name: build
-      run: docker build . --file Dockerfile.alt --tag test-image --tag ${{ env.output-name }} --tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
-    - name: run
-      run: |
-        docker run --name test -p 8443:8443 --rm -d test-image
-        docker ps | grep test
+        docker pull ${{ env.backend-image }}
+        docker tag ${{ env.backend-image }} $NAME-backend:latest
+        
+        docker pull ${{ env.frontend-image }}
+        docker tag ${{ env.frontend-image }} $NAME-frontend:latest
+    - run: docker build . --file Dockerfile.alt --tag test-image --tag ${{ env.um-image }} --tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
+    - run: docker run --name test -p 8443:8443 --rm -d test-image
     - name: test
       run: |
         curl -s -k --key backend/certs/key.pem --cert backend/certs/server.pem -o output.log --url https://localhost:8443/index.html
         cat output.log | grep -q "<title>User Management</title>"
-    - name: stop
-      run: docker kill test
-    - name: push
-      run: docker push ${{ env.output-name }}
+    - run: docker kill test
+    - run: docker push ${{ env.um-image }}
     - if: github.event_name == 'push'
       uses: docker/login-action@v1
       with:
@@ -378,7 +369,7 @@ jobs:
       if: github.event_name == 'push'
       run: docker push $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
 
-  push:
+  upload:
     needs: [setup, test]
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
