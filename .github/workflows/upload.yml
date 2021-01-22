@@ -263,7 +263,7 @@ jobs:
         curl -uprince-chrismc:${{ secrets.JFROG_RTFACT_PASSWORD }} -T $NAME-static-fe-$BUILD_VERSION.tar.gz "$DIST_URL/$NAME-static-fe-$BUILD_VERSION.tar.gz"
         
   frontend-image:
-    needs: [frontend]
+    needs: [setup, frontend]
     runs-on: ubuntu-latest
     env:
       name: docker.pkg.github.com/${{ github.repository }}/user-management-frontend:${{ needs.setup.outputs.build-version }}
