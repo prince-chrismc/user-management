@@ -191,7 +191,7 @@ jobs:
         conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
         
         cd backend
-        conan install $NAME/$BUILD_VERSION@
+        conan install $NAME/$BUILD_VERSION@ --build missing
     - name: build
       run: |
         # https://stackoverflow.com/a/57868193/8480874
@@ -277,12 +277,11 @@ jobs:
     - name: download
       run: |
         curl -L -uprince-chrismc:${{ secrets.JFROG_RTFACT_PASSWORD }} -O "$DIST_URL/$NAME-static-fe-$BUILD_VERSION.tar.gz"
-        mkdir -p bin
-        mv $NAME-static-fe-$BUILD_VERSION.tar.gz z
+        mkdir -p /tmp/um
+        tar -C /tmp/um -zxvf $NAME-static-fe-$BUILD_VERSION.tar.gz
     - name: build
-      run: |        
-        cd web-app
-        docker build . --file Dockerfile --tag ${{ env.name }}
+      run: |
+        docker build /tmp/um --file web-app/Dockerfile --tag ${{ env.name }}
         docker push ${{ env.name }}
     - if: github.event_name == 'push'
       uses: docker/login-action@v1
