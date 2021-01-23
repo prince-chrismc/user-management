@@ -25,7 +25,7 @@ class RemoveUser extends Component {
   }
 
   handleDelete = () => {
-    const etag = Etag(this.state.email, this.state.id, this.state.name)
+    const etag = Etag(this.state.id, this.state.name, this.state.email)
     DeleteUser(this.state.id, etag)
       .then(() => this.toggleSuccess())
       .catch((err) => this.toggleError(err))

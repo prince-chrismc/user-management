@@ -38,19 +38,14 @@ jobs:
       name: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
-    - uses: satackey/action-docker-layer-caching@v0.0.11
-      continue-on-error: true
     - uses: docker/login-action@v1
       with:
         registry: docker.pkg.github.com
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - uses: docker/build-push-action@v2
-      with:
-        push: true
-        file: backend/Dockerfile.build
-        tags: ${{ env.name }}
-  
+    - run: docker build . --file backend/Dockerfile.build --tag ${{ env.name }}
+    - run: docker push ${{ env.name }}
+
   calc-deps:
     needs: [setup, build-image]
     runs-on: ubuntu-latest
@@ -79,6 +74,10 @@ jobs:
         
         conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=Release        
         conan lock build-order locks/conan.lock --json=build_order.json
+    - uses: actions/upload-artifact@v2
+      with:
+        name: conan-lockfile
+        path: backend/locks/conan.lock
     - id: set-matrix
       name: output
       run: |
@@ -104,6 +103,10 @@ jobs:
       - run: echo "${{ needs.calc-deps.outputs.empty_matrix }}"
       - run: echo "${{ needs.calc-deps.outputs.matrix }}"
       - run: echo "${{ fromJson(needs.calc-deps.outputs.matrix) }}"
+      - uses: actions/download-artifact@v2
+        with:
+          name: conan-lockfile
+      - run: ls -R
 
   build-deps:
     needs: [setup, calc-deps]
@@ -116,29 +119,33 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.calc-deps.outputs.matrix) }}
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v2
-      if: ${{ matrix.reference != 'null' }}
-      with:
-        path: ~/.conan/data
-        key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
-    - uses: ./.github/actions/setup-conan
-      if: ${{ matrix.reference != 'null' }}
-    - name: build
-      if: ${{ matrix.reference != 'null' }}
-      run: |
-        conan profile update settings.compiler.musl=1.2 default
-        
-        conan lock create --reference=${{ matrix.reference }}
-        conan install ${{ matrix.reference }} -l conan.lock -b missing
-    - name: upload
-      if: ${{ matrix.reference != 'null' }}
-      run: |
-        conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
-        conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
-                
-        conan upload ${{ matrix.reference }} -r $CONAN_REMOTE --all
-    - run: exit 0
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        if: ${{ matrix.reference != 'null' }}
+        with:
+          path: ~/.conan/data
+          key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
+      - uses: ./.github/actions/setup-conan
+        if: ${{ matrix.reference != 'null' }}
+      - name: download
+        if: ${{ matrix.reference != 'null' }}
+        uses: actions/download-artifact@v2
+        with:
+          name: conan-lockfile
+      - name: build
+        if: ${{ matrix.reference != 'null' }}
+        run: |
+          conan profile update settings.compiler.musl=1.2 default
+          
+          conan install ${{ matrix.reference }} -l conan.lock -b missing
+      - name: upload
+        if: ${{ matrix.reference != 'null' }}
+        run: |
+          conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
+          conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+
+          conan upload ${{ matrix.reference }} -r $CONAN_REMOTE --all
+      - run: exit 0
   
   alpine-backend:
     needs: [setup, build-deps]
@@ -149,27 +156,27 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ github.token }}
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v2
-      with:
-        path: ~/.conan/data
-        key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
-    - uses: ./.github/actions/setup-conan
-    - name: build
-      run: |
-        conan profile update settings.compiler.musl=1.2 default
-        
-        cd backend
-        conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
-        conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
-        
-        conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=Release
-        
-        conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock
-    - name: upload
-      run: conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.conan/data
+          key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
+      - uses: actions/download-artifact@v2
+        with:
+          name: conan-lockfile
+      - uses: ./.github/actions/setup-conan
+      - name: setup
+        run: |
+          conan profile update settings.compiler.musl=1.2 default
+
+          conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
+          conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+      - name: build
+        run: conan create backend/conanfile.py $BUILD_VERSION@ --lockfile conan.lock
+      - name: upload
+        run: conan upload "*" --all -r $CONAN_REMOTE -c
   
-  install-image:
+  backend-image:
     needs: [setup, alpine-backend]
     runs-on: ubuntu-latest
     container: 
@@ -180,43 +187,44 @@ jobs:
     env:
       name: docker.pkg.github.com/${{ github.repository }}/user-management-backend:${{ needs.setup.outputs.build-version }}
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v2
-      with:
-        path: ~/.conan/data
-        key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
-    - uses: ./.github/actions/setup-conan
-    - name: download
-      run: |
-        conan profile update settings.compiler.musl=1.2 default
-        
-        conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
-        conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
-        
-        cd backend
-        conan install $NAME/$BUILD_VERSION@
-    - name: build
-      run: |
-        # https://stackoverflow.com/a/57868193/8480874
-        apk add --update docker openrc
-        rc-update add docker boot
-        
-        cd backend
-        docker build . --file Dockerfile --tag ${{ env.name }}
-        echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-        docker push ${{ env.name }}
-    - if: github.event_name == 'push'
-      name: upload
-      run: |
-        echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
-        docker tag ${{ env.name }} $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
-        docker push $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.conan/data
+          key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
+      - uses: actions/download-artifact@v2
+        with:
+          name: conan-lockfile
+      - uses: ./.github/actions/setup-conan
+      - name: download
+        run: |
+          conan profile update settings.compiler.musl=1.2 default
+
+          conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
+          conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+
+          conan install $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE -l conan.lock -if backend
+      - name: build
+        run: |
+          # https://stackoverflow.com/a/57868193/8480874
+          apk add --update docker openrc
+          rc-update add docker boot
+
+          docker build backend --file backend/Dockerfile --tag ${{ env.name }}
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+          docker push ${{ env.name }}
+      - if: github.event_name == 'push'
+        name: upload
+        run: |
+          echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
+          docker tag ${{ env.name }} $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
+          docker push $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
 
   backend:
     strategy:
       fail-fast: true
       matrix:
-        build-type: [Release, Debug]
+        build-type: [Release]
         logging: [syslog, console]
     runs-on: ubuntu-latest
     steps:
@@ -261,9 +269,43 @@ jobs:
     - run: |
         cd web-app/
         yarn install
-        yarn build
+        yarn build --env.API_URL=https://ec2-18-222-250-141.us-east-2.compute.amazonaws.com
         GZIP=-9 tar -zcf $NAME-static-fe-$BUILD_VERSION.tar.gz dist/
         curl -uprince-chrismc:${{ secrets.JFROG_RTFACT_PASSWORD }} -T $NAME-static-fe-$BUILD_VERSION.tar.gz "$DIST_URL/$NAME-static-fe-$BUILD_VERSION.tar.gz"
+        
+  frontend-image:
+    needs: [setup, frontend]
+    runs-on: ubuntu-latest
+    env:
+      name: docker.pkg.github.com/${{ github.repository }}/user-management-frontend:${{ needs.setup.outputs.build-version }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: docker/login-action@v1
+      with:
+        registry: docker.pkg.github.com
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: download
+      run: |
+        curl -L -uprince-chrismc:${{ secrets.JFROG_RTFACT_PASSWORD }} -O "$DIST_URL/$NAME-static-fe-$BUILD_VERSION.tar.gz"
+        mkdir -p /tmp/um
+        tar -C /tmp/um -zxvf $NAME-static-fe-$BUILD_VERSION.tar.gz
+    - name: build
+      run: |
+        docker build /tmp/um --file web-app/Dockerfile --tag ${{ env.name }}
+        docker push ${{ env.name }}
+    - if: github.event_name == 'push'
+      uses: docker/login-action@v1
+      with:
+        registry: princechrismc.jfrog.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.JFROG_RTFACT_PASSWORD }}
+    - if: github.event_name == 'push'
+      name: upload
+      run: |
+        echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
+        docker tag ${{ env.name }} $DOCKER_REGISTRY/$NAME-frontend:$BUILD_VERSION
+        docker push $DOCKER_REGISTRY/$NAME-frontend:$BUILD_VERSION
 
   frontend-pack:
     runs-on: ubuntu-latest
@@ -287,11 +329,12 @@ jobs:
         npm publish --registry $NPM_REGISTRY_URL $NAME-$BUILD_VERSION.tgz
 
   test:
-    needs: [setup, install-image, frontend]
+    needs: [setup, backend-image, frontend-image]
     runs-on: ubuntu-latest    
     env:
-      input-name: docker.pkg.github.com/${{ github.repository }}/user-management-backend:${{ needs.setup.outputs.build-version }}
-      output-name: docker.pkg.github.com/${{ github.repository }}/user-management:${{ needs.setup.outputs.build-version }}
+      backend-image: docker.pkg.github.com/${{ github.repository }}/user-management-backend:${{ needs.setup.outputs.build-version }}
+      frontend-image: docker.pkg.github.com/${{ github.repository }}/user-management-frontend:${{ needs.setup.outputs.build-version }}
+      um-image: docker.pkg.github.com/${{ github.repository }}/user-management:${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
     - uses: docker/login-action@v1
@@ -301,37 +344,30 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: download
       run: |
-        docker pull ${{ env.input-name }}
-        docker tag ${{ env.input-name }} $NAME-backend:latest
-
-        curl -L -uprince-chrismc:${{ secrets.JFROG_RTFACT_PASSWORD }} -O "$DIST_URL/$NAME-static-fe-$BUILD_VERSION.tar.gz"
-        mkdir -p bin
-        mv $NAME-static-fe-$BUILD_VERSION.tar.gz bin/web-app.tar.gz
-    - name: build
-      run: docker build . --file Dockerfile.alt --tag test-image --tag ${{ env.output-name }} --tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
-    - name: run
-      run: |
-        docker run --name test -p 8443:8443 --rm -d test-image
-        docker ps | grep test
+        docker pull ${{ env.backend-image }}
+        docker tag ${{ env.backend-image }} $NAME-backend:latest
+        
+        docker pull ${{ env.frontend-image }}
+        docker tag ${{ env.frontend-image }} $NAME-frontend:latest
+    - run: docker build . --file Dockerfile.alt --tag test-image --tag ${{ env.um-image }} --tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
+    - run: docker run --name test -p 8443:8443 --rm -d test-image
     - name: test
       run: |
         curl -s -k --key backend/certs/key.pem --cert backend/certs/server.pem -o output.log --url https://localhost:8443/index.html
         cat output.log | grep -q "<title>User Management</title>"
-    - name: stop
-      run: docker kill test
-    - name: push
-      run: docker push ${{ env.output-name }}
-    - if: github.event_name == 'push'
+    - run: docker kill test
+    - run: docker push ${{ env.um-image }}
+    - #if: github.event_name == 'push'
       uses: docker/login-action@v1
       with:
         registry: princechrismc.jfrog.io
         username: ${{ github.repository_owner }}
         password: ${{ secrets.JFROG_RTFACT_PASSWORD }}
     - name: upload
-      if: github.event_name == 'push'
+      #if: github.event_name == 'push'
       run: docker push $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
 
-  push:
+  upload:
     needs: [setup, test]
     runs-on: ubuntu-latest
     if: github.event_name == 'push'

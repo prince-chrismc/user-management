@@ -1,3 +1,5 @@
+FROM user-management-frontend:latest as fe
+
 FROM user-management-backend:latest
 
-ADD bin/web-app.tar.gz /opt/um/
+COPY --from=fe /usr/share/nginx/html /opt/um/dist/
