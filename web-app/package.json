@@ -21,7 +21,7 @@
     "react-async": "^10.0.1",
     "react-dom": "^16.8.6",
     "react-imported-component": "^6.3.13",
-    "react-live-clock": "5.0.12",
+    "react-live-clock": "5.0.13",
     "react-router-dom": "^5.0.1",
     "semantic-ui-react": "^2.0.3"
   },
