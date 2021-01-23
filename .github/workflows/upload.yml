@@ -119,8 +119,6 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.calc-deps.outputs.matrix) }}
     steps:
-      - if: ${{ matrix.reference == 'null' }}
-        run: exit 0
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
         if: ${{ matrix.reference != 'null' }}
@@ -226,7 +224,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        build-type: [Release, Debug]
+        build-type: [Release]
         logging: [syslog, console]
     runs-on: ubuntu-latest
     steps:
@@ -366,7 +364,7 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.JFROG_RTFACT_PASSWORD }}
     - name: upload
-      if: github.event_name == 'push'
+      #if: github.event_name == 'push'
       run: docker push $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
 
   upload:
