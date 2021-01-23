@@ -62,7 +62,7 @@ void verify_etag(const handler::request_handle &req, user_management::user_key i
   verify_if_match(req);
   if (conditional_matching(req, http_field::if_match, etag)) return;
 
-  throw precondition_failed(fmt::format("the user '{}' was modified without you knowledge", id));
+  throw precondition_failed(fmt::format("the user '{}' was modified without you knowledge. New 'ETag' is: {}", id, etag));
 }
 }  // namespace
 
