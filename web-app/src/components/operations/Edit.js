@@ -25,7 +25,7 @@ class ModifyUser extends Component {
   }
 
   handleSubmit = (name, email) => {
-    const etag = Etag(this.state.email, this.state.id, this.state.name)
+    const etag = Etag(this.state.id, this.state.name, this.state.email)
     EditUser(this.state.id, name, email, etag)
       .then((data) => { this.toggleSuccess(data.name, data.email) })
       .catch((err) => this.toggleError(err))
