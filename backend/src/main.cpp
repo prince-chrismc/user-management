@@ -67,32 +67,51 @@ auto server_handler(const std::string &root_dir, user_database &db) {
   return router;
 }
 
+template <bool enable_tls>
+struct server_traits : restinio::traits_t<restinio::asio_timer_manager_t, server_logger, handler::router> {};
+template <>
+struct server_traits<true> : restinio::tls_traits_t<restinio::asio_timer_manager_t, server_logger, handler::router> {};
+
+template <typename traits>
+restinio::run_on_thread_pool_settings_t<traits> make_settings(const app_args_t &args) {
+  return restinio::on_thread_pool<traits>(args.pool_size)
+      .address(args.address)
+      .port(args.port)
+      .read_next_http_message_timelimit(10s)
+      .write_http_response_timelimit(1s)
+      .handle_request_timeout(1s);
+}
+
 namespace ssl = restinio::asio_ns::ssl;
 int main(int argc, char const *argv[]) {
   const auto args = app_args_t::parse(argc, argv);
-  if(!args.has_value())
-    return static_cast<int>(args.error());
+  if (!args.has_value()) return static_cast<int>(args.error());
+
+  // Setup the empty database
+  user_database db;
+
+  const auto enable_tls = args->certs_dir.has_value();
 
   try {
-    ssl::context tls_context{ssl::context::tls};
-    tls_context.set_options(ssl::context::default_workarounds | ssl::context::no_sslv2 |
-                            ssl::context::no_sslv3 | ssl::context::no_tlsv1 |
-                            ssl::context::single_dh_use);
+    if (enable_tls) {
+      ssl::context tls_context{ssl::context::tls};
+      tls_context.set_options(ssl::context::default_workarounds | ssl::context::no_sslv2 | ssl::context::no_sslv3 |
+                              ssl::context::no_tlsv1 | ssl::context::no_tlsv1_1 | ssl::context::single_dh_use);
 
-    tls_context.use_certificate_chain_file(args->certs_dir + "/server.pem");
-    tls_context.use_private_key_file(args->certs_dir + "/key.pem", ssl::context::pem);
-    tls_context.use_tmp_dh_file(args->certs_dir + "/dh2048.pem");
+      const auto &certs_dir = args->certs_dir.value();
+      tls_context.use_certificate_chain_file(certs_dir + "/server.pem");
+      tls_context.use_private_key_file(certs_dir + "/key.pem", ssl::context::pem);
+      tls_context.use_tmp_dh_file(certs_dir + "/dh2048.pem");
 
-    user_database db;
-    using traits_t = restinio::tls_traits_t<restinio::asio_timer_manager_t, server_logger, handler::router>;
-    restinio::run(restinio::on_thread_pool<traits_t>(args->pool_size)
-                      .address(args->address)
-                      .port(args->port)
-                      .request_handler(server_handler(args->root_dir, db))
-                      .read_next_http_message_timelimit(10s)
-                      .write_http_response_timelimit(1s)
-                      .handle_request_timeout(1s)
-                      .tls_context(std::move(tls_context)));
+      auto pool_settings = make_settings<server_traits<true>>(args.value());
+      pool_settings.tls_context(std::move(tls_context)).request_handler(server_handler(args->root_dir, db));
+      restinio::run(std::move(pool_settings));
+    } else {
+      auto pool_settings = make_settings<server_traits<false>>(args.value());
+      pool_settings.request_handler(server_handler(args->root_dir, db));
+      restinio::run(std::move(pool_settings));
+    }
+
   } catch (const std::exception &ex) {
     std::cerr << "Error: " << ex.what() << std::endl;
     return 1;

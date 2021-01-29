@@ -12,6 +12,8 @@ conan config set general.revisions_enabled=1
 
 *Note*: You will need to clear your conan cache, use `conan remove -f '*'`
 
+<!--> TODO: Add instructions for installing musl libc settings <-->
+
 ### Conan Lockfile
 
 To create the top level `conan.lock` run:
@@ -34,15 +36,27 @@ conan lock create conanfile.py --lockfile=conan.lock --lockfile-out=build/conan.
 cd build && conan install .. --lockfile=conan.lock
 ```
 
+## Development
+
+### Update Conan Lockfile
+
+```sh
+conan lock create conanfile.py --version=1.0.0-dev.0 --base --update
+```
+
+```sh
+cd build && conan install .. -s build_type=Debug --lockfile=../conan.lock
+```
+
 ## Usage
 
-### Package
+### Package Back-end
 
 ```sh
 conan create . 1.0.0-dev.0+`git rev-parse --short HEAD`@
 ```
 
-### Deploy
+### Install Application
 
 > :notebook: This step requires the [packing](#package) to be completed first
 
@@ -50,12 +64,20 @@ conan create . 1.0.0-dev.0+`git rev-parse --short HEAD`@
 conan install user-managment/1.0.0-dev.0+`git rev-parse --short HEAD`
 ```
 
-## Development
+### Build Docker Image
 
 ```sh
-conan lock create conanfile.py --version=1.0.0-dev.0 --base --update
+docker build . -f Dockerfile -t user-managment-backend:1.0.0-dev.0 # Docker does not support SemVer build information
 ```
 
+## Run Container
+
 ```sh
-conan install .. -s build_type=Debug --lockfile=../conan.lock
+docker run --rm -d -p 8443:8443 -v "$(pwd):/dist" user-managment-backend:1.0.0-dev.0
+```
+
+> :notebook: By default the back-end image is setup for HTTPS for unsecure transport use the following
+
+```sh
+docker run --rm -d --entrypoint "user_database_app dist -a '0.0.0.0' -p 8080 -n 4" -p 8080:8080 -v "$(pwd):/dist" user-managment-backend:1.0.0-dev.0
 ```
