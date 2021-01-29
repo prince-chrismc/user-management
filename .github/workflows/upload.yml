@@ -351,20 +351,24 @@ jobs:
         docker tag ${{ env.frontend-image }} $NAME-frontend:latest
     - run: docker build . --file Dockerfile.alt --tag test-image --tag ${{ env.um-image }} --tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
     - run: docker run --name test -p 8443:8443 --rm -d test-image
-    - name: test
+    - name: test HTTPS
       run: |
         curl -s -k --key backend/certs/key.pem --cert backend/certs/server.pem -o output.log --url https://localhost:8443/index.html
         cat output.log | grep -q "<title>User Management</title>"
     - run: docker kill test
+    - run: docker run --name test -p 8080:8080 --rm -d test-image dist -a "0.0.0.0" -p 8080 -n 4
+    - name: test HTTP
+      run: |
+        curl -s -o output.log --url http://localhost:8080/index.html
+        cat output.log | grep -q "<title>User Management</title>"
+    - run: docker kill test
     - run: docker push ${{ env.um-image }}
-    - #if: github.event_name == 'push'
-      uses: docker/login-action@v1
+    - uses: docker/login-action@v1
       with:
         registry: princechrismc.jfrog.io
         username: ${{ github.repository_owner }}
         password: ${{ secrets.JFROG_RTFACT_PASSWORD }}
     - name: upload
-      #if: github.event_name == 'push'
       run: docker push $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
 
   upload:
