@@ -79,5 +79,5 @@ docker run --rm -d -p 8443:8443 -v "$(pwd):/dist" user-managment-backend:1.0.0-d
 > :notebook: By default the back-end image is setup for HTTPS for unsecure transport use the following
 
 ```sh
-docker run --rm -d --entrypoint "user_database_app dist -a '0.0.0.0' -p 8080 -n 4" -p 8080:8080 -v "$(pwd):/dist" user-managment-backend:1.0.0-dev.0
+docker run --rm -d -p 8080:8080 -v "$(pwd):/dist" user-managment-backend:1.0.0-dev.0 dist -a "0.0.0.0" -p 8080 -n 4
 ```
