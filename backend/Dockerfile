@@ -7,5 +7,5 @@ ADD certs /opt/um/certs
 
 WORKDIR /opt/um
 
-ENTRYPOINT user_database_app
-CMD dist certs -a "0.0.0.0" -p 8443 -n 4
+ENTRYPOINT ["user_database_app"]
+CMD ["dist", "certs", "-a", "0.0.0.0", "-p", "8443", "-n", "4"]
