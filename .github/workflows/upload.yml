@@ -403,8 +403,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: pulumi/action-install-pulumi-cli@v1.0.1
-      - run: cd .infra/
-      - run: pulumi stack select dev
       - uses: pulumi/actions@v1
         with:
           command: up
+        env: 
+          PULUMI_ROOT: .infra/
+          PULUMI_STACK_NAME: dev
