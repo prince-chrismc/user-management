@@ -346,7 +346,6 @@ jobs:
       run: |
         docker pull ${{ env.backend-image }}
         docker tag ${{ env.backend-image }} $NAME-backend:latest
-        
         docker pull ${{ env.frontend-image }}
         docker tag ${{ env.frontend-image }} $NAME-frontend:latest
     - run: docker build . --file Dockerfile.alt --tag test-image --tag ${{ env.um-image }} --tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
