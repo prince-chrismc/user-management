@@ -412,7 +412,7 @@ jobs:
       - name: report
         run: |
           cd .infra/
-          jq -nc '{"body": "$(pulumi stack output url)"}' | \
+          jq -nc "{\"body\": \"$(pulumi stack output url)\"}" | \
           curl -sL  -X POST -d @- \
             -H "Content-Type: application/json" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
