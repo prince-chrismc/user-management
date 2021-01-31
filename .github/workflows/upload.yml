@@ -346,6 +346,7 @@ jobs:
       run: |
         docker pull ${{ env.backend-image }}
         docker tag ${{ env.backend-image }} $NAME-backend:latest
+        
         docker pull ${{ env.frontend-image }}
         docker tag ${{ env.frontend-image }} $NAME-frontend:latest
     - run: docker build . --file Dockerfile.alt --tag test-image --tag ${{ env.um-image }} --tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
@@ -408,3 +409,11 @@ jobs:
         env: 
           PULUMI_ROOT: .infra/
           PULUMI_STACK_NAME: dev
+      - name: report
+        run: |
+          cd .infra/
+          jq -nc '{"body": "$(pulumi stack output url)"}' | \
+          curl -sL  -X POST -d @- \
+            -H "Content-Type: application/json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/comments"
