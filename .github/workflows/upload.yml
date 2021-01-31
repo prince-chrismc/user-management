@@ -373,6 +373,10 @@ jobs:
 
   upload:
     needs: [setup, test]
+    strategy:
+      matrix:
+        image: ['user-management', 'user-management-backend' ]
+      fail-fast: true
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     steps:
@@ -384,6 +388,6 @@ jobs:
           password: ${{ secrets.JFROG_RTFACT_PASSWORD }}
       - name: push
         run: |
-          docker pull $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
-          docker tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION $DOCKER_REGISTRY/$NAME:${{ needs.setup.outputs.build-version }}
-          docker push $DOCKER_REGISTRY/$NAME:${{ needs.setup.outputs.build-version }}
+          docker pull $DOCKER_REGISTRY/${{ matrix.image }}:$BUILD_VERSION
+          docker tag $DOCKER_REGISTRY/${{ matrix.image }}:$BUILD_VERSION $DOCKER_REGISTRY/${{ matrix.image }}:${{ needs.setup.outputs.build-version }}
+          docker push $DOCKER_REGISTRY/${{ matrix.image }}:${{ needs.setup.outputs.build-version }}
