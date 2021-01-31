@@ -393,9 +393,9 @@ jobs:
           docker push $DOCKER_REGISTRY/${{ matrix.image }}:${{ needs.setup.outputs.build-version }}
 
   deploy:
-    needs: [setup, backend-image]
+    needs: [setup, upload]
     runs-on: ubuntu-latest
-    # if: github.event_name == 'push'
+    if: github.event_name == 'push'
     env: 
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
