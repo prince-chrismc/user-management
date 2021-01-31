@@ -373,6 +373,10 @@ jobs:
 
   upload:
     needs: [setup, test]
+    strategy:
+      matrix:
+        image: ['user-management', 'user-management-backend' ]
+      fail-fast: true
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     steps:
@@ -384,6 +388,33 @@ jobs:
           password: ${{ secrets.JFROG_RTFACT_PASSWORD }}
       - name: push
         run: |
-          docker pull $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
-          docker tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION $DOCKER_REGISTRY/$NAME:${{ needs.setup.outputs.build-version }}
-          docker push $DOCKER_REGISTRY/$NAME:${{ needs.setup.outputs.build-version }}
+          docker pull $DOCKER_REGISTRY/${{ matrix.image }}:$BUILD_VERSION
+          docker tag $DOCKER_REGISTRY/${{ matrix.image }}:$BUILD_VERSION $DOCKER_REGISTRY/${{ matrix.image }}:${{ needs.setup.outputs.build-version }}
+          docker push $DOCKER_REGISTRY/${{ matrix.image }}:${{ needs.setup.outputs.build-version }}
+
+  deploy:
+    needs: [setup, upload]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    env: 
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pulumi/action-install-pulumi-cli@v1.0.1
+      - uses: pulumi/actions@v1
+        with:
+          command: up
+        env: 
+          PULUMI_ROOT: .infra/
+          PULUMI_STACK_NAME: dev
+      - name: report
+        run: |
+          cd .infra/
+          pulumi stack select dev
+          jq -nc "{\"body\": \":rocket: automatically deployed to http://$(pulumi stack output url)\"}" | \
+          curl -sL  -X POST -d @- \
+            -H "Content-Type: application/json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/comments"
