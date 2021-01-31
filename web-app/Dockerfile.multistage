@@ -1,8 +1,9 @@
-FROM 14-alpine3.12 as install
+FROM node:14-alpine3.12 as install
 RUN yarn install
 
-FROM 14-alpine3.12 as build
+FROM install as build
 ARG api_url
+ADD . .
 RUN yarn build --env.API_URL=${api_url}
 
 FROM nginx:1.19.6-alpine
