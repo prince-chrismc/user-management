@@ -413,7 +413,7 @@ jobs:
         run: |
           cd .infra/
           pulumi stack select dev
-          jq -nc "{\"body\": \"$(pulumi stack output url)\"}" | \
+          jq -nc "{\"body\": \":rocket: automatically deployed to http://$(pulumi stack output url)\"}" | \
           curl -sL  -X POST -d @- \
             -H "Content-Type: application/json" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
