@@ -1,4 +1,5 @@
 FROM node:14-alpine3.12 as install
+ADD yarn.lock yarn.lock
 RUN yarn install
 
 FROM install as build
