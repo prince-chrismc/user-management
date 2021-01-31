@@ -59,7 +59,7 @@
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.32",
     "postcss": "^8.2.4",
-    "postcss-loader": "^4.1.0",
+    "postcss-loader": "^4.2.0",
     "postcss-preset-env": "^6.7.0",
     "react-hot-loader": "^4.12.6",
     "react-moment": "^0.9.7",
