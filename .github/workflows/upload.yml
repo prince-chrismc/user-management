@@ -378,7 +378,7 @@ jobs:
         image: ['user-management', 'user-management-backend' ]
       fail-fast: true
     runs-on: ubuntu-latest
-    # if: github.event_name == 'push'
+    if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v2
       - uses: docker/login-action@v1
@@ -390,7 +390,7 @@ jobs:
         run: |
           docker pull $DOCKER_REGISTRY/${{ matrix.image }}:$BUILD_VERSION
           docker tag $DOCKER_REGISTRY/${{ matrix.image }}:$BUILD_VERSION $DOCKER_REGISTRY/${{ matrix.image }}:${{ needs.setup.outputs.build-version }}
-          # docker push $DOCKER_REGISTRY/${{ matrix.image }}:${{ needs.setup.outputs.build-version }}
+          docker push $DOCKER_REGISTRY/${{ matrix.image }}:${{ needs.setup.outputs.build-version }}
 
   deploy:
     needs: [setup, upload]
