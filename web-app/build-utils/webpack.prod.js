@@ -1,6 +1,5 @@
 const commonPaths = require('./common-paths');
 
-const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const config = {
@@ -19,18 +18,37 @@ const config = {
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
+            options: {
+              esModule: true,
+              modules: {
+                namedExport: true,
+              },
+            },
           },
           {
             loader: 'css-loader',
             options: {
-              modules: true,
-              importLoaders: 1,
-              localsConvention: 'camelCase',
-              sourceMap: true,
-            },
+              esModule: true,
+              modules: {
+                namedExport: true,
+              },
+              importLoaders: 1
+            }
           },
           {
             loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [
+                  [
+                    "postcss-preset-env",
+                    {
+                      // Options
+                    },
+                  ],
+                ],
+              },
+            },
           },
         ],
       },
