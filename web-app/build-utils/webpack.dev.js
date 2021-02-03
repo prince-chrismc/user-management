@@ -19,13 +19,20 @@ const config = {
         use: [
           {
             loader: 'style-loader',
+            options: {
+              esModule: true,
+              modules: {
+                namedExport: true,
+              },
+            },
           },
           {
             loader: 'css-loader',
             options: {
-              modules: true,
-              localsConvention: 'camelCase',
-              sourceMap: true,
+              esModule: true,
+              modules: {
+                namedExport: true,
+              },
             },
           },
         ],
