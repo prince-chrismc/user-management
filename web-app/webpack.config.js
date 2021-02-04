@@ -25,7 +25,11 @@ module.exports = env => {
       plugins: [
         new webpack.DefinePlugin({
           'process.env.API_URL': JSON.stringify(`${env.API_URL}`)
-        })
+        }),
+        new webpack.ProvidePlugin({
+          'React': 'react',
+          'ReactDOM': 'react-dom',
+        }),
       ]
     }
   );

@@ -1,4 +1,3 @@
-import React from 'react'
 import { Card, Button, Placeholder } from 'semantic-ui-react'
 
 const UserPlaceholder = () => (
