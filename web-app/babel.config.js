@@ -1,4 +1,4 @@
-const presets = ["@babel/preset-react", "@babel/preset-env"];
+const presets = ["@babel/preset-react"];
 const plugins = [
   "react-hot-loader/babel",
   "@babel/plugin-syntax-dynamic-import",
@@ -6,7 +6,10 @@ const plugins = [
 ];
 
 if (process.env["ENV"] === "prod") {
-  presets.push({ "modules": false });
+  presets.push(["@babel/preset-env", { modules: false }]);
+} else {
+  presets.push(["@babel/preset-env", { useBuiltIns: "usage", corejs: { version: "3.8", proposals: true } }]);
+  plugins.push("@babel/plugin-transform-runtime")
 }
 
 module.exports = { presets, plugins };

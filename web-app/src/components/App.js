@@ -1,7 +1,6 @@
 import { Component } from 'react'
 import { Message, Icon, Card } from 'semantic-ui-react'
 import { useAsync } from 'react-async'
-import regeneratorRuntime from 'regenerator-runtime' // required for async
 
 import Layout from './Layout'
 import User from './cards/Display'

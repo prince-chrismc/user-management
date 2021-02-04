@@ -29,6 +29,7 @@
     "@babel/core": "^7.12.10",
     "@babel/plugin-proposal-class-properties": "^7.5.0",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.12.13",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-react": "^7.12.13",
     "@testing-library/dom": "^7.29.4",
@@ -40,6 +41,7 @@
     "babel-jest": "^26.1.0",
     "babel-loader": "^8.2.2",
     "chalk": "^4.1.0",
+    "core-js": "^3.8.3",
     "cross-env": "^7.0.2",
     "crypto-js": "^4.0.0",
     "css-loader": "^5.0.1",
@@ -84,7 +86,11 @@
     "hot module replacement",
     "hmr"
   ],
+  "browserslist": "> 0.25%, not dead",
   "jest": {
+    "setupFiles": [
+      "<rootDir>/jest.setup.js"
+    ],
     "collectCoverageFrom": [
       "src/**/*.js",
       "!src/index.js",
