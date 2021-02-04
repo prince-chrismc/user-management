@@ -1,12 +1,25 @@
 import { Component } from 'react'
 import { Message, Icon, Card } from 'semantic-ui-react'
 import { useAsync } from 'react-async'
+import importedComponent from 'react-imported-component';
 
 import Layout from './Layout'
-import User from './cards/Display'
-import AddCard from './cards/Add'
 import UserPlaceholder from './cards/Loading'
 import { LoadUsers } from './endpoints/List'
+
+const AsyncUser = importedComponent(
+  () => import(/* webpackChunkName:'UserCard' */ './cards/Display'),
+  {
+    LoadingComponent: UserPlaceholder
+  }
+);
+
+const AsyncAddCard = importedComponent(
+  () => import(/* webpackChunkName:'AddCard' */ './cards/Add'),
+  {
+    LoadingComponent: UserPlaceholder
+  }
+);
 
 class MakeCards extends Component {
   state = { users: this.props.users }
@@ -19,13 +32,13 @@ class MakeCards extends Component {
     this.setState(prevState => ({ users: prevState.users.filter((user) => { return user.id !== id }) }))
   }
 
-  render () {
+  render() {
     return (
       <Card.Group>
         {this.state.users.map(user => (
-          <User id={user.id} name={user.name} email={user.email} onDelete={this.onDelete} />
+          <AsyncUser id={user.id} name={user.name} email={user.email} onDelete={this.onDelete} />
         ))}
-        <AddCard onAdd={this.onAdd} />
+        <AsyncAddCard onAdd={this.onAdd} />
       </Card.Group>
     )
   }
