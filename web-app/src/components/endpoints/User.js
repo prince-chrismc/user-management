@@ -17,5 +17,5 @@ export const DeleteUser = async (id, etag) => {
     headers: { 'If-Match': '"' + etag + '"' }
   }
   return await fetch(process.env.API_URL + '/um/v1/users/' + id, requestOptions)
-    .then(res => (res.status == 204 ? null : Promise.reject(res)))
+    .then(res => (res.status === 204 ? null : Promise.reject(res)))
 }
