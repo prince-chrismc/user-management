@@ -1,8 +1,8 @@
-import sha256 from 'crypto-js/sha256'
-import Base64 from 'crypto-js/enc-base64'
+import { fromByteArray } from 'base64-js';
+import { sha256 } from 'js-sha256'
 
 export const Etag = (id, name, email) => {
-  return Base64.stringify(sha256(JSON.stringify({
+  return fromByteArray(sha256.array(JSON.stringify({
     // Order is important
     email: email,
     id: id,
