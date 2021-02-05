@@ -5,7 +5,7 @@ import waitForExpect from 'wait-for-expect'
 
 import ModifyUser from './Edit'
 
-jest.mock('../endpoints/User', () => {
+jest.mock('../../core/services/User', () => {
   return {
     EditUser: jest.fn((id, name, email) => {
       console.log('throwing')

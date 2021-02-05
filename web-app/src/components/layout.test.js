@@ -1,10 +1,7 @@
-import React from 'react'
 import { render } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 
 import Layout from './Layout'
-
-// jest.mock('react-live-clock')
 
 test('renders a placeholder', () => {
   Date.now = jest.fn(() => 1482363367071)

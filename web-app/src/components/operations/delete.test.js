@@ -5,7 +5,8 @@ import waitForExpect from 'wait-for-expect'
 
 import RemoveUser from './Delete'
 
-jest.mock('../endpoints/User')
+jest.mock('../../core/services/List')
+jest.mock('../../core/services/User')
 
 test('renders', () => {
   const { getByRole, queryByRole, queryByText } = render(

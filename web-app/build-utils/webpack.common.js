@@ -46,7 +46,7 @@ const config = {
     }),
     new MomentLocalesPlugin(),
     new MomentTimezoneDataPlugin({
-      matchZones: ['/^Etc/'],
+      matchZones: ['Etc/UTC'],
       startYear: 2020,
       endYear: 2025,
   }),

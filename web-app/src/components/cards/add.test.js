@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 
 import AddCard from './Add'
 
-jest.mock('../endpoints/List')
+jest.mock('../../core/services/List')
 
 test('renders', () => {
   const { getByText, getByRole } = render(<AddCard />)
@@ -20,7 +20,7 @@ test('updates on add', async () => {
     <AddCard onAdd={mockCallback} />)
 
   userEvent.click(getByRole('button', { name: 'Add' }))
-  waitFor(() => getByRole('button', { name: 'Save' }))
+  waitFor(() => getByRole('button', { name: 'Save' })) // Wait for module to pop up
 
   fireEvent.change(getByPlaceholderText('Name'), { target: { value: 'Jane Doe' } })
   fireEvent.change(getByPlaceholderText('Email'), { target: { value: 'jane@example.com' } })

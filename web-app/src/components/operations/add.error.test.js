@@ -5,7 +5,7 @@ import waitForExpect from 'wait-for-expect'
 
 import CreateUser from './Add'
 
-jest.mock('../endpoints/List', () => {
+jest.mock('../../core/services/List', () => {
   return {
     AddUser: jest.fn((name, email) => {
       console.log('throwing')

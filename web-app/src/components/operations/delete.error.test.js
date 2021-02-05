@@ -5,7 +5,7 @@ import waitForExpect from 'wait-for-expect'
 
 import RemoveUser from './Delete'
 
-jest.mock('../endpoints/User', () => {
+jest.mock('../../core/services/User', () => {
   return {
     EditUser: jest.fn((id, name, email) => { }),
     DeleteUser: jest.fn((id) => { return new Promise((resolve, reject) => reject(new Error('mock network error'))) })

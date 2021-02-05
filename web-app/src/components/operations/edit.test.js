@@ -5,7 +5,8 @@ import userEvent from '@testing-library/user-event'
 
 import ModifyUser from './Edit'
 
-jest.mock('../endpoints/User')
+jest.mock('../../core/services/List')
+jest.mock('../../core/services/User')
 
 test('renders', () => {
   render(<ModifyUser id="0" name="Jenny Doe" email="jenny@example.com"

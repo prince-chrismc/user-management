@@ -5,7 +5,7 @@ import waitForExpect from 'wait-for-expect'
 
 import CreateUser from './Add'
 
-jest.mock('../endpoints/List')
+jest.mock('../../core/services/List')
 
 test('renders', () => {
   render(<CreateUser onAdd={(id, name, email) => { expect(true).toBe(false) }} />)

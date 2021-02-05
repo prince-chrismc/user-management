@@ -3,7 +3,7 @@ import { Message } from 'semantic-ui-react'
 
 import PopupModal from '../dialogs/UserModal'
 import FormEditNameAndEmail from '../dialogs/EditForm'
-import { AddUser } from '../endpoints/List'
+import { AddUser } from '../../core/services/List'
 
 class CreateUser extends Component {
   state = { showError: false, errMsg: '', showOkay: false }
