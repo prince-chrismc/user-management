@@ -4,7 +4,10 @@ import importedComponent from 'react-imported-component';
 
 import Layout from './Layout'
 import { LoadUsers } from '../core/services/List'
-import { Placeholders } from './decks/Placeholders'
+
+const AsyncPlaceholders = importedComponent(
+  () => import(/* webpackChunkName:'Placeholders' */ './decks/Placeholders'),
+);
 
 const AsyncMakeCards = importedComponent(
   () => import(/* webpackChunkName:'MakeCards' */ './decks/Individuals'),
@@ -26,7 +29,7 @@ const EditUsers = () => {
             We are fetching that content for you.
           </Message.Content>
         </Message>
-        <Placeholders />
+        <AsyncPlaceholders />
       </>
     )
   }
@@ -38,7 +41,7 @@ const EditUsers = () => {
           <Message.Header>Oh no! Something went wrong. Please Submit an issue to our support team.</Message.Header>
           <p>{error.message}</p>
         </Message>
-        <Placeholders />
+        <AsyncPlaceholders />
       </>
     )
   }
