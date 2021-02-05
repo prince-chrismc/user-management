@@ -1,4 +1,4 @@
-import { render, fireEvent, waitFor, screen } from '@testing-library/react'
+import { render, fireEvent, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import waitForExpect from 'wait-for-expect'
 import userEvent from '@testing-library/user-event'
@@ -105,7 +105,7 @@ test('renders', () => {
 })
 
 test('updates on add', async () => {
-  const { container, getByPlaceholderText, getByRole, getByText } = render(
+  const { getByPlaceholderText, getByRole, getByText } = render(
     <MakeCards
       users={[{ id: 99, name: 'Jenny Doe', email: 'jenny@example.com' }]}
     />
@@ -132,7 +132,7 @@ test('updates on add', async () => {
 })
 
 test('updates on edit', async () => {
-  const { container, getByPlaceholderText, getByRole, getByText } = render(
+  const { getByPlaceholderText, getByRole, getByText } = render(
     <MakeCards
       users={[{ id: 99, name: 'Jenny Doe', email: 'jenny@example.com' }]}
     />

@@ -1,4 +1,4 @@
-import { Message, Icon, Card } from 'semantic-ui-react'
+import { Message, Icon } from 'semantic-ui-react'
 import { useAsync } from 'react-async'
 import importedComponent from 'react-imported-component'
 
@@ -12,7 +12,7 @@ const AsyncPlaceholders = importedComponent(
 const AsyncMakeCards = importedComponent(
   () => import(/* webpackChunkName:'MakeCards' */ './decks/Individuals'),
   {
-    LoadingComponent: Placeholders
+    LoadingComponent: AsyncPlaceholders
   }
 )
 

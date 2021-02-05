@@ -43,7 +43,7 @@ test('default data on submit', async () => {
 
 test('new data on submit', async () => {
   const mockCallback = jest.fn((id, name, email) => { })
-  const { getByPlaceholderText, getByRole, getByText } = render(<CreateUser onAdd={mockCallback} />)
+  const { getByPlaceholderText, getByRole } = render(<CreateUser onAdd={mockCallback} />)
 
   userEvent.click(screen.getByText('Add'))
   waitFor(() => getByRole('button', { name: 'Save' }))
