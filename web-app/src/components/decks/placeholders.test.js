@@ -1,10 +1,10 @@
-import { render } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
+import { render } from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
 
-import { Placeholders } from "./Placeholders";
+import { Placeholders } from './Placeholders'
 
-test("renders a placeholder", () => {
-  const { container } = render(<Placeholders />);
+test('renders a placeholder', () => {
+  const { container } = render(<Placeholders />)
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div
       class="ui cards"
@@ -242,5 +242,5 @@ test("renders a placeholder", () => {
         </div>
       </div>
     </div>
-  `);
-});
+  `)
+})

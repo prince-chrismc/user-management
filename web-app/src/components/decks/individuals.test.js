@@ -1,19 +1,19 @@
-import { render, fireEvent, waitFor, screen } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
-import waitForExpect from "wait-for-expect";
-import userEvent from "@testing-library/user-event";
+import { render, fireEvent, waitFor, screen } from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
+import waitForExpect from 'wait-for-expect'
+import userEvent from '@testing-library/user-event'
 
-import { MakeCards } from "./Individuals";
+import { MakeCards } from './Individuals'
 
-jest.mock("../../core/services/List");
-jest.mock("../../core/services/User");
+jest.mock('../../core/services/List')
+jest.mock('../../core/services/User')
 
-test("renders", () => {
+test('renders', () => {
   const { container } = render(
     <MakeCards
-      users={[{ id: 99, name: "Jenny Doe", email: "jenny@example.com" }]}
+      users={[{ id: 99, name: 'Jenny Doe', email: 'jenny@example.com' }]}
     />
-  );
+  )
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div
       class="ui cards"
@@ -101,56 +101,56 @@ test("renders", () => {
         </div>
       </div>
     </div>
-  `);
-});
+  `)
+})
 
-test("updates on add", async () => {
+test('updates on add', async () => {
   const { container, getByPlaceholderText, getByRole, getByText } = render(
     <MakeCards
-      users={[{ id: 99, name: "Jenny Doe", email: "jenny@example.com" }]}
+      users={[{ id: 99, name: 'Jenny Doe', email: 'jenny@example.com' }]}
     />
-  );
+  )
 
-  userEvent.click(getByRole("button", { name: "Edit" }));
-  waitFor(() => getByRole("button", { name: "Save" }));
+  userEvent.click(getByRole('button', { name: 'Edit' }))
+  waitFor(() => getByRole('button', { name: 'Save' }))
 
-  fireEvent.change(getByPlaceholderText("Name"), {
-    target: { value: "John Doe" },
-  });
-  fireEvent.change(getByPlaceholderText("Email"), {
-    target: { value: "john@example.com" },
-  });
-  userEvent.click(getByRole("button", { name: "Save" }));
+  fireEvent.change(getByPlaceholderText('Name'), {
+    target: { value: 'John Doe' }
+  })
+  fireEvent.change(getByPlaceholderText('Email'), {
+    target: { value: 'john@example.com' }
+  })
+  userEvent.click(getByRole('button', { name: 'Save' }))
 
   await waitForExpect(() => {
-    expect(getByRole("button", { name: "Save" })).toBeDisabled();
-    expect(getByText("Success!", { exact: false })).toBeInTheDocument();
-  }, 700);
+    expect(getByRole('button', { name: 'Save' })).toBeDisabled()
+    expect(getByText('Success!', { exact: false })).toBeInTheDocument()
+  }, 700)
 
-  expect(getByText("John Doe")).toBeInTheDocument();
-  expect(getByText("john@example.com")).toBeInTheDocument();
-});
+  expect(getByText('John Doe')).toBeInTheDocument()
+  expect(getByText('john@example.com')).toBeInTheDocument()
+})
 
-test("updates on edit", async () => {
+test('updates on edit', async () => {
   const { container, getByPlaceholderText, getByRole, getByText } = render(
     <MakeCards
-      users={[{ id: 99, name: "Jenny Doe", email: "jenny@example.com" }]}
+      users={[{ id: 99, name: 'Jenny Doe', email: 'jenny@example.com' }]}
     />
-  );
+  )
 
-  userEvent.click(getByRole("button", { name: "Add" }));
-  waitFor(() => getByRole("button", { name: "Save" }));
+  userEvent.click(getByRole('button', { name: 'Add' }))
+  waitFor(() => getByRole('button', { name: 'Save' }))
 
-  fireEvent.change(getByPlaceholderText("Name"), {
-    target: { value: "Jane Doe" },
-  });
-  fireEvent.change(getByPlaceholderText("Email"), {
-    target: { value: "jane@example.com" },
-  });
-  userEvent.click(getByRole("button", { name: "Save" }));
+  fireEvent.change(getByPlaceholderText('Name'), {
+    target: { value: 'Jane Doe' }
+  })
+  fireEvent.change(getByPlaceholderText('Email'), {
+    target: { value: 'jane@example.com' }
+  })
+  userEvent.click(getByRole('button', { name: 'Save' }))
 
   await waitForExpect(() => {
-    expect(getByRole("button", { name: "Save" })).toBeDisabled();
-    expect(getByText("Success!", { exact: false })).toBeInTheDocument();
-  }, 700);
-});
+    expect(getByRole('button', { name: 'Save' })).toBeDisabled()
+    expect(getByText('Success!', { exact: false })).toBeInTheDocument()
+  }, 700)
+})

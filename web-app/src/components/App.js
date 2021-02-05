@@ -1,20 +1,20 @@
 import { Message, Icon, Card } from 'semantic-ui-react'
 import { useAsync } from 'react-async'
-import importedComponent from 'react-imported-component';
+import importedComponent from 'react-imported-component'
 
 import Layout from './Layout'
 import { LoadUsers } from '../core/services/List'
 
 const AsyncPlaceholders = importedComponent(
-  () => import(/* webpackChunkName:'Placeholders' */ './decks/Placeholders'),
-);
+  () => import(/* webpackChunkName:'Placeholders' */ './decks/Placeholders')
+)
 
 const AsyncMakeCards = importedComponent(
   () => import(/* webpackChunkName:'MakeCards' */ './decks/Individuals'),
   {
     LoadingComponent: Placeholders
   }
-);
+)
 
 const EditUsers = () => {
   const { data, error, isLoading } = useAsync({ promiseFn: LoadUsers })

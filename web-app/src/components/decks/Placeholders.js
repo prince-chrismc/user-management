@@ -7,4 +7,4 @@ export const Placeholders = () => (
         <UserPlaceholder key={x.toString()}/>
       ))}
     </Card.Group>
-  )
+)

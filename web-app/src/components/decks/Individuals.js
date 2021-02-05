@@ -6,16 +6,16 @@ import AddCard from '../cards/Add'
 
 export class MakeCards extends Component {
     state = { users: this.props.users }
-  
+
     onAdd = (user) => {
       this.setState({ users: this.state.users.concat(user) })
     }
-  
+
     onDelete = (id) => {
       this.setState(prevState => ({ users: prevState.users.filter((user) => { return user.id !== id }) }))
     }
-  
-    render() {
+
+    render () {
       return (
         <Card.Group>
           {this.state.users.map(user => (
@@ -25,4 +25,4 @@ export class MakeCards extends Component {
         </Card.Group>
       )
     }
-  }
+}
