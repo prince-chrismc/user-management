@@ -1,20 +1,11 @@
+import React, { lazy, Suspense } from 'react';
 import { Message, Icon } from 'semantic-ui-react'
 import { useAsync } from 'react-async'
-import importedComponent from 'react-imported-component'
 
 import Layout from './Layout'
 import { LoadUsers } from '../core/services/List'
-
-const AsyncPlaceholders = importedComponent(
-  () => import(/* webpackChunkName:'Placeholders' */ './decks/Placeholders')
-)
-
-const AsyncMakeCards = importedComponent(
-  () => import(/* webpackChunkName:'MakeCards' */ './decks/Individuals'),
-  {
-    LoadingComponent: AsyncPlaceholders
-  }
-)
+import { Placeholders } from './decks/Placeholders'
+import { MakeCards } from './decks/Individuals'
 
 const EditUsers = () => {
   const { data, error, isLoading } = useAsync({ promiseFn: LoadUsers })
@@ -29,7 +20,7 @@ const EditUsers = () => {
             We are fetching that content for you.
           </Message.Content>
         </Message>
-        <AsyncPlaceholders />
+        <Placeholders />
       </>
     )
   }
@@ -41,14 +32,14 @@ const EditUsers = () => {
           <Message.Header>Oh no! Something went wrong. Please Submit an issue to our support team.</Message.Header>
           <p>{error.message}</p>
         </Message>
-        <AsyncPlaceholders />
+        <Placeholders />
       </>
     )
   }
 
   if (data) {
     return (
-      <AsyncMakeCards users={data} />
+      <MakeCards users={data} />
     )
   }
 }
