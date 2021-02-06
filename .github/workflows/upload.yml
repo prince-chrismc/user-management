@@ -403,7 +403,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: pulumi/action-install-pulumi-cli@v1.0.1
-      - uses: pulumi/actions@v1
+      - uses: pulumi/actions@v1.2.0
         with:
           command: up
         env: 
