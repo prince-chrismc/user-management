@@ -1,5 +1,3 @@
-
-import React from 'react'
 import { Card, Button } from 'semantic-ui-react'
 
 import CreateUser from '../operations/Add'

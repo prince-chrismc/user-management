@@ -1,4 +1,3 @@
-import React from 'react'
 import { enableFetchMocks } from 'jest-fetch-mock' // mock fetch within list endpoints
 
 import { LoadUsers, AddUser } from './List'

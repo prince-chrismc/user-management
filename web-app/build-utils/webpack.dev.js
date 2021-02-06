@@ -40,6 +40,11 @@ const config = {
     ],
   },
   plugins: [new webpack.HotModuleReplacementPlugin()],
+  resolve: {
+    alias: {
+      'react-dom': '@hot-loader/react-dom'
+    }
+  },
   devServer: {
     host: 'localhost',
     port: port,

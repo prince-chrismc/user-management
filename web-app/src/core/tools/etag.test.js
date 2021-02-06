@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Etag } from './Etag'
 
 test('generates valid etag', () => {

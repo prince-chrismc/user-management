@@ -1,4 +1,3 @@
-import React from 'react'
 import Clock from 'react-live-clock'
 import { Header, Container, Divider, Icon, Grid } from 'semantic-ui-react'
 

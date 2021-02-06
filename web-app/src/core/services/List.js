@@ -1,5 +1,3 @@
-import regeneratorRuntime from 'regenerator-runtime' // required for async
-
 export const LoadUsers = async () => {
   const requestOptions = {
     headers: {

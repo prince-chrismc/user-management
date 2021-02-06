@@ -1,13 +1,11 @@
-import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom/extend-expect'
-import regeneratorRuntime from 'regenerator-runtime' // required for async
 import waitForExpect from 'wait-for-expect'
 
 import ModifyUser from './Edit'
 
-jest.mock('../endpoints/User', () => {
+jest.mock('../../core/services/User', () => {
   return {
     EditUser: jest.fn((id, name, email) => {
       console.log('throwing')

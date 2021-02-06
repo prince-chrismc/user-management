@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import { Message } from 'semantic-ui-react'
 
 import FormEditNameAndEmail from '../dialogs/EditForm'
 import PopupModal from '../dialogs/UserModal'
-import { EditUser } from '../endpoints/User'
-import { Etag } from '../tools/Etag'
+import { EditUser } from '../../core/services/User'
+import { Etag } from '../../core/tools/Etag'
 
 class ModifyUser extends Component {
   state = { id: this.props.id, name: this.props.name, email: this.props.email, showError: false, errMsg: '', showOkay: false }

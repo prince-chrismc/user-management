@@ -1,6 +1,8 @@
 const commonPaths = require('./common-paths');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
+const MomentTimezoneDataPlugin = require('moment-timezone-data-webpack-plugin');
 
 const config = {
   entry: {
@@ -15,7 +17,10 @@ const config = {
       {
         test: /\.(js)$/,
         exclude: /node_modules/,
-        use: ['babel-loader']
+        loader: 'babel-loader',
+        options: {
+          presets: ["@babel/preset-env"],
+        },
       }
     ]
   },
@@ -41,7 +46,13 @@ const config = {
     new HtmlWebpackPlugin({
       template: `public/index.html`,
       favicon: `public/favicon.ico`
-    })
+    }),
+    new MomentLocalesPlugin(),
+    new MomentTimezoneDataPlugin({
+      matchZones: ['Etc/UTC'],
+      startYear: 2020,
+      endYear: 2025,
+    }),
   ]
 };
 

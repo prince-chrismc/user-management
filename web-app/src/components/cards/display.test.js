@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, fireEvent, waitFor, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import waitForExpect from 'wait-for-expect'
@@ -6,7 +5,8 @@ import userEvent from '@testing-library/user-event'
 
 import User from './Display'
 
-jest.mock('../endpoints/User')
+jest.mock('../../core/services/List')
+jest.mock('../../core/services/User')
 
 test('renders', () => {
   const { getByText, getByRole } = render(<User id="0" name="Jenny Doe" email="jenny@example.com" />)

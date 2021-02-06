@@ -1,4 +1,3 @@
-import React from 'react'
 import { Form, Message } from 'semantic-ui-react'
 
 const FormConfirm = ({ name, handleSubmit, children, success, error }) => (

@@ -1,13 +1,11 @@
-import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom/extend-expect'
-import regeneratorRuntime from 'regenerator-runtime' // required for async
 import waitForExpect from 'wait-for-expect'
 
 import RemoveUser from './Delete'
 
-jest.mock('../endpoints/User', () => {
+jest.mock('../../core/services/User', () => {
   return {
     EditUser: jest.fn((id, name, email) => { }),
     DeleteUser: jest.fn((id) => { return new Promise((resolve, reject) => reject(new Error('mock network error'))) })

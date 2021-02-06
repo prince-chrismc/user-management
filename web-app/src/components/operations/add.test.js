@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, waitFor, screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom/extend-expect'
@@ -6,7 +5,7 @@ import waitForExpect from 'wait-for-expect'
 
 import CreateUser from './Add'
 
-jest.mock('../endpoints/List')
+jest.mock('../../core/services/List')
 
 test('renders', () => {
   render(<CreateUser onAdd={(id, name, email) => { expect(true).toBe(false) }} />)
@@ -44,7 +43,7 @@ test('default data on submit', async () => {
 
 test('new data on submit', async () => {
   const mockCallback = jest.fn((id, name, email) => { })
-  const { getByPlaceholderText, getByRole, getByText } = render(<CreateUser onAdd={mockCallback} />)
+  const { getByPlaceholderText, getByRole } = render(<CreateUser onAdd={mockCallback} />)
 
   userEvent.click(screen.getByText('Add'))
   waitFor(() => getByRole('button', { name: 'Save' }))

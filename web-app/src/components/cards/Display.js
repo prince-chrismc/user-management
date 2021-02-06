@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component } from 'react'
 import { Card, Button } from 'semantic-ui-react'
 
 import ModifyUser from '../operations/Edit'
