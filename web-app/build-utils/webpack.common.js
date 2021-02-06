@@ -3,7 +3,6 @@ const commonPaths = require('./common-paths');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 const MomentTimezoneDataPlugin = require('moment-timezone-data-webpack-plugin');
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 const config = {
   entry: {
@@ -20,7 +19,6 @@ const config = {
         exclude: /node_modules/,
         loader: 'babel-loader',
         options: {
-          plugins: ["lodash"],
           presets: ["@babel/preset-env"],
         },
       }
@@ -45,7 +43,6 @@ const config = {
     }
   },
   plugins: [
-    new LodashModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       template: `public/index.html`,
       favicon: `public/favicon.ico`
