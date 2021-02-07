@@ -74,10 +74,16 @@ cd build && conan install .. -s build_type=Debug --lockfile=../conan.lock
 
 ## Usage
 
+### Lock Dependency graph
+
+```sh
+conan lock create conanfile.py --version 1.0.0-dev.0+`git rev-parse --short HEAD` --lockfile=conan.lock --lockfile-out=locks/conan.lock
+```
+
 ### Package Back-end
 
 ```sh
-conan create . 1.0.0-dev.0+`git rev-parse --short HEAD`@
+conan create conanfile.py 1.0.0-dev.0+`git rev-parse --short HEAD`@ --lockfile locks/conan.lock
 ```
 
 ### Install Application
@@ -85,7 +91,7 @@ conan create . 1.0.0-dev.0+`git rev-parse --short HEAD`@
 > :notebook: This step requires the [packing](#package) to be completed first
 
 ```sh
-conan install user-managment/1.0.0-dev.0+`git rev-parse --short HEAD`
+conan install user-managment/1.0.0-dev.0+`git rev-parse --short HEAD`  --lockfile locks/conan.lock
 ```
 
 ### Build Docker Image
