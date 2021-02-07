@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v1.0.0-dev.1](https://github.com/prince-chrismc/user-management/tree/v1.0.0-dev.1) (2021-02-07)
+
+[Full Changelog](https://github.com/prince-chrismc/user-management/compare/v1.0.0-dev.0...v1.0.0-dev.1)
+
+**API updates:**
+
+- Conditional API requests - rfc7232 [\#10](https://github.com/prince-chrismc/user-management/pull/10)
+
+**Implemented enhancements:**
+
+- Logging support for backend [\#17](https://github.com/prince-chrismc/user-management/issues/17)
+- Add support for an plain HTTP backend [\#63](https://github.com/prince-chrismc/user-management/pull/63)
+
+- implementation of conditional request support [\#11](https://github.com/prince-chrismc/user-management/pull/11)
+
+**Fixed bugs:**
+
+- Fix css loader configuration [\#77](https://github.com/prince-chrismc/user-management/pull/77)
+- Current time displayed in the wrong position [\#66](https://github.com/prince-chrismc/user-management/issues/66)
+- Separate front-end from FQDN + Fix front-end Etag handling + Stabilize CI [\#52](https://github.com/prince-chrismc/user-management/pull/52)
+- add new user API is not correctly supported [\#14](https://github.com/prince-chrismc/user-management/issues/14)
+- fixing new user being empty [\#13](https://github.com/prince-chrismc/user-management/pull/13)
+
+**Deployment improvements:**
+
+- Infrastructure as code [\#19](https://github.com/prince-chrismc/user-management/issues/19)
+- Improve front-end test coverage + reduce bundle size [\#78](https://github.com/prince-chrismc/user-management/pull/78)
+- Infrastructure as code deployment [\#70](https://github.com/prince-chrismc/user-management/pull/70)
+- Combined Alpine deployment image [\#38](https://github.com/prince-chrismc/user-management/pull/38)
+- Leverage alpine build and runtime image for condensed image sizes [\#37](https://github.com/prince-chrismc/user-management/pull/37)
+
+**Closed issues:**
+
+- Improved documentation [\#18](https://github.com/prince-chrismc/user-management/issues/18)
+
+**Merged pull requests:**
+
+- Updating project documentation [\#79](https://github.com/prince-chrismc/user-management/pull/79)
+- Build various configuration of backend in parallel [\#32](https://github.com/prince-chrismc/user-management/pull/32)
+- leveraging binary repo to store build artifacts [\#26](https://github.com/prince-chrismc/user-management/pull/26)
+- Add code analysis to CI/CD [\#20](https://github.com/prince-chrismc/user-management/pull/20)
+
 ## [v1.0.0-dev.0](https://github.com/prince-chrismc/user-management/tree/v1.0.0-dev.0) (2020-08-12)
 
 [Full Changelog](https://github.com/prince-chrismc/user-management/compare/30247851259609ff3d66a4e788abd86cd2ec0af9...v1.0.0-dev.0)
@@ -16,14 +58,14 @@ All notable changes to this project will be documented in this file. This projec
 
 **Merged pull requests:**
 
-- refinements to API documentation [\#9](https://github.com/prince-chrismc/user-management/pull/9) ([prince-chrismc](https://github.com/prince-chrismc))
-- adding tests for endpoints [\#8](https://github.com/prince-chrismc/user-management/pull/8) ([prince-chrismc](https://github.com/prince-chrismc))
-- Improve front-end testing [\#7](https://github.com/prince-chrismc/user-management/pull/7) ([prince-chrismc](https://github.com/prince-chrismc))
-- user delete tests produce false positive [\#6](https://github.com/prince-chrismc/user-management/pull/6) ([prince-chrismc](https://github.com/prince-chrismc))
-- adding tests for add, edit, and deleting a user [\#5](https://github.com/prince-chrismc/user-management/pull/5) ([prince-chrismc](https://github.com/prince-chrismc))
-- adding coverage test [\#4](https://github.com/prince-chrismc/user-management/pull/4) ([prince-chrismc](https://github.com/prince-chrismc))
-- limit the number of jobs ran on each commit [\#3](https://github.com/prince-chrismc/user-management/pull/3) ([prince-chrismc](https://github.com/prince-chrismc))
-- Bump websocket-extensions from 0.1.3 to 0.1.4 in /web-app [\#2](https://github.com/prince-chrismc/user-management/pull/2) ([dependabot[bot]](https://github.com/apps/dependabot))
-- Chore/update json schema [\#1](https://github.com/prince-chrismc/user-management/pull/1) ([prince-chrismc](https://github.com/prince-chrismc))
+- refinements to API documentation [\#9](https://github.com/prince-chrismc/user-management/pull/9)
+- adding tests for endpoints [\#8](https://github.com/prince-chrismc/user-management/pull/8)
+- Improve front-end testing [\#7](https://github.com/prince-chrismc/user-management/pull/7)
+- user delete tests produce false positive [\#6](https://github.com/prince-chrismc/user-management/pull/6)
+- adding tests for add, edit, and deleting a user [\#5](https://github.com/prince-chrismc/user-management/pull/5)
+- adding coverage test [\#4](https://github.com/prince-chrismc/user-management/pull/4)
+- limit the number of jobs ran on each commit [\#3](https://github.com/prince-chrismc/user-management/pull/3)
+- Bump websocket-extensions from 0.1.3 to 0.1.4 in /web-app [\#2](https://github.com/prince-chrismc/user-management/pull/2)
+- Chore/update json schema [\#1](https://github.com/prince-chrismc/user-management/pull/1)
 
 \* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*

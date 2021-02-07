@@ -1,7 +1,7 @@
 openapi: "3.0.0"
 info:
   title: User Management API
-  version: "1.0.0-dev.0"
+  version: "1.0.0-dev.1"
   description: >-
     A Simple API for creating, editing, and deleting
     users. The goal here is to offer minimal flexability

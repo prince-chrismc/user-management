@@ -63,7 +63,7 @@ cmake .. -DRUN_TIDY=ON
 To update the top level `conan.lock` run:
 
 ```sh
-conan lock create conanfile.py --version=1.0.0-dev.0 --base --update
+conan lock create conanfile.py --version=1.0.0-dev.1 --base --update
 ```
 
 ```sh
@@ -77,13 +77,13 @@ cd build && conan install .. -s build_type=Debug --lockfile=../conan.lock
 ### Lock Dependency graph
 
 ```sh
-conan lock create conanfile.py --version 1.0.0-dev.0+`git rev-parse --short HEAD` --lockfile=conan.lock --lockfile-out=locks/conan.lock
+conan lock create conanfile.py --version 1.0.0-dev.1+`git rev-parse --short HEAD` --lockfile=conan.lock --lockfile-out=locks/conan.lock
 ```
 
 ### Package Back-end
 
 ```sh
-conan create conanfile.py 1.0.0-dev.0+`git rev-parse --short HEAD`@ --lockfile locks/conan.lock
+conan create conanfile.py 1.0.0-dev.1+`git rev-parse --short HEAD`@ --lockfile locks/conan.lock
 ```
 
 ### Install Application
@@ -91,23 +91,23 @@ conan create conanfile.py 1.0.0-dev.0+`git rev-parse --short HEAD`@ --lockfile l
 > :notebook: This step requires the [packing](#package) to be completed first
 
 ```sh
-conan install user-managment/1.0.0-dev.0+`git rev-parse --short HEAD`  --lockfile locks/conan.lock
+conan install user-managment/1.0.0-dev.1+`git rev-parse --short HEAD`  --lockfile locks/conan.lock
 ```
 
 ### Build Docker Image
 
 ```sh
-docker build . -f Dockerfile -t user-managment-backend:1.0.0-dev.0 # Docker does not support SemVer build information
+docker build . -f Dockerfile -t user-managment-backend:1.0.0-dev.1 # Docker does not support SemVer build information
 ```
 
 ## Run Container
 
 ```sh
-docker run --rm -d -p 8443:8443 -v "$(pwd):/dist" user-managment-backend:1.0.0-dev.0
+docker run --rm -d -p 8443:8443 -v "$(pwd):/dist" user-managment-backend:1.0.0-dev.1
 ```
 
 > :notebook: By default the back-end image is setup for HTTPS for unsecure transport use the following
 
 ```sh
-docker run --rm -d -p 8080:8080 -v "$(pwd):/dist" user-managment-backend:1.0.0-dev.0 dist -a "0.0.0.0" -p 8080 -n 4
+docker run --rm -d -p 8080:8080 -v "$(pwd):/dist" user-managment-backend:1.0.0-dev.1 dist -a "0.0.0.0" -p 8080 -n 4
 ```

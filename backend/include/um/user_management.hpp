@@ -1,6 +1,6 @@
 // MIT License
 // Copyright (c) 2020 Christopher McArthur
-// Version: 1.0.0-dev.0
+// Version: 1.0.0-dev.1
 
 #ifndef UM_USER_MANAGEMENT_HPP_
 #define UM_USER_MANAGEMENT_HPP_
@@ -15,7 +15,7 @@
 #include "schemas.hpp"
 
 namespace user_management {
-constexpr auto version = "1.0.0-dev.0";
+constexpr auto version = "1.0.0-dev.1";
 
 using json = api::json;
 using user_key = size_t;

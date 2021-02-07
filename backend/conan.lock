@@ -2,7 +2,7 @@
  "graph_lock": {
   "nodes": {
    "0": {
-    "ref": "user-management/1.0.0-dev.0",
+    "ref": "user-management/1.0.0-dev.1",
     "requires": [
      "1",
      "3",

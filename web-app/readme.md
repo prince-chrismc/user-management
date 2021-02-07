@@ -85,7 +85,7 @@ yarn pack
 #### Build Docker Image
 
 ```sh
-docker build . -f Dockerfile -t user-managment-frontend:1.0.0-dev.0 # Docker does not support SemVer build information
+docker build . -f Dockerfile -t user-managment-frontend:1.0.0-dev.1 # Docker does not support SemVer build information
 ```
 
 As an alternative, the previsous two teps (package and build image), can be execture with the multistage builder
@@ -93,11 +93,11 @@ As an alternative, the previsous two teps (package and build image), can be exec
 ```sh
 docker build . -f Dockerfile.multistage \
 --build-arg api_url=https://ec2-18-222-250-141.us-east-2.compute.amazonaws.com \
--t user-managment-frontend:1.0.0-dev.0 
+-t user-managment-frontend:1.0.0-dev.1 
 ```
 
 ### Run Containers
 
 ```sh
-docker run --rm -d -p 80:80 user-managment-frontend:1.0.0-dev.0
+docker run --rm -d -p 80:80 user-managment-frontend:1.0.0-dev.1
 ```

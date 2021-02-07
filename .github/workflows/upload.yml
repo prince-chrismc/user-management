@@ -320,7 +320,7 @@ jobs:
         key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     - run: |
         cd web-app/
-        sed -i "s/1.0.0-dev.0/$BUILD_VERSION/1" package.json
+        sed -i "s/1.0.0-dev.1/$BUILD_VERSION/1" package.json
         npm config set registry $NPM_REGISTRY_URL
         echo '_auth = ${{ secrets.JFROG_RTFACT_NPM_AUTH }}' > ~/.npmrc
         echo 'email = prince.chrismc@gmail.com' >> ~/.npmrc
