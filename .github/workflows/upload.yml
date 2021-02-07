@@ -326,7 +326,7 @@ jobs:
         echo 'email = prince.chrismc@gmail.com' >> ~/.npmrc
         echo 'always-auth = true' >> ~/.npmrc
         npm pack
-        npm publish --registry $NPM_REGISTRY_URL $NAME-$BUILD_VERSION.tgz
+        npm publish --registry $NPM_REGISTRY_URL $NAME-frontend-$BUILD_VERSION.tgz
 
   test:
     needs: [setup, backend-image, frontend-image]
