@@ -8,7 +8,7 @@ An open-source application delivering a responsive user management experience.
 
 ## :microscope: Technical Overview
 
-This repository contains distributed cloud native application comprised of two compents:
+This repository contains a distributed cloud native application comprised of two compents:
 
 * [Front-end](web-app/) - Primary point of interaction with users. It is a [React](https://reactjs.org/) client side application build using [webpack](https://webpack.js.org) for _fast_ surfing.
 * [Back-end](backend/) - Centralized data store containing the information of all known users. Written in [C++](https://isocpp.org/) for flexibility and scalability it leverages many Open-Source technologies [listed here](backend/conan.lock).
