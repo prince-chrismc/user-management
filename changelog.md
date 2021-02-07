@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](http://semver.org/).1
+All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v1.0.0-dev.0](https://github.com/prince-chrismc/user-management/tree/v1.0.0-dev.0) (2020-08-12)
 
@@ -9,9 +9,9 @@ All notable changes to this project will be documented in this file. This projec
 **:dart: Features:**
 
 - Minimal API set for viewing, adding, editing, removing users
-  - With Documentation hosted on GitHub Pages
-- Functional back-end C++14 inomplementation
-- Feature complete front-end in ReactJS 16 that is Webpacked
+  - With documentation hosted on GitHub Pages
+- Functional back-end with a C++14 implementation
+- Feature complete front-end in ReactJS 16 that is built using webpack
 - AWS EC2 instance hosting the working proof-of-concept
 
 **Merged pull requests:**
