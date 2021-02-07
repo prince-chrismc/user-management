@@ -1,44 +1,66 @@
-# User management back-end
+# User Management Back-end
 
 ## Setup
 
 ### Conan Configuration
 
-> :warning: This come be done before any configuration!
+> :warning: This **must** be done before any usage!
+If that is not possible, you will need to clear your conan cache. This can be done using `conan remove -f '*'`
+
+Enable recipe revisions
 
 ```sh
 conan config set general.revisions_enabled=1
 ```
 
-*Note*: You will need to clear your conan cache, use `conan remove -f '*'`
+#### Targeting different `C` library implementations
 
-<!--> TODO: Add instructions for installing musl libc settings <-->
+The Conan default `settings.yml` does not take these into account. The settings model can be extended by doing the following:
 
-### Conan Lockfile
-
-To create the top level `conan.lock` run:
+1. install an extended settings model
 
 ```sh
-conan lock create --base conanfile.py --update
+conan config install .conan/settings.yml
 ```
 
-To generate a lock file for your system and configuration.
+2. configure your profile (or build settings)
 
 ```sh
-conan lock create conanfile.py --lockfile=conan.lock --lockfile-out=build/conan.lock -s build_type=Debug -s compiler.libcxx=libstdc++11
-```
-
-*Note*: You will need to change the "build type" to match your intentions
-
-### Install Dependencies
-
-```sh
-cd build && conan install .. --lockfile=conan.lock
+conan profile update settings.compiler.musl=1.2 default
+# or
+conan profile update settings.compiler.glibc=2.32 default
 ```
 
 ## Development
 
-### Update Conan Lockfile
+Generate build files via CMake
+
+```sh
+mkdir build
+cmake ..
+```
+
+Build the project
+
+```sh
+cmake --build . # from the build folder
+```
+
+Enable building tests
+
+```sh
+cmake .. -DBUILD_TESTS=ON
+```
+
+Enable building tests
+
+```sh
+cmake .. -DRUN_TIDY=ON
+```
+
+### Updating dependencies
+
+To update the top level `conan.lock` run:
 
 ```sh
 conan lock create conanfile.py --version=1.0.0-dev.0 --base --update
@@ -47,6 +69,8 @@ conan lock create conanfile.py --version=1.0.0-dev.0 --base --update
 ```sh
 cd build && conan install .. -s build_type=Debug --lockfile=../conan.lock
 ```
+
+*Note*: You will need to change the "build type" to match your intentions
 
 ## Usage
 
