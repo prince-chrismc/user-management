@@ -28,7 +28,7 @@ Run ESlint
 yarn lint
 ```
 
-#### Updating dependencies
+### Updating dependencies
 
 A _light_ update within semver range (low risk to break)
 
@@ -88,8 +88,7 @@ yarn pack
 docker build . -f Dockerfile -t user-managment-frontend:1.0.0-dev.0 # Docker does not support SemVer build information
 ```
 
-As an alternative, the previsous two teps (package and build image), can be execture with
-
+As an alternative, the previsous two teps (package and build image), can be execture with the multistage builder
 
 ```sh
 docker build . -f Dockerfile.multistage \
