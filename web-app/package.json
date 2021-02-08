@@ -68,7 +68,7 @@
     "moment-locales-webpack-plugin": "^1.2.0",
     "moment-timezone": "^0.5.32",
     "moment-timezone-data-webpack-plugin": "^1.4.0",
-    "postcss": "^8.2.4",
+    "postcss": "^8.2.5",
     "postcss-loader": "^4.2.0",
     "postcss-preset-env": "^6.7.0",
     "prettier": "^2.2.1",
