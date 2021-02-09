@@ -108,7 +108,7 @@ jobs:
         fi
   
   list-deps:
-    needs: [setup, calc-deps]
+    needs: [calc-deps]
     runs-on: ubuntu-latest
     steps:
       - run: echo "${{ needs.calc-deps.outputs.empty_matrix }}"
@@ -120,7 +120,7 @@ jobs:
       - run: ls -R
 
   build-deps:
-    needs: [setup, calc-deps]
+    needs: [build-image, calc-deps]
     runs-on: ubuntu-latest
     container: 
       image: ${{ needs.build-image.outputs.name }}
@@ -159,7 +159,7 @@ jobs:
       - run: exit 0
   
   alpine-backend:
-    needs: [setup, build-deps]
+    needs: [build-image, build-deps]
     runs-on: ubuntu-latest
     container: 
       image: ${{ needs.build-image.outputs.name }}
@@ -188,7 +188,7 @@ jobs:
         run: conan upload "*" --all -r $CONAN_REMOTE -c
   
   backend-image:
-    needs: [setup, alpine-backend]
+    needs: [setup, build-image, alpine-backend]
     runs-on: ubuntu-latest
     container: 
       image: ${{ needs.build-image.outputs.name }}
@@ -404,7 +404,7 @@ jobs:
           docker push $DOCKER_REGISTRY/${{ matrix.image }}:${{ needs.setup.outputs.build-version }}
 
   deploy:
-    needs: [setup, upload]
+    needs: [upload]
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     env: 
