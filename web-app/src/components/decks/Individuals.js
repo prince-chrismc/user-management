@@ -19,7 +19,7 @@ export class MakeCards extends Component {
       return (
         <Card.Group>
           {this.state.users.map(user => (
-            <User key={user.id} id={user.id} name={user.name} email={user.email} onDelete={this.onDelete} />
+            <User key={user.id} user={user} onDelete={this.onDelete} />
           ))}
           <AddCard onAdd={this.onAdd} />
         </Card.Group>
