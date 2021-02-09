@@ -51,9 +51,9 @@ jobs:
       name: check existence
       run: |
         docker pull ${{ env.name }}:${{ steps.version.outputs.version }} > /dev/null && echo "::set-output name=exists::$(echo true)" || echo "::set-output name=exists::$(echo false)"
-    - if: steps.check.outputs.exists == "false"
+    - if: ${{ steps.check.outputs.exists == "false" }}
       run: docker build . --file backend/Dockerfile.build --tag ${{ env.name }}:${{ steps.version.outputs.version }}
-    - if: steps.check.outputs.exists == "false"
+    - if: ${{ steps.check.outputs.exists == "false" }}
       run: docker push ${{ env.name }}:${{ steps.version.outputs.version }}
 
   calc-deps:
