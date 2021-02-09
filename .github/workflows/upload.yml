@@ -59,7 +59,7 @@ jobs:
       empty_matrix: ${{ steps.check-matrix.outputs.empty_matrix }}
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/cache@v2
+    - uses: actions/cache@v2.1.4
       with:
         path: ~/.conan/data
         key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
@@ -120,7 +120,7 @@ jobs:
       matrix: ${{ fromJson(needs.calc-deps.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - uses: actions/cache@v2.1.4
         if: ${{ matrix.reference != 'null' }}
         with:
           path: ~/.conan/data
@@ -157,7 +157,7 @@ jobs:
         password: ${{ github.token }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - uses: actions/cache@v2.1.4
         with:
           path: ~/.conan/data
           key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
@@ -188,7 +188,7 @@ jobs:
       name: docker.pkg.github.com/${{ github.repository }}/user-management-backend:${{ needs.setup.outputs.build-version }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - uses: actions/cache@v2.1.4
         with:
           path: ~/.conan/data
           key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
@@ -229,11 +229,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/cache@v2
+    - uses: actions/cache@v2.1.4
       with:
         path: ~/.conan/data
         key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
-    - uses: actions/cache@v2
+    - uses: actions/cache@v2.1.4
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
@@ -262,7 +262,7 @@ jobs:
     - uses: actions/setup-node@v2.1.4
       with:
         node-version: 14.x # Current LTS
-    - uses: actions/cache@v2
+    - uses: actions/cache@v2.1.4
       with:
         path: '**/node_modules'
         key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
@@ -314,7 +314,7 @@ jobs:
     - uses: actions/setup-node@v2.1.4
       with:
         node-version: 14.x # Current LTS
-    - uses: actions/cache@v2
+    - uses: actions/cache@v2.1.4
       with:
         path: '**/node_modules'
         key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}

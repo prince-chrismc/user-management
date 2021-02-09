@@ -28,13 +28,13 @@ jobs:
         python-version: 3.8
 
     - name: cache conan data
-      uses: actions/cache@v2
+      uses: actions/cache@v2.1.4
       with:
         path: ~/.conan/data
         key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
 
     - name: cache pip data
-      uses: actions/cache@v2
+      uses: actions/cache@v2.1.4
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
