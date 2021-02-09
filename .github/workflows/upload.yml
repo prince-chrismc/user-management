@@ -67,12 +67,11 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       empty_matrix: ${{ steps.check-matrix.outputs.empty_matrix }}
     steps:
-    - run: echo "${{ needs.build-image.outputs.name }}"
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
       with:
         path: ~/.conan/data
-        key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
+        key: apline-${{ hashFiles('**/conan.lock') }}
     - uses: ./.github/actions/setup-conan
     - name: calc
       run: |
@@ -106,18 +105,6 @@ jobs:
           echo "::set-output name=empty_matrix::false"        
         fi
   
-  list-deps:
-    needs: [calc-deps]
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "${{ needs.calc-deps.outputs.empty_matrix }}"
-      - run: echo "${{ needs.calc-deps.outputs.matrix }}"
-      - run: echo "${{ fromJson(needs.calc-deps.outputs.matrix) }}"
-      - uses: actions/download-artifact@v2
-        with:
-          name: conan-lockfile
-      - run: ls -R
-
   build-deps:
     needs: [build-image, calc-deps]
     runs-on: ubuntu-latest
@@ -134,7 +121,7 @@ jobs:
         if: ${{ matrix.reference != 'null' }}
         with:
           path: ~/.conan/data
-          key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
+          key: alpine-${{ hashFiles('**/conan.lock') }}
       - uses: ./.github/actions/setup-conan
         if: ${{ matrix.reference != 'null' }}
       - name: download
@@ -170,7 +157,7 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: ~/.conan/data
-          key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
+          key: alpine-${{ hashFiles('**/conan.lock') }}
       - uses: actions/download-artifact@v2
         with:
           name: conan-lockfile
@@ -201,7 +188,7 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: ~/.conan/data
-          key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
+          key: alpine-${{ hashFiles('**/conan.lock') }}
       - uses: actions/download-artifact@v2
         with:
           name: conan-lockfile
