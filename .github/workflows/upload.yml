@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master # tagged latest
-      - reuse-build-image
     tags:
       - v* # semver release
   pull_request: # runs tests
