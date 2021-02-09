@@ -417,6 +417,7 @@ jobs:
       - run: |
           cd .infra/
           pulumi stack select dev
+          npm install
           pulumi preview
       - uses: pulumi/actions@v1.2.0
         with:
