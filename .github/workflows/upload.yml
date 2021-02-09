@@ -424,7 +424,7 @@ jobs:
         working-directory: .infra/
         run: |
           pulumi stack select dev
-          pulumi up
+          pulumi up --yes
       - if: github.event_name == 'push'
         name: report
         working-directory: .infra/
