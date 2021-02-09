@@ -35,7 +35,6 @@ jobs:
   build-image:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.version.outputs.version }}
       name: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ steps.version.outputs.version }}
     env:
       name: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine
@@ -61,7 +60,7 @@ jobs:
     needs: [build-image]
     runs-on: ubuntu-latest
     container: 
-      image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.build-image.outputs.version }}
+      image: ${{ needs.build-image.outputs.name }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ github.token }}
@@ -124,7 +123,7 @@ jobs:
     needs: [setup, calc-deps]
     runs-on: ubuntu-latest
     container: 
-      image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
+      image: ${{ needs.build-image.outputs.name }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ github.token }}
@@ -163,7 +162,7 @@ jobs:
     needs: [setup, build-deps]
     runs-on: ubuntu-latest
     container: 
-      image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
+      image: ${{ needs.build-image.outputs.name }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ github.token }}
@@ -192,7 +191,7 @@ jobs:
     needs: [setup, alpine-backend]
     runs-on: ubuntu-latest
     container: 
-      image: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ needs.setup.outputs.build-version }}
+      image: ${{ needs.build-image.outputs.name }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ github.token }}
@@ -415,6 +414,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: pulumi/action-install-pulumi-cli@v1.0.1
+      - run: |
+          cd .infra/
+          pulumi stack select dev
+          pulumi preview
       - uses: pulumi/actions@v1.2.0
         with:
           command: up
