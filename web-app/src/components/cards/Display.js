@@ -4,12 +4,9 @@ import { Card, Button } from 'semantic-ui-react'
 import ModifyUser from '../operations/Edit'
 import RemoveUser from '../operations/Delete'
 
-const User = props => {
-  const [user, setUser] = useState(props.user)
-
-  useEffect(() => {
-    setUser(props.user)
-  }, [props.user])
+const User = ({ user, onDelete }) => {
+  const [u, setUser] = useState(user)
+  useEffect(() => { setUser(user) }, [user])
 
   const onChange = (name, email) => {
     setUser(prevState => ({
@@ -22,18 +19,14 @@ const User = props => {
   return (
     <Card color='grey'>
       <Card.Content>
-        <Card.Header>
-          {user.name}
-        </Card.Header>
-        <Card.Meta>
-          {user.email}
-        </Card.Meta>
+        <Card.Header>{u.name}</Card.Header>
+        <Card.Meta>{u.email}</Card.Meta>
       </Card.Content>
       <Card.Content extra>
         <Button.Group widths='2'>
-          <ModifyUser id={user.id} name={user.name} email={user.email} onChange={onChange} />
+          <ModifyUser id={u.id} name={u.name} email={u.email} onChange={onChange} />
           <Button.Or />
-          <RemoveUser id={user.id} name={user.name} email={user.email} onDelete={() => props.onDelete(user.id)} />
+          <RemoveUser id={u.id} name={u.name} email={u.email} onDelete={() => onDelete(u.id)} />
         </Button.Group>
       </Card.Content>
     </Card>

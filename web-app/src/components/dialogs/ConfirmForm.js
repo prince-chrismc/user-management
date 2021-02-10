@@ -1,7 +1,7 @@
 import { Form, Message } from 'semantic-ui-react'
 
 const FormConfirm = ({ name, handleSubmit, children, success, error }) => (
-  <Form onSubmit={() => { handleSubmit() }}
+  <Form onSubmit={handleSubmit}
     warning={!success && !error}
     success={success}
     error={error}
