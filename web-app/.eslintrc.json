@@ -2,12 +2,16 @@
     "parser": "@babel/eslint-parser",
     "env": {
         "browser": true,
-        "es2020": true
+        "es2020": true,
+        "jest/globals": true
     },
     "extends": [
+        "standard",
         "eslint:recommended",
         "plugin:react/recommended",
-        "standard"
+        "plugin:react-hooks/recommended",
+        "plugin:jest/recommended",
+        "plugin:jest/style"
     ],
     "parserOptions": {
         "ecmaFeatures": {
@@ -17,7 +21,8 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "jest"
     ],
     "rules": {
         "react/react-in-jsx-scope": "off",
