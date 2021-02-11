@@ -375,7 +375,6 @@ jobs:
         image: ['user-management', 'user-management-backend' ]
       fail-fast: true
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v2
       - uses: docker/login-action@v1
@@ -383,7 +382,8 @@ jobs:
           registry: princechrismc.jfrog.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.JFROG_RTFACT_PASSWORD }}
-      - name: push
+      - if: github.event_name == 'push'
+        name: push
         run: |
           docker pull $DOCKER_REGISTRY/${{ matrix.image }}:$BUILD_VERSION
           docker tag $DOCKER_REGISTRY/${{ matrix.image }}:$BUILD_VERSION $DOCKER_REGISTRY/${{ matrix.image }}:${{ needs.setup.outputs.build-version }}
@@ -396,24 +396,26 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    defaults:
+      run:
+        working-directory: .infra/
     steps:
       - uses: actions/checkout@v2
       - uses: pulumi/action-install-pulumi-cli@v1.0.1
-      - name: test
-        working-directory: .infra/
+      - run: npm install
+      - if: github.event_name == 'pull_request'
+        name: test
         run: |
           pulumi stack select dev
-          npm install
+          pulumi config set --path backend.version $BUILD_VERSION
           pulumi preview
       - if: github.event_name == 'push'
         name: deploy
-        working-directory: .infra/
         run: |
           pulumi stack select dev
           pulumi up --yes
       - if: github.event_name == 'push'
         name: report
-        working-directory: .infra/
         run: |
           pulumi stack select dev
           jq -nc "{\"body\": \":rocket: automatically deployed to http://$(pulumi stack output url)\"}" | \

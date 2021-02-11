@@ -1,13 +1,19 @@
+import * as pulumi from "@pulumi/pulumi";
 import * as awsx from "@pulumi/awsx";
 
-// The data layer for the application
-// Use the 'image' property to point to a pre-built Docker image.
-const backendListener = new awsx.elasticloadbalancingv2.NetworkListener("backend", { port: 8080 });
-const backend = new awsx.ecs.FargateService("backend", {
+interface BackendConfig {
+    version: string;
+}
+
+let config = new pulumi.Config();
+let backendConfig = config.requireObject<BackendConfig>("backend");
+
+let backendListener = new awsx.lb.NetworkListener("backend", { port: 8080 });
+let backend = new awsx.ecs.FargateService("backend", {
     taskDefinitionArgs: {
         containers: {
             backend: {
-                image: "princechrismc.jfrog.io/user-management-docker/user-management-backend:1.0.0-commit.224",
+                image: `princechrismc.jfrog.io/user-management-docker/user-management-backend:${backendConfig.version}`,
                 memory: 512,
                 portMappings: [backendListener],
                 command: ["dist", "-a", "0.0.0.0", "-p", "8080", "-n", "4"],
@@ -16,12 +22,9 @@ const backend = new awsx.ecs.FargateService("backend", {
     },
 });
 
-const backendEndpoint = backendListener.endpoint;
+let backendEndpoint = backendListener.endpoint;
 
-// Create a load balancer to listen for requests and route them to the container.
 let lb = new awsx.lb.NetworkListener("frontend", { port: 80 });
-
-// Define the service, building and publishing our "./web-app/Dockerfile", and using the load balancer.
 let service = new awsx.ecs.FargateService("frontend", {
     desiredCount: 1,
     taskDefinitionArgs: {
