@@ -11,7 +11,7 @@ const config = {
   output: {
     filename: '[name].[fullhash].js',
   },
-  devtool: 'inline-source-map',
+  devtool: 'eval',
   module: {
     rules: [
       {
