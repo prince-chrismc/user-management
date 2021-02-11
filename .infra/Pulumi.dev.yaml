@@ -1,2 +1,4 @@
 config:
   aws:region: us-east-2
+  user-management:backend:
+    version: latest

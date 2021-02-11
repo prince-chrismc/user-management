@@ -20,6 +20,12 @@ npm install
 
 ## Development
 
+Select back-end version
+
+```sh
+pulumi config set --path backend.version latest
+```
+
 Preview deployment
 
 ```sh

@@ -375,7 +375,6 @@ jobs:
         image: ['user-management', 'user-management-backend' ]
       fail-fast: true
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v2
       - uses: docker/login-action@v1
@@ -383,7 +382,8 @@ jobs:
           registry: princechrismc.jfrog.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.JFROG_RTFACT_PASSWORD }}
-      - name: push
+      - if: github.event_name == 'push'
+        name: push
         run: |
           docker pull $DOCKER_REGISTRY/${{ matrix.image }}:$BUILD_VERSION
           docker tag $DOCKER_REGISTRY/${{ matrix.image }}:$BUILD_VERSION $DOCKER_REGISTRY/${{ matrix.image }}:${{ needs.setup.outputs.build-version }}
@@ -399,11 +399,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: pulumi/action-install-pulumi-cli@v1.0.1
-      - name: test
+      - run: npm install
+      - if: github.event_name == 'pull_request'
+        name: test
         working-directory: .infra/
         run: |
           pulumi stack select dev
-          npm install
+          pulumi config set --path backend.version $BUILD_VERSION
           pulumi preview
       - if: github.event_name == 'push'
         name: deploy
