@@ -9,7 +9,7 @@ const config = {
     app: [`${commonPaths.appEntry}/index.js`],
   },
   output: {
-    filename: 'static/[name].[hash].js',
+    filename: 'static/[name].[fullhash].js',
   },
   devtool: 'source-map',
   optimization: {
@@ -61,7 +61,7 @@ const config = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: 'styles/[name].[hash].css',
+      filename: 'styles/[name].[fullhash].css',
     }),
   ],
 };
