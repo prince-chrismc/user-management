@@ -9,7 +9,8 @@ jest.mock('../../core/services/List')
 jest.mock('../../core/services/User')
 
 test('renders', () => {
-  const { getByText, getByRole } = render(<User id="0" name="Jenny Doe" email="jenny@example.com" />)
+  const user = { id: '0', name: 'Jenny Doe', email: 'jenny@example.com' }
+  const { getByText, getByRole } = render(<User user={user} />)
   expect(getByText('Jenny Doe')).toBeInTheDocument()
   expect(getByText('jenny@example.com')).toBeInTheDocument()
   expect(getByRole('button', { name: 'Edit' })).toHaveTextContent('Edit')
@@ -17,9 +18,10 @@ test('renders', () => {
 })
 
 test('updates on edit', async () => {
+  const user = { id: '37', name: 'Jenny Doe', email: 'jenny@example.com' }
   const mockCallback = jest.fn((id) => { })
   const { container, getByPlaceholderText, getByRole, getByText } = render(
-    <User id="37" name="Jenny Doe" email="jenny@example.com" onDelete={mockCallback} />)
+    <User user={user} onDelete={mockCallback} />)
 
   userEvent.click(getByRole('button', { name: 'Edit' }))
   waitFor(() => getByRole('button', { name: 'Save' }))
@@ -48,9 +50,10 @@ test('updates on edit', async () => {
 })
 
 test('notifies id on delete', async () => {
+  const user = { id: '27', name: 'James Doe', email: 'james@example.com' }
   const mockCallback = jest.fn((id) => { })
   const { getByRole } = render(
-    <User id="27" name="James Doe" email="james@example.com" onDelete={mockCallback} />)
+    <User user={user} onDelete={mockCallback} />)
 
   userEvent.click(getByRole('button', { name: 'Delete' }))
   waitFor(() => getByRole('button', { name: 'Confirm' }))

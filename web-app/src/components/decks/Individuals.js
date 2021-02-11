@@ -1,28 +1,24 @@
-import { Component } from 'react'
+import { useState, useEffect } from 'react'
 import { Card } from 'semantic-ui-react'
 
 import User from '../cards/Display'
 import AddCard from '../cards/Add'
 
-export class MakeCards extends Component {
-    state = { users: this.props.users }
+export const MakeCards = ({ users }) => {
+  const [list, setList] = useState(users)
+  useEffect(() => { setList(users) }, [users])
 
-    onAdd = (user) => {
-      this.setState({ users: this.state.users.concat(user) })
-    }
+  const onAdd = (user) => { setList(prevState => [...prevState, user]) }
 
-    onDelete = (id) => {
-      this.setState(prevState => ({ users: prevState.users.filter((user) => { return user.id !== id }) }))
-    }
+  const onDelete = (id) => {
+    const newList = list.filter((user) => { return user.id !== id })
+    setList(newList)
+  }
 
-    render () {
-      return (
-        <Card.Group>
-          {this.state.users.map(user => (
-            <User key={user.id} id={user.id} name={user.name} email={user.email} onDelete={this.onDelete} />
-          ))}
-          <AddCard onAdd={this.onAdd} />
-        </Card.Group>
-      )
-    }
+  return (
+    <Card.Group>
+      {list.map(user => <User key={user.id} user={user} onDelete={onDelete} />)}
+      <AddCard onAdd={onAdd} />
+    </Card.Group>
+  )
 }

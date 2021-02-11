@@ -1,4 +1,3 @@
-import React, { lazy, Suspense } from 'react';
 import { Message, Icon } from 'semantic-ui-react'
 import { useAsync } from 'react-async'
 
