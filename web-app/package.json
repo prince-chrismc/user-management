@@ -11,11 +11,11 @@
   "author": "prince-chrismc",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --env.env=dev --env.API_URL=https://ec2-18-222-250-141.us-east-2.compute.amazonaws.com",
-    "dev:bundleanalyzer": "yarn dev --env.addons=bundleanalyzer",
+    "dev": "webpack serve --open --env env=dev --env API_URL=https://ec2-18-229-250-141.us-east-2.compute.amazonaws.com",
+    "dev:bundleanalyzer": "yarn dev --env addons=bundleanalyzer",
     "prebuild": "rimraf dist",
-    "build": "cross-env NODE_ENV=production webpack -p --env.env=prod",
-    "build:bundleanalyzer": "yarn build --env.addons=bundleanalyzer",
+    "build": "cross-env NODE_ENV=production webpack --env env=prod",
+    "build:bundleanalyzer": "yarn build --env addons=bundleanalyzer",
     "lint": "eslint --fix src/*.js src/components/*.js src/components/**/*.js",
     "test": "cross-env NODE_ENV=dev API_URL=http://localhost:3001 jest",
     "coverage": "yarn test --coverage"
@@ -78,7 +78,7 @@
     "wait-for-expect": "^3.0.2",
     "webpack": "^4.46.0",
     "webpack-bundle-analyzer": "^4.4.0",
-    "webpack-cli": "^3.3.5",
+    "webpack-cli": "^4.5.0",
     "webpack-dev-server": "^3.11.2",
     "webpack-merge": "^5.7.3"
   },
