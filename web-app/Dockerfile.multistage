@@ -4,7 +4,7 @@ RUN yarn install
 
 FROM install as build
 ARG api_url
-RUN yarn build --env.API_URL=${api_url}
+RUN yarn build --env API_URL=${api_url}
 
 FROM nginx:1.19.6-alpine
 COPY --from=build dist/ /usr/share/nginx/html
