@@ -9,9 +9,9 @@ const config = {
     app: `${commonPaths.appEntry}/index.js`,
   },
   output: {
-    filename: '[name].[hash].js',
+    filename: '[name].[fullhash].js',
   },
-  devtool: 'inline-source-map',
+  devtool: 'eval',
   module: {
     rules: [
       {

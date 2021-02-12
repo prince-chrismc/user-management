@@ -1,7 +1,6 @@
 const commonPaths = require('./common-paths');
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const TerserPlugin = require("terser-webpack-plugin");
 
 const config = {
   mode: 'production',
@@ -9,12 +8,7 @@ const config = {
     app: [`${commonPaths.appEntry}/index.js`],
   },
   output: {
-    filename: 'static/[name].[hash].js',
-  },
-  devtool: 'source-map',
-  optimization: {
-    minimize: true,
-    minimizer: [new TerserPlugin()],
+    filename: 'static/[name].[fullhash].js',
   },
   module: {
     rules: [
@@ -61,7 +55,7 @@ const config = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: 'styles/[name].[hash].css',
+      filename: 'styles/[name].[fullhash].css',
     }),
   ],
 };
