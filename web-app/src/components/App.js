@@ -4,7 +4,7 @@ import { useAsync } from 'react-async'
 import Layout from './Layout'
 import { LoadUsers } from '../core/services/List'
 import { Placeholders } from './decks/Placeholders'
-import { MakeCards } from './decks/Individuals'
+import MakeCards from './decks/Individuals'
 
 const EditUsers = () => {
   const { data, error, isLoading } = useAsync({ promiseFn: LoadUsers })

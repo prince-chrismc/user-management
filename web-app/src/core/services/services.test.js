@@ -126,7 +126,7 @@ test('delete users', async () => {
   const json = await DeleteUser(123, etag)
   console.log(json)
 
-  expect(json).toEqual(null)
+  expect(json).toBeNull()
 })
 
 test('edit users', async () => {

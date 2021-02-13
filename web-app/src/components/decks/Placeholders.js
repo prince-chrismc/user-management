@@ -4,7 +4,7 @@ import UserPlaceholder from '../cards/Loading'
 export const Placeholders = () => (
     <Card.Group>
       {[...Array(4).keys()].map(x => (
-        <UserPlaceholder key={x.toString()}/>
+        <UserPlaceholder key={x.toString()} />
       ))}
     </Card.Group>
 )

@@ -4,7 +4,7 @@ import { Card } from 'semantic-ui-react'
 import User from '../cards/Display'
 import AddCard from '../cards/Add'
 
-export const MakeCards = ({ users }) => {
+const MakeCards = ({ users }) => {
   const [list, setList] = useState(users)
   useEffect(() => { setList(users) }, [users])
 
@@ -22,3 +22,13 @@ export const MakeCards = ({ users }) => {
     </Card.Group>
   )
 }
+
+MakeCards.propTypes = {
+  users: PropTypes.arrayOf(PropTypes.exact({
+    id: PropTypes.number,
+    name: PropTypes.string,
+    email: PropTypes.string
+  }))
+}
+
+export default MakeCards

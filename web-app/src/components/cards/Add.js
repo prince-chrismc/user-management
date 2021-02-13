@@ -10,10 +10,14 @@ const AddCard = ({ onAdd }) => (
     </Card.Content>
     <Card.Content extra>
       <Button.Group widths='2'>
-        <CreateUser onAdd={onAdd}/>
+        <CreateUser onAdd={onAdd} />
       </Button.Group>
     </Card.Content>
   </Card >
 )
+
+AddCard.propTypes = {
+  onAdd: PropTypes.func.isRequired
+}
 
 export default AddCard

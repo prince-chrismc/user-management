@@ -3,7 +3,7 @@ import '@testing-library/jest-dom/extend-expect'
 import waitForExpect from 'wait-for-expect'
 import userEvent from '@testing-library/user-event'
 
-import { MakeCards } from './Individuals'
+import MakeCards from './Individuals'
 
 jest.mock('../../core/services/List')
 jest.mock('../../core/services/User')

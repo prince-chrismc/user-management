@@ -39,7 +39,12 @@ const config = {
       },
     ],
   },
-  plugins: [new webpack.HotModuleReplacementPlugin()],
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.ProvidePlugin({
+      'PropTypes': 'prop-types',
+    }),
+  ],
   resolve: {
     alias: {
       'react-dom': '@hot-loader/react-dom'
