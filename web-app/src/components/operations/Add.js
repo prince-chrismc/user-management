@@ -1,7 +1,7 @@
 import { Component } from 'react'
-import { Message } from 'semantic-ui-react'
+import { Button, Message } from 'semantic-ui-react'
 
-import PopupModal from '../dialogs/UserModal'
+import PopupModal from '../../containers/PopupModal'
 import FormEditNameAndEmail from '../dialogs/EditForm'
 import { AddUser } from '../../core/services/List'
 
@@ -31,7 +31,7 @@ class CreateUser extends Component {
 
   render () {
     return (
-      <PopupModal content='Add' icon='user outline' labelPosition='left' color='green'
+      <PopupModal button={<Button content='Add' icon='user outline' labelPosition='left' color='green' />}
         header='Add New User' onClose={this.clearMessages}>
         <FormEditNameAndEmail
           name="John Doe"

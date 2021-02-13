@@ -1,8 +1,8 @@
 import { Component } from 'react'
-import { Message } from 'semantic-ui-react'
+import { Button, Message } from 'semantic-ui-react'
 
 import FormConfirm from '../dialogs/ConfirmForm'
-import PopupModal from '../dialogs/UserModal'
+import PopupModal from '../../containers/PopupModal'
 import { DeleteUser } from '../../core/services/User'
 import { Etag } from '../../core/tools/Etag'
 
@@ -33,7 +33,7 @@ class RemoveUser extends Component {
 
   render () {
     return (
-      <PopupModal color='red' content='Delete' icon='user cancel' labelPosition='right' floated='right'
+      <PopupModal button={<Button color='red' content='Delete' icon='user cancel' labelPosition='right' floated='right' />}
         header='Delete User' onClose={this.clearMessages}>
         <FormConfirm name={this.state.name} handleSubmit={this.handleDelete}
           sucess={this.state.showError} error={this.state.showOkay}>

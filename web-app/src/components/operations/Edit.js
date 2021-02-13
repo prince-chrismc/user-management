@@ -1,8 +1,8 @@
 import { Component } from 'react'
-import { Message } from 'semantic-ui-react'
+import { Button, Message } from 'semantic-ui-react'
 
 import FormEditNameAndEmail from '../dialogs/EditForm'
-import PopupModal from '../dialogs/UserModal'
+import PopupModal from '../../containers/PopupModal'
 import { EditUser } from '../../core/services/User'
 import { Etag } from '../../core/tools/Etag'
 
@@ -34,7 +34,7 @@ class ModifyUser extends Component {
   render () {
     const { name, email } = this.state
     return (
-      <PopupModal content='Edit' icon='edit outline' labelPosition='left' floated='left'
+      <PopupModal button={<Button content='Edit' icon='edit outline' labelPosition='left' floated='left' />}
         header='Edit Settings' onClose={this.clearMessages}>
         <FormEditNameAndEmail
           name={name}
