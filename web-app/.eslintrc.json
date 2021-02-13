@@ -10,6 +10,7 @@
         "eslint:recommended",
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
+        "plugin:import/errors",
         "plugin:jest/recommended",
         "plugin:jest/style"
     ],
@@ -25,7 +26,11 @@
         "jest"
     ],
     "rules": {
+        "react/prefer-es6-class": "error",
         "react/react-in-jsx-scope": "off",
+        "react/default-props-match-prop-types": "error",
+        "react/forbid-prop-types": "error",
+        "react/jsx-tag-spacing": "error",
         "semi": [
             "error",
             "never"
@@ -33,7 +38,8 @@
         "quotes": [
             "error",
             "single"
-        ]
+        ],
+        "no-undef": "off"
     },
     "settings": {
         "react": {

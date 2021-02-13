@@ -8,7 +8,7 @@ import AddCard from './Add'
 jest.mock('../../core/services/List')
 
 test('renders', () => {
-  const { getByText, getByRole } = render(<AddCard />)
+  const { getByText, getByRole } = render(<AddCard onAdd={() => {}} />)
   expect(getByText('Create New User')).toBeInTheDocument()
   expect(getByText('Someone New', { exact: false })).toBeInTheDocument()
   expect(getByRole('button', { name: 'Add' })).toHaveTextContent('Add')

@@ -3,7 +3,7 @@ import '@testing-library/jest-dom/extend-expect'
 
 import Layout from './Layout'
 
-test('renders a placeholder', () => {
+test('renders a layout', () => {
   Date.now = jest.fn(() => 1482363367071)
   const { container, getByTestId } = render(
     <Layout>
