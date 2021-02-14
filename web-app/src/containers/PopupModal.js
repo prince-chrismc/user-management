@@ -26,10 +26,7 @@ const PopupModal = ({ button, header, children, onClose }) => {
 PopupModal.propTypes = {
   button: PropTypes.element.isRequired,
   header: PropTypes.string.isRequired,
-  children: PropTypes.oneOfType([
-    PropTypes.element,
-    PropTypes.arrayOf(PropTypes.element),
-  ]).isRequired,
+  children: PropTypes.node,
   onClose: PropTypes.func.isRequired
 }
 

@@ -23,7 +23,7 @@ UserForm.propTypes = {
     email: PropTypes.string
   }).isRequired,
   handleSubmit: PropTypes.func.isRequired,
-  disabled: PropTypes.boolean
+  disabled: PropTypes.bool
 }
 
 export default UserForm
