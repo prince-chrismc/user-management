@@ -1,57 +1,56 @@
-import { Component } from 'react'
+import { useState } from "react"
+import { useFetch } from "react-async"
 import { Button, Message } from 'semantic-ui-react'
 
 import PopupModal from '../../containers/PopupModal'
-import FormEditNameAndEmail from '../dialogs/EditForm'
-import { AddUser } from '../../core/services/List'
+import UserForm from '../forms/User'
+import PendingMessage from '../messages/Pending'
+// import { AddUser } from '../../core/services/List'
 
-class CreateUser extends Component {
-  state = { showError: false, errMsg: '', showOkay: false }
+const ShowMessages = ({ isFulfilled, isPending, error }) => {
+  return (
+    <>
+      { isPending && <PendingMessage message='Currently proccessing add of new user' />}
+      { error && <Message error header='Oh no! Something went horribly wrong' content={error.message} />}
+      { isFulfilled && <Message success header='Success! The operation completed without any issue' content='The user was successfully added' />}
+    </>
+  )
+}
 
-  toggleError = (err) => {
-    this.setState((prevState) => {
-      return { showError: !prevState.showError, errMsg: '' + err }
-    })
-  };
+const CreateUser = ({ onAdd }) => {
+  const [isSubmitting, setSubmmiting] = useState(false)
+  const defaultUser = { id: 0, name: "John Doe", email: "john@example.com" }
+  const { isFulfilled, isPending, error, run, cancel } = useFetch(process.env.API_URL + '/um/v1/users', {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+  }, { onResolve: onAdd })
 
-  toggleSuccess = (id, name, email) => {
-    this.setState({ showOkay: true })
-    this.props.onAdd({ id, name, email })
-  };
-
-  handleSubmit = (name, email) => {
-    AddUser(name, email)
-      .then((data) => this.toggleSuccess(data.id, data.name, data.email))
-      .catch((err) => this.toggleError(err))
+  const handleSubmit = (name, email) => {
+    setSubmmiting(true)
+    run({ body: JSON.stringify({ name, email }) })
   }
 
-  clearMessages = () => {
-    this.setState({ showError: false, showOkay: false })
+  const doClose = () => {
+    cancel()
+    setSubmmiting(false)
   }
 
-  render () {
-    return (
-      <PopupModal button={<Button content='Add' icon='user outline' labelPosition='left' color='green' />}
-        header='Add New User' onClose={this.clearMessages}>
-        <FormEditNameAndEmail
-          name="John Doe"
-          email="john@example.com"
-          handleSubmit={this.handleSubmit}
-          error={this.state.showError}
-          success={this.state.showOkay}
-        >
-          <Message error
-            header='Oh no! Something went horribly wrong'
-            content={this.state.errMsg}
-          />
-          <Message success
-            header='Success! The operation completed without any issue'
-            content='The user was successfully modified'
-          />
-        </FormEditNameAndEmail>
-      </PopupModal>
-    )
-  }
+  return (
+    <PopupModal button={<Button content='Add' icon='user outline' labelPosition='left' color='green' />}
+      header='Add New User' onClose={doClose}>
+
+      {isSubmitting && <ShowMessages isFulfilled={isFulfilled} isPending={isPending} error={error} />}
+
+      <UserForm user={defaultUser} handleSubmit={handleSubmit} disabled={isSubmitting} />
+    </PopupModal>
+  )
+}
+
+CreateUser.propTypes = {
+  onAdd: PropTypes.func.isRequired
 }
 
 export default CreateUser
