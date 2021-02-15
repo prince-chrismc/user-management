@@ -1,4 +1,4 @@
-const buildValidations = require('./build-utils/build-validations');
+const chalk = require('chalk');
 const commonConfig = require('./build-utils/webpack.common.js');
 
 const webpack = require('webpack');
@@ -12,8 +12,12 @@ const addons = (/* string | string[] */ addonsArg) => {
 };
 
 module.exports = env => {
-  if (!env) {
-    throw new Error(buildValidations.ERR_NO_ENV_FLAG);
+  if (!env['env']) {
+    throw new Error(`You must pass an '--env env=dev|prod' flag into your build for webpack to work!`);
+  }
+  
+  if (!env['API_URL']) {
+    console.log(`${chalk.yellow('Warning! API_URL is undefined')}`);
   }
 
   const envConfig = require(`./build-utils/webpack.${env.env}.js`);
