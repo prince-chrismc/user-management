@@ -57,7 +57,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-standard": "^5.0.0",
     "html-webpack-plugin": "^5.0.0",
-    "http-terminator": "^2.0.3",
+    "http-terminator": "^3.0.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^26.6.3",
     "jest-fetch-mock": "^3.0.3",
