@@ -5,7 +5,15 @@ import waitForExpect from 'wait-for-expect'
 
 import CreateUser from './Add'
 
-jest.mock('../../core/services/List')
+jest.mock('../../core/services/List', () => {
+  return {
+    AddUser: jest.fn(({ name, email }) => {
+      return new Promise(resolve => resolve({ id: 9, name: name, email: email }))
+    }),
+    LoadUsers: jest.fn(() => { })
+  }
+})
+
 
 test('renders', () => {
   render(<CreateUser onAdd={(id, name, email) => { expect(true).toBe(false) }} />)
@@ -26,7 +34,7 @@ test('renders', () => {
 })
 
 test('default data on submit', async () => {
-  const mockCallback = jest.fn((id, name, email) => { })
+  const mockCallback = jest.fn()
   const { getByRole } = render(<CreateUser onAdd={mockCallback} />)
 
   userEvent.click(getByRole('button', { name: 'Add' }))
@@ -35,10 +43,14 @@ test('default data on submit', async () => {
   expect(mockCallback).not.toHaveBeenCalled()
 
   await waitForExpect(() => {
-    expect(mockCallback).toHaveBeenCalledWith({ id: 9, name: 'John Doe', email: 'john@example.com' })
+    // expect(mockCallback).toHaveBeenCalledWith({ id: 9, name: 'John Doe', email: 'john@example.com' })
     expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
     expect(screen.getByText('Success!', { exact: false })).toBeInTheDocument()
-  }, 1500)
+  }, 700)
+
+  await waitForExpect(() => {
+    expect(mockCallback).toHaveBeenCalledWith({ id: 9, name: 'John Doe', email: 'john@example.com' })
+  }, 700)
 })
 
 test('new data on submit', async () => {
