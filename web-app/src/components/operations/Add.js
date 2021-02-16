@@ -1,11 +1,11 @@
 import { useState } from "react"
-import { useFetch } from "react-async"
+import { useAsync } from "react-async"
 import { Button, Message } from 'semantic-ui-react'
 
 import PopupModal from '../../containers/PopupModal'
 import UserForm from '../forms/User'
 import PendingMessage from '../messages/Pending'
-// import { AddUser } from '../../core/services/List'
+import { AddUser } from '../../core/services/List'
 
 const ShowMessages = ({ isFulfilled, isPending, error }) => {
   return (
@@ -20,13 +20,7 @@ const ShowMessages = ({ isFulfilled, isPending, error }) => {
 const CreateUser = ({ onAdd }) => {
   const [isSubmitting, setSubmmiting] = useState(false)
   const defaultUser = { id: 0, name: "John Doe", email: "john@example.com" }
-  const { isFulfilled, isPending, error, run, cancel } = useFetch(process.env.API_URL + '/um/v1/users', {
-    method: 'PUT',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-  }, { onResolve: onAdd })
+  const { isFulfilled, isPending, error, run, cancel } = useAsync({ deferFn: AddUser }, { onResolve: onAdd })
 
   const handleSubmit = (name, email) => {
     setSubmmiting(true)

@@ -5,6 +5,6 @@ export const LoadUsers = async () => {
   ]))
 }
 
-export const AddUser = async (name, email) => {
+export const AddUser = async ({ name, email }, { signal }) => {
   return new Promise(resolve => resolve({ id: 9, name: name, email: email }))
 }

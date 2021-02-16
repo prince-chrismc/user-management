@@ -38,7 +38,7 @@ test('default data on submit', async () => {
     expect(mockCallback).toHaveBeenCalledWith({ id: 9, name: 'John Doe', email: 'john@example.com' })
     expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
     expect(screen.getByText('Success!', { exact: false })).toBeInTheDocument()
-  }, 700)
+  }, 1500)
 })
 
 test('new data on submit', async () => {

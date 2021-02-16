@@ -10,8 +10,9 @@ export const LoadUsers = async () => {
     .then(res => res.json())
 }
 
-export const AddUser = async (name, email) => {
+export const AddUser = async ({ name, email }, { signal }) => {
   const requestOptions = {
+    signal,
     method: 'PUT',
     headers: {
       Accept: 'application/json',
@@ -19,6 +20,7 @@ export const AddUser = async (name, email) => {
     },
     body: JSON.stringify({ name: name, email: email })
   }
+  console.log('from add user')
   return await fetch(process.env.API_URL + '/um/v1/users', requestOptions)
     .then(res => (res.ok ? res : Promise.reject(res)))
     .then(res => res.json())
