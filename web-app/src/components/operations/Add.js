@@ -20,7 +20,7 @@ const ShowMessages = ({ isFulfilled, isPending, error }) => {
 const CreateUser = ({ onAdd }) => {
   const [isSubmitting, setSubmmiting] = useState(false)
   const defaultUser = { id: 0, name: "John Doe", email: "john@example.com" }
-  const { isFulfilled, isPending, error, run, cancel } = useAsync({ deferFn: AddUser }, { onResolve: onAdd })
+  const { isFulfilled, isPending, error, run, cancel } = useAsync({ deferFn: AddUser, onResolve: onAdd })
 
   const handleSubmit = (name, email) => {
     setSubmmiting(true)
