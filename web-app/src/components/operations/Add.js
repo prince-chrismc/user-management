@@ -11,7 +11,7 @@ const ShowMessages = ({ isFulfilled, isPending, error }) => {
   return (
     <>
       { isPending && <PendingMessage message='Currently proccessing add of new user' />}
-      { error && <Message error header='Oh no! Something went horribly wrong' content={error.message} />}
+      { error && <Message error header='Oh no! Something went horribly wrong' content={'Error: ' + error.message} />}
       { isFulfilled && <Message success header='Success! The operation completed without any issue' content='The user was successfully added' />}
     </>
   )
