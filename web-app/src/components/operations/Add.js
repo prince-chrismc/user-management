@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { useAsync } from "react-async"
+import { useState } from 'react'
+import { useAsync } from 'react-async'
 import { Button, Message } from 'semantic-ui-react'
 
 import PopupModal from '../../containers/PopupModal'
@@ -19,7 +19,7 @@ const ShowMessages = ({ isFulfilled, isPending, error }) => {
 
 const CreateUser = ({ onAdd }) => {
   const [isSubmitting, setSubmmiting] = useState(false)
-  const user = { id: 0, name: "John Doe", email: "john@example.com" }
+  const user = { id: 0, name: 'John Doe', email: 'john@example.com' }
   const { isFulfilled, isPending, error, run, cancel } = useAsync({ deferFn: AddUser, onResolve: onAdd })
 
   const handleSubmit = (name, email) => {

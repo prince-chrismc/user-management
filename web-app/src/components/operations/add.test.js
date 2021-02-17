@@ -7,7 +7,6 @@ import CreateUser from './Add'
 
 jest.mock('../../core/services/List')
 
-
 test('renders', async () => {
   const mockCallback = jest.fn()
   const { getByRole, getByPlaceholderText } = render(<CreateUser onAdd={mockCallback} />)
