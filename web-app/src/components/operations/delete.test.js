@@ -13,7 +13,7 @@ test('renders', () => {
     <RemoveUser id="0" name="Jenny Doe" email="jenny@example.com" onDelete={() => expect(true).toBe(false)} />)
 
   userEvent.click(getByRole('button', { name: 'Delete' }))
-  waitFor(() => getByRole('button', { name: 'Confirm' }))
+  await waitFor(() => getByRole('button', { name: 'Confirm' }))
 
   userEvent.type(queryByText('dangerous!', { exact: false }), '{esc}')
   expect(queryByRole('button', { name: 'Confirm' })).not.toBeInTheDocument()
@@ -25,7 +25,7 @@ test('default data on submit', async () => {
     <RemoveUser id="0" name="Jenny Doe" email="jenny@example.com" onDelete={mockCallback} />)
 
   userEvent.click(getByText('Delete'))
-  waitFor(() => getByRole('button', { name: 'Confirm' }))
+  await waitFor(() => getByRole('button', { name: 'Confirm' }))
   userEvent.click(getByRole('button', { name: 'Confirm' }))
 
   await waitForExpect(() => {

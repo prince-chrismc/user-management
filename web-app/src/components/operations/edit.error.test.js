@@ -21,7 +21,7 @@ test('handles errors', async () => {
     onChange={mockCallback} />)
 
   userEvent.click(getByText('Edit'))
-  waitFor(() => getByRole('button', { name: 'Save' }))
+  await waitFor(() => getByRole('button', { name: 'Save' }))
   userEvent.click(getByRole('button', { name: 'Save' }))
 
   await waitForExpect(() => {

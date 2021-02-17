@@ -18,7 +18,7 @@ test('handles errors', async () => {
     <RemoveUser id="0" name="Jenny Doe" email="jenny@example.com" onDelete={mockCallback} />)
 
   userEvent.click(getByRole('button', { name: 'Delete' }))
-  waitFor(() => getByRole('button', { name: 'Confirm' }))
+  await waitFor(() => getByRole('button', { name: 'Confirm' }))
   userEvent.click(getByRole('button', { name: 'Confirm' }))
 
   await waitForExpect(() => {

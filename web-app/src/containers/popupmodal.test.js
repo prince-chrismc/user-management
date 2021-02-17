@@ -26,7 +26,7 @@ test('renders a PopupModal', async () => {
   `)
 
   userEvent.click(getByTestId('button'))
-  waitFor(() => getByTestId('children'))
+  await waitFor(() => getByTestId('children'))
 
   expect(getByTestId('children')).toHaveTextContent('Hello World')
   expect(getByText('Title Here')).toBeTruthy()

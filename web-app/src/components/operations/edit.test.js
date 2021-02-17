@@ -13,7 +13,7 @@ test('renders', () => {
     onChange={(name, email) => { expect(true).toBe(false) }} />)
 
   fireEvent.click(screen.getByText('Edit'))
-  waitFor(() => screen.getByRole('button', { name: 'Save' }))
+  await waitFor(() => screen.getByRole('button', { name: 'Save' }))
 
   expect(screen.getByPlaceholderText('Name')).toHaveValue('Jenny Doe')
   expect(screen.getByPlaceholderText('Email')).toHaveValue('jenny@example.com')
@@ -32,7 +32,7 @@ test('default data on submit', async () => {
     onChange={mockCallback} />)
 
   userEvent.click(getByText('Edit'))
-  waitFor(() => getByRole('button', { name: 'Save' }))
+  await waitFor(() => getByRole('button', { name: 'Save' }))
   userEvent.click(getByRole('button', { name: 'Save' }))
 
   await waitForExpect(() => {
@@ -48,7 +48,7 @@ test('new data on submit', async () => {
     onChange={mockCallback} />)
 
   userEvent.click(screen.getByText('Edit'))
-  waitFor(() => getByRole('button', { name: 'Save' }))
+  await waitFor(() => getByRole('button', { name: 'Save' }))
 
   fireEvent.change(getByPlaceholderText('Name'), { target: { value: 'John Doe' } })
   fireEvent.change(getByPlaceholderText('Email'), { target: { value: 'john@example.com' } })

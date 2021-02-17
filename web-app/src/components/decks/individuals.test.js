@@ -112,7 +112,7 @@ test('updates on add', async () => {
   )
 
   userEvent.click(getByRole('button', { name: 'Edit' }))
-  waitFor(() => getByRole('button', { name: 'Save' }))
+  await waitFor(() => getByRole('button', { name: 'Save' }))
 
   fireEvent.change(getByPlaceholderText('Name'), {
     target: { value: 'John Doe' }
@@ -139,7 +139,7 @@ test('updates on edit', async () => {
   )
 
   userEvent.click(getByRole('button', { name: 'Add' }))
-  waitFor(() => getByRole('button', { name: 'Save' }))
+  await waitFor(() => getByRole('button', { name: 'Save' }))
 
   fireEvent.change(getByPlaceholderText('Name'), {
     target: { value: 'Jane Doe' }
