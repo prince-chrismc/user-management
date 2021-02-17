@@ -4,8 +4,8 @@ import Layout from './Layout'
 import { LoadUsers } from '../core/services/List'
 import { Placeholders } from './decks/Placeholders'
 import MakeCards from './decks/Individuals'
-import ErrorMessage from './messages/Error'
-import PendingMessage from './messages/Pending'
+import ErrorMessage from '../containers/messages/Error'
+import PendingMessage from '../containers/messages/Pending'
 
 const EditUsers = () => {
   const { data, error, isLoading } = useAsync({ promiseFn: LoadUsers })

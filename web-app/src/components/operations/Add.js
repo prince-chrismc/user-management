@@ -4,7 +4,7 @@ import { Button, Message } from 'semantic-ui-react'
 
 import PopupModal from '../../containers/PopupModal'
 import UserForm from '../forms/User'
-import SelectMessage from '../messages/Select'
+import SelectMessage from '../../containers/messages/Select'
 import { AddUser } from '../../core/services/List'
 
 const ShowMessages = ({ isFulfilled, isPending, error }) => {
