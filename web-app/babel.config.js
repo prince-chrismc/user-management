@@ -6,10 +6,10 @@ const plugins = [
 ];
 
 if (process.env["ENV"] === "prod") {
-  presets.push(["@babel/preset-env", { modules: false }]);
+  presets.push(["@babel/preset-env", { modules: false }])
   plugins.push("transform-react-remove-prop-types")
 } else {
-  presets.push(["@babel/preset-env", { useBuiltIns: "usage", corejs: { version: "3.8", proposals: true } }]);
+  presets.push(["@babel/preset-env", { useBuiltIns: "usage", corejs: { version: "3.8", proposals: true } }])
   plugins.push("@babel/plugin-transform-runtime")
 }
 
