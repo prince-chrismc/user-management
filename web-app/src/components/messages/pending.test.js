@@ -3,7 +3,7 @@ import '@testing-library/jest-dom/extend-expect'
 
 import PendingMessage from './Pending'
 
-test('renders a placeholder', () => {
+test('renders a pending message', () => {
   const { container } = render(<PendingMessage message='Hello World' />)
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div

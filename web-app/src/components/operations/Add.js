@@ -4,16 +4,14 @@ import { Button, Message } from 'semantic-ui-react'
 
 import PopupModal from '../../containers/PopupModal'
 import UserForm from '../forms/User'
-import PendingMessage from '../messages/Pending'
+import SelectMessage from '../messages/Select'
 import { AddUser } from '../../core/services/List'
 
 const ShowMessages = ({ isFulfilled, isPending, error }) => {
+  const success = isFulfilled ? { message: 'The user was successfully added' } : null
+  const loading = isPending ? { message: 'Currently proccessing add of new user' } : null
   return (
-    <>
-      { isPending && <PendingMessage message='Currently proccessing add of new user' />}
-      { error && <Message error header='Oh no! Something went horribly wrong' content={'Error: ' + error.message} />}
-      { isFulfilled && <Message success header='Success! The operation completed without any issue' content='The user was successfully added' />}
-    </>
+    <SelectMessage success={success} loading={loading} error={error} />
   )
 }
 
