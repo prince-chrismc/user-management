@@ -13,7 +13,7 @@ test('renders', async () => {
   const { getByRole, getByPlaceholderText } = render(<CreateUser onAdd={mockCallback} />)
 
   userEvent.click(getByRole('button', { name: 'Add' }))
-  waitFor(() => getByRole('button', { name: 'Save' }))
+  await waitFor(() => getByRole('button', { name: 'Save' }))
 
   expect(getByPlaceholderText('Name')).toHaveValue('John Doe')
   expect(getByPlaceholderText('Email')).toHaveValue('john@example.com')
@@ -33,7 +33,7 @@ test('default data on submit', async () => {
   const { getByRole } = render(<CreateUser onAdd={mockCallback} />)
 
   userEvent.click(getByRole('button', { name: 'Add' }))
-  waitFor(() => getByRole('button', { name: 'Save' }))
+  await waitFor(() => getByRole('button', { name: 'Save' }))
   userEvent.click(getByRole('button', { name: 'Save' }))
   expect(mockCallback).not.toHaveBeenCalled()
 
@@ -49,7 +49,7 @@ test('new data on submit', async () => {
   const { getByPlaceholderText, getByRole } = render(<CreateUser onAdd={mockCallback} />)
 
   userEvent.click(screen.getByText('Add'))
-  waitFor(() => getByRole('button', { name: 'Save' }))
+  await waitFor(() => getByRole('button', { name: 'Save' }))
 
   fireEvent.change(getByPlaceholderText('Name'), { target: { value: 'Jenny Doe' } })
   fireEvent.change(getByPlaceholderText('Email'), { target: { value: 'jenny@example.com' } })
