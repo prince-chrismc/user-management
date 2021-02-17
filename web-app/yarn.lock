@@ -1183,6 +1183,11 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.7.0.tgz#5f7760965170f7f1e2910d2498c5be88b47a2a8c"
   integrity sha512-V3WyEc8ZyAuOQ2fpFuTuYYOd2tV4NePeSdxaHYgYAOs7ERLxlcFi2XsmgI5LJFdAUmJKXsg8jaIiVTkTHQygQw==
 
+"@rooks/use-input@^4.9.1":
+  version "4.9.1"
+  resolved "https://registry.yarnpkg.com/@rooks/use-input/-/use-input-4.9.1.tgz#3a8ef981e797914de8c816b089cf56a5327c782a"
+  integrity sha512-vgJ9TqKhToGxdd/kM6v2TRzlvmU/uru/YSlqdub0WN2s/jtMVbQ1jeucw/zzSDApBohWIVqL7xBUAZ8jE1XIvA==
+
 "@semantic-ui-react/event-stack@^3.1.2":
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/@semantic-ui-react/event-stack/-/event-stack-3.1.2.tgz#14fac9796695aa3967962d94ea9733a85325f9c4"
