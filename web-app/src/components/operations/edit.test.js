@@ -8,7 +8,7 @@ import ModifyUser from './Edit'
 jest.mock('../../core/services/List')
 jest.mock('../../core/services/User')
 
-test('renders', () => {
+test('renders', async () => {
   render(<ModifyUser id="0" name="Jenny Doe" email="jenny@example.com"
     onChange={(name, email) => { expect(true).toBe(false) }} />)
 

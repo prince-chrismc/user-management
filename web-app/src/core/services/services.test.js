@@ -101,7 +101,7 @@ test('get list of users', async () => {
 })
 
 test('add new user to list', async () => {
-  const json = await AddUser('James Does', 'james@example.com')
+  const json = await AddUser(['James Does', 'james@example.com'], null, { signal: null })
   console.log(json)
 
   expect(json).toEqual({ id: 543, name: 'James Does', email: 'james@example.com' })
@@ -118,7 +118,7 @@ test('faulty backend > add user', async () => {
   __error = true
   expect.assertions(1)
 
-  await expect(AddUser('James Does', 'james@example.com')).rejects.toBeInstanceOf(Response)
+  await expect(AddUser(['James Does', 'james@example.com'], null, { signal: null })).rejects.toBeInstanceOf(Response)
 })
 
 test('delete users', async () => {

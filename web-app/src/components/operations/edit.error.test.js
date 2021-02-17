@@ -8,7 +8,6 @@ import ModifyUser from './Edit'
 jest.mock('../../core/services/User', () => {
   return {
     EditUser: jest.fn((id, name, email) => {
-      console.log('throwing')
       return new Promise((resolve, reject) => reject(new Error('mock network error')))
     }),
     DeleteUser: jest.fn((id) => { })

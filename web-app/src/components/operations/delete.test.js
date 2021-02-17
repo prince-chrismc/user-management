@@ -8,7 +8,7 @@ import RemoveUser from './Delete'
 jest.mock('../../core/services/List')
 jest.mock('../../core/services/User')
 
-test('renders', () => {
+test('renders', async () => {
   const { getByRole, queryByRole, queryByText } = render(
     <RemoveUser id="0" name="Jenny Doe" email="jenny@example.com" onDelete={() => expect(true).toBe(false)} />)
 
