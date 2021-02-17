@@ -5,32 +5,27 @@ import waitForExpect from 'wait-for-expect'
 
 import CreateUser from './Add'
 
-jest.mock('../../core/services/List', () => {
-  return {
-    AddUser: jest.fn(({ name, email }) => {
-      return new Promise(resolve => resolve({ id: 9, name: name, email: email }))
-    }),
-    LoadUsers: jest.fn(() => { })
-  }
-})
+jest.mock('../../core/services/List')
 
 
-test('renders', () => {
-  render(<CreateUser onAdd={(id, name, email) => { expect(true).toBe(false) }} />)
+test('renders', async () => {
+  const mockCallback = jest.fn()
+  const { getByRole, getByPlaceholderText } = render(<CreateUser onAdd={mockCallback} />)
 
-  userEvent.click(screen.getByRole('button', { name: 'Add' }))
-  waitFor(() => screen.getByRole('button', { name: 'Save' }))
+  userEvent.click(getByRole('button', { name: 'Add' }))
+  waitFor(() => getByRole('button', { name: 'Save' }))
 
-  expect(screen.getByPlaceholderText('Name')).toHaveValue('John Doe')
-  expect(screen.getByPlaceholderText('Email')).toHaveValue('john@example.com')
-  expect(screen.getByRole('button', { name: 'Save' })).toHaveTextContent('Save')
+  expect(getByPlaceholderText('Name')).toHaveValue('John Doe')
+  expect(getByPlaceholderText('Email')).toHaveValue('john@example.com')
+  expect(getByRole('button', { name: 'Save' })).toHaveTextContent('Save')
 
-  userEvent.type(screen.getByPlaceholderText('Name'), '{esc}')
+  userEvent.type(getByPlaceholderText('Name'), '{esc}')
 
   expect(screen.queryByPlaceholderText('Name')).not.toBeInTheDocument()
   expect(screen.queryByPlaceholderText('Email')).not.toBeInTheDocument()
   expect(screen.queryByRole('button', { name: 'Save' })).not.toBeInTheDocument()
   expect(screen.queryByText('Success!', { exact: false })).not.toBeInTheDocument()
+  expect(mockCallback).not.toHaveBeenCalled()
 })
 
 test('default data on submit', async () => {
@@ -43,18 +38,14 @@ test('default data on submit', async () => {
   expect(mockCallback).not.toHaveBeenCalled()
 
   await waitForExpect(() => {
-    // expect(mockCallback).toHaveBeenCalledWith({ id: 9, name: 'John Doe', email: 'john@example.com' })
+    expect(mockCallback).toHaveBeenCalledWith({ id: 9, name: 'John Doe', email: 'john@example.com' })
     expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
     expect(screen.getByText('Success!', { exact: false })).toBeInTheDocument()
-  }, 700)
-
-  await waitForExpect(() => {
-    expect(mockCallback).toHaveBeenCalledWith({ id: 9, name: 'John Doe', email: 'john@example.com' })
   }, 700)
 })
 
 test('new data on submit', async () => {
-  const mockCallback = jest.fn((id, name, email) => { })
+  const mockCallback = jest.fn()
   const { getByPlaceholderText, getByRole } = render(<CreateUser onAdd={mockCallback} />)
 
   userEvent.click(screen.getByText('Add'))

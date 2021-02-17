@@ -10,7 +10,7 @@ export const LoadUsers = async () => {
     .then(res => res.json())
 }
 
-export const AddUser = async ({ name, email }, { signal }) => {
+export const AddUser = async ([name, email], props, { signal }) => {
   const requestOptions = {
     signal,
     method: 'PUT',

@@ -19,12 +19,12 @@ const ShowMessages = ({ isFulfilled, isPending, error }) => {
 
 const CreateUser = ({ onAdd }) => {
   const [isSubmitting, setSubmmiting] = useState(false)
-  const defaultUser = { id: 0, name: "John Doe", email: "john@example.com" }
+  const user = { id: 0, name: "John Doe", email: "john@example.com" }
   const { isFulfilled, isPending, error, run, cancel } = useAsync({ deferFn: AddUser, onResolve: onAdd })
 
   const handleSubmit = (name, email) => {
     setSubmmiting(true)
-    run({ body: JSON.stringify({ name, email }) })
+    run(name, email)
   }
 
   const doClose = () => {
@@ -38,7 +38,7 @@ const CreateUser = ({ onAdd }) => {
 
       {isSubmitting && <ShowMessages isFulfilled={isFulfilled} isPending={isPending} error={error} />}
 
-      <UserForm user={defaultUser} handleSubmit={handleSubmit} disabled={isSubmitting} />
+      <UserForm user={user} handleSubmit={handleSubmit} disabled={isSubmitting} />
     </PopupModal>
   )
 }

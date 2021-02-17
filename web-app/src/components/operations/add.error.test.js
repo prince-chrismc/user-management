@@ -7,16 +7,15 @@ import CreateUser from './Add'
 
 jest.mock('../../core/services/List', () => {
   return {
-    AddUser: jest.fn((name, email) => {
-      console.log('throwing')
+    AddUser: jest.fn(() => {
       return new Promise((resolve, reject) => reject(new Error('mock network error')))
     }),
-    LoadUsers: jest.fn(() => { })
+    LoadUsers: jest.fn()
   }
 })
 
 test('handles errors', async () => {
-  const mockCallback = jest.fn((id, name, email) => { })
+  const mockCallback = jest.fn()
   const { getByText, getByRole } = render(<CreateUser onAdd={mockCallback} />)
 
   userEvent.click(getByRole('button', { name: 'Add' }))
