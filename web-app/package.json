@@ -86,7 +86,7 @@
   },
   "browserslist": "> 2%, not dead",
   "jest": {
-    "setupFiles": [
+    "setupFilesAfterEnv": [
       "<rootDir>/jest.setup.js"
     ],
     "collectCoverageFrom": [
