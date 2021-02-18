@@ -11,7 +11,7 @@ const SuccessMessage = ({ message }) => (
 )
 
 SuccessMessage.propTypes = {
-    message: PropTypes.string.isRequired
+  message: PropTypes.string.isRequired
 }
 
 export default SuccessMessage

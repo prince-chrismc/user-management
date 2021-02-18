@@ -1,10 +1,10 @@
-import { render } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
+import { render } from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
 
-import SuccessMessage from "./Success";
+import SuccessMessage from './Success'
 
-test("renders a success message", () => {
-  const { container } = render(<SuccessMessage message="Hello World" />);
+test('renders a success message', () => {
+  const { container } = render(<SuccessMessage message="Hello World" />)
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div
       class="ui icon success message"
@@ -24,5 +24,5 @@ test("renders a success message", () => {
         Hello World
       </div>
     </div>
-  `);
-});
+  `)
+})

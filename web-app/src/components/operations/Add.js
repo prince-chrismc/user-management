@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAsync } from 'react-async'
-import { Button, Message } from 'semantic-ui-react'
+import { Button } from 'semantic-ui-react'
 
 import PopupModal from '../../containers/PopupModal'
 import UserForm from '../forms/User'
@@ -13,6 +13,14 @@ const ShowMessages = ({ isFulfilled, isPending, error }) => {
   return (
     <SelectMessage success={success} loading={loading} error={error} />
   )
+}
+
+ShowMessages.propTypes = {
+  isFulfilled: PropTypes.bool.isRequired,
+  isPending: PropTypes.bool.isRequired,
+  error: PropTypes.shape({
+    message: PropTypes.string.isRequired
+  })
 }
 
 const CreateUser = ({ onAdd }) => {

@@ -1,16 +1,16 @@
-import { render } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
+import { render } from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
 
-import SelectMessage from "./Select";
+import SelectMessage from './Select'
 
-const success = { message: "It's working" };
-const loading = { message: "It's pending" };
-const error = { message: "It's failing" };
+const success = { message: 'It\'s working' }
+const loading = { message: 'It\'s pending' }
+const error = { message: 'It\'s failing' }
 
-test("renders selects success", () => {
+test('renders selects success', () => {
   const { container } = render(
     <SelectMessage success={success} loading={null} error={null} />
-  );
+  )
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div
       class="ui icon success message"
@@ -30,13 +30,13 @@ test("renders selects success", () => {
         It's working
       </div>
     </div>
-  `);
-});
+  `)
+})
 
-test("renders selects loading", () => {
+test('renders selects loading', () => {
   const { container } = render(
     <SelectMessage success={null} loading={loading} error={null} />
-  );
+  )
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div
       class="ui icon message"
@@ -56,13 +56,13 @@ test("renders selects loading", () => {
         It's pending
       </div>
     </div>
-  `);
-});
+  `)
+})
 
-test("renders selects error", () => {
+test('renders selects error', () => {
   const { container } = render(
     <SelectMessage success={null} loading={null} error={error} />
-  );
+  )
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div
       class="ui error icon message"
@@ -85,5 +85,5 @@ test("renders selects error", () => {
         </p>
       </div>
     </div>
-  `);
-});
+  `)
+})
