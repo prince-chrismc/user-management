@@ -34,7 +34,7 @@ let service = new awsx.ecs.FargateService("frontend", {
                     context: "../web-app",
                     dockerfile: "../web-app/Dockerfile.multistage",
                     cacheFrom: { stages: ["install"] },
-                    args: { api_url: backendEndpoint.apply(e => `"http://${e.hostname}:${e.port.toString()}"`) }
+                    args: { api_url: backendEndpoint.apply(e => `http://${e.hostname}:${e.port.toString()}`) }
                 }),
                 memory: 512,
                 portMappings: [lb],
