@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import { enableFetchMocks } from 'jest-fetch-mock' // mock fetch within list endpoints
 
 import { LoadUsers, AddUser } from './List'
