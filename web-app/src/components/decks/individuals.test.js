@@ -11,7 +11,7 @@ jest.mock('../../core/services/User')
 test('renders', () => {
   const { container } = render(
     <MakeCards
-      users={[{ id: 99, name: 'Jenny Doe', email: 'jenny@example.com' }]}
+      users={[{ id: 99, name: 'Jamie Doe', email: 'jamie@example.com' }]}
     />
   )
   expect(container.firstChild).toMatchInlineSnapshot(`
@@ -27,12 +27,12 @@ test('renders', () => {
           <div
             class="header"
           >
-            Jenny Doe
+            Jamie Doe
           </div>
           <div
             class="meta"
           >
-            jenny@example.com
+            jamie@example.com
           </div>
         </div>
         <div
@@ -107,9 +107,35 @@ test('renders', () => {
 test('updates on add', async () => {
   const { getByPlaceholderText, getByRole, getByText } = render(
     <MakeCards
+      users={[]}
+    />
+  )
+
+  userEvent.click(getByRole('button', { name: 'Add' }))
+  await waitFor(() => getByRole('button', { name: 'Save' }))
+
+  fireEvent.change(getByPlaceholderText('Name'), { target: { value: 'Jane Doe' } })
+  fireEvent.change(getByPlaceholderText('Email'), { target: { value: 'jane@example.com' } })
+  userEvent.click(getByRole('button', { name: 'Save' }))
+
+  await waitForExpect(() => {
+    expect(getByRole('button', { name: 'Save' })).toBeDisabled()
+    expect(getByText('Success!', { exact: false })).toBeInTheDocument()
+  }, 700)
+
+  expect(getByText('Jane Doe')).toBeInTheDocument()
+  expect(getByText('jane@example.com')).toBeInTheDocument()
+})
+
+test('updates on edit', async () => {
+  const { getByPlaceholderText, getByRole, getByText, queryByText } = render(
+    <MakeCards
       users={[{ id: 99, name: 'Jenny Doe', email: 'jenny@example.com' }]}
     />
   )
+
+  expect(getByText('Jenny Doe')).toBeInTheDocument()
+  expect(getByText('jenny@example.com')).toBeInTheDocument()
 
   userEvent.click(getByRole('button', { name: 'Edit' }))
   await waitFor(() => getByRole('button', { name: 'Save' }))
@@ -125,24 +151,31 @@ test('updates on add', async () => {
 
   expect(getByText('John Doe')).toBeInTheDocument()
   expect(getByText('john@example.com')).toBeInTheDocument()
+  expect(queryByText('Jenny Doe')).not.toBeInTheDocument()
+  expect(queryByText('jenny@example.com')).not.toBeInTheDocument()
 })
 
-test('updates on edit', async () => {
-  const { getByPlaceholderText, getByRole, getByText } = render(
+test('updates on delete', async () => {
+  const { getByRole, getByText, queryByText } = render(
     <MakeCards
       users={[{ id: 99, name: 'Jenny Doe', email: 'jenny@example.com' }]}
     />
   )
 
-  userEvent.click(getByRole('button', { name: 'Add' }))
-  await waitFor(() => getByRole('button', { name: 'Save' }))
+  expect(getByText('Jenny Doe')).toBeInTheDocument()
+  expect(getByText('jenny@example.com')).toBeInTheDocument()
 
-  fireEvent.change(getByPlaceholderText('Name'), { target: { value: 'Jane Doe' } })
-  fireEvent.change(getByPlaceholderText('Email'), { target: { value: 'jane@example.com' } })
-  userEvent.click(getByRole('button', { name: 'Save' }))
+  userEvent.click(getByText('Delete'))
+  await waitFor(() => getByRole('button', { name: 'Confirm' }))
+  userEvent.click(getByRole('button', { name: 'Confirm' }))
 
   await waitForExpect(() => {
-    expect(getByRole('button', { name: 'Save' })).toBeDisabled()
+    expect(getByRole('button', { name: 'Confirm' })).toBeDisabled()
     expect(getByText('Success!', { exact: false })).toBeInTheDocument()
   }, 700)
+
+  await waitForExpect(() => {
+    expect(queryByText('Jenny Doe')).not.toBeInTheDocument()
+    expect(queryByText('jenny@example.com')).not.toBeInTheDocument()
+  }, 1500)
 })
