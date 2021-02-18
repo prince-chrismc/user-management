@@ -1,60 +1,71 @@
-import { Component } from 'react'
-import { Button, Message } from 'semantic-ui-react'
+import { useState, useEffect } from 'react'
+import { useAsync } from 'react-async'
+import { Button } from 'semantic-ui-react'
 
-import FormEditNameAndEmail from '../dialogs/EditForm'
 import PopupModal from '../../containers/PopupModal'
+import UserForm from '../forms/User'
+import SelectMessage from '../../containers/messages/Select'
 import { EditUser } from '../../core/services/User'
 import { Etag } from '../../core/tools/Etag'
 
-class ModifyUser extends Component {
-  state = { id: this.props.id, name: this.props.name, email: this.props.email, showError: false, errMsg: '', showOkay: false }
+const ShowMessages = ({ isFulfilled, isPending, error }) => {
+  const success = isFulfilled ? { message: 'The user was successfully modified' } : null
+  const loading = isPending ? { message: 'Currently proccessing edit of user' } : null
+  return (
+    <SelectMessage success={success} loading={loading} error={error} />
+  )
+}
 
-  toggleError = (err) => {
-    this.setState((prevState) => {
-      return { showError: !prevState.showError, errMsg: '' + err }
-    })
-  };
+ShowMessages.propTypes = {
+  isFulfilled: PropTypes.bool.isRequired,
+  isPending: PropTypes.bool.isRequired,
+  error: PropTypes.shape({
+    message: PropTypes.string.isRequired
+  })
+}
 
-  toggleSuccess = (name, email) => {
-    this.setState({ name: name, email: email, showOkay: true })
-    this.props.onChange(name, email)
-  };
+const ModifyUser = ({ user, onChange }) => {
+  const [isSubmitting, setSubmmiting] = useState(false)
+  const [u, setUser] = useState(user)
+  useEffect(() => { setUser(user) }, [user])
+  const { isFulfilled, isPending, error, run, cancel } = useAsync({
+    deferFn: EditUser,
+    onResolve: (data) => {
+      setUser(prevState => ({ ...prevState, name: data.name, email: data.email }))
+      onChange(data.name, data.email)
+    }
+  })
 
-  clearMessages = () => {
-    this.setState({ showError: false, showOkay: false })
+  const handleSubmit = (name, email) => {
+    setSubmmiting(true)
+
+    const etag = Etag(u.id, u.name, u.email)
+    run(u.id, name, email, etag)
   }
 
-  handleSubmit = (name, email) => {
-    const etag = Etag(this.state.id, this.state.name, this.state.email)
-    EditUser(this.state.id, name, email, etag)
-      .then((data) => { this.toggleSuccess(data.name, data.email) })
-      .catch((err) => this.toggleError(err))
+  const doClose = () => {
+    cancel()
+    setSubmmiting(false)
   }
 
-  render () {
-    const { name, email } = this.state
-    return (
-      <PopupModal button={<Button content='Edit' icon='edit outline' labelPosition='left' floated='left' />}
-        header='Edit Settings' onClose={this.clearMessages}>
-        <FormEditNameAndEmail
-          name={name}
-          email={email}
-          handleSubmit={this.handleSubmit}
-          error={this.state.showError}
-          success={this.state.showOkay}
-        >
-          <Message error
-            header='Oh no! Something went horribly wrong'
-            content={this.state.errMsg}
-          />
-          <Message success
-            header='Success! The operation completed without any issue'
-            content='The user was successfully modified'
-          />
-        </FormEditNameAndEmail>
-      </PopupModal>
-    )
-  }
+  return (
+    <PopupModal button={<Button content='Edit' icon='edit outline' labelPosition='left' floated='left' />}
+      header='Edit Settings' onClose={doClose}>
+
+      {isSubmitting && <ShowMessages isFulfilled={isFulfilled} isPending={isPending} error={error} />}
+
+      <UserForm user={u} handleSubmit={handleSubmit} disabled={isSubmitting} />
+    </PopupModal>
+  )
+}
+
+ModifyUser.propTypes = {
+  user: PropTypes.exact({
+    id: PropTypes.number,
+    name: PropTypes.string,
+    email: PropTypes.string
+  }).isRequired,
+  onChange: PropTypes.func.isRequired
 }
 
 export default ModifyUser

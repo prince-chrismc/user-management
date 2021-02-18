@@ -131,7 +131,7 @@ test('delete users', async () => {
 
 test('edit users', async () => {
   const etag = Etag(JSON_USER_123.id, JSON_USER_123.name, JSON_USER_123.email)
-  const json = await EditUser(123, 'James Does', 'james@example.com', etag)
+  const json = await EditUser([123, 'James Does', 'james@example.com', etag], null, { signal: null })
   console.log(json)
 
   expect(json).toEqual({ email: 'james@example.com', id: '123', name: 'James Does' })
@@ -148,5 +148,5 @@ test('faulty backend > edit user', async () => {
   __error = true
   expect.assertions(1)
 
-  await expect(EditUser(123, 'James Does', 'james@example.com')).rejects.toBeInstanceOf(Response)
+  await expect(EditUser([123, 'James Does', 'james@example.com', 'etag'], null, { signal: null })).rejects.toBeInstanceOf(Response)
 })

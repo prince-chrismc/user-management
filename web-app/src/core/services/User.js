@@ -1,4 +1,4 @@
-export const EditUser = async (id, name, email, etag) => {
+export const EditUser = async ([id, name, email, etag], props, { signal }) => {
   const requestOptions = {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', 'If-Match': '"' + etag + '"' },

@@ -7,17 +7,15 @@ import ModifyUser from './Edit'
 
 jest.mock('../../core/services/User', () => {
   return {
-    EditUser: jest.fn((id, name, email) => {
-      return new Promise((resolve, reject) => reject(new Error('mock network error')))
-    }),
-    DeleteUser: jest.fn((id) => { })
+    EditUser: jest.fn(() => { return new Promise((resolve, reject) => reject(new Error('mock network error'))) }),
+    DeleteUser: jest.fn()
   }
 })
 
 test('handles errors', async () => {
-  const mockCallback = jest.fn((name, email) => { })
-  const { getByText, getByRole } = render(<ModifyUser id="72" name="Jenny Doe" email="jenny@example.com"
-    onChange={mockCallback} />)
+  const user = { id: 72, name: 'Jenny Doe', email: 'jenny@example.com' }
+  const mockCallback = jest.fn()
+  const { getByText, getByRole } = render(<ModifyUser user={user} onChange={mockCallback} />)
 
   userEvent.click(getByText('Edit'))
   await waitFor(() => getByRole('button', { name: 'Save' }))
