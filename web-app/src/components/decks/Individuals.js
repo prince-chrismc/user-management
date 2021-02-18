@@ -14,7 +14,7 @@ const MakeCards = ({ users }) => {
     setTimeout(() => {
       const newList = list.filter((user) => { return user.id !== id })
       setList(newList)
-    }, 500);
+    }, 500)
   }
 
   return (

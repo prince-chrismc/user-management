@@ -1,10 +1,10 @@
-import { render } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
+import { render } from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
 
-import WarningMessage from "./Warning";
+import WarningMessage from './Warning'
 
-test("renders an error message", () => {
-  const { container } = render(<WarningMessage message="Watch your step!" />);
+test('renders an error message', () => {
+  const { container } = render(<WarningMessage message="Watch your step!" />)
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div
       class="ui icon warning message"
@@ -24,5 +24,5 @@ test("renders an error message", () => {
         Watch your step!
       </div>
     </div>
-  `);
-});
+  `)
+})

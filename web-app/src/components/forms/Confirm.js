@@ -7,8 +7,8 @@ const ConfirmForm = ({ handleSubmit, disabled }) => (
 )
 
 ConfirmForm.propTypes = {
-    handleSubmit: PropTypes.func.isRequired,
-    disabled: PropTypes.bool
+  handleSubmit: PropTypes.func.isRequired,
+  disabled: PropTypes.bool
 }
 
 export default ConfirmForm

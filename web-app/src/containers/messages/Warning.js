@@ -11,7 +11,7 @@ const WarningMessage = ({ message }) => (
 )
 
 WarningMessage.propTypes = {
-    message: PropTypes.string.isRequired
+  message: PropTypes.string.isRequired
 }
 
 export default WarningMessage

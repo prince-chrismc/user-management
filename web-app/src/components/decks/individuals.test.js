@@ -114,12 +114,8 @@ test('updates on add', async () => {
   userEvent.click(getByRole('button', { name: 'Edit' }))
   await waitFor(() => getByRole('button', { name: 'Save' }))
 
-  fireEvent.change(getByPlaceholderText('Name'), {
-    target: { value: 'John Doe' }
-  })
-  fireEvent.change(getByPlaceholderText('Email'), {
-    target: { value: 'john@example.com' }
-  })
+  fireEvent.change(getByPlaceholderText('Name'), { target: { value: 'John Doe' } })
+  fireEvent.change(getByPlaceholderText('Email'), { target: { value: 'john@example.com' } })
   userEvent.click(getByRole('button', { name: 'Save' }))
 
   await waitForExpect(() => {
@@ -141,12 +137,8 @@ test('updates on edit', async () => {
   userEvent.click(getByRole('button', { name: 'Add' }))
   await waitFor(() => getByRole('button', { name: 'Save' }))
 
-  fireEvent.change(getByPlaceholderText('Name'), {
-    target: { value: 'Jane Doe' }
-  })
-  fireEvent.change(getByPlaceholderText('Email'), {
-    target: { value: 'jane@example.com' }
-  })
+  fireEvent.change(getByPlaceholderText('Name'), { target: { value: 'Jane Doe' } })
+  fireEvent.change(getByPlaceholderText('Email'), { target: { value: 'jane@example.com' } })
   userEvent.click(getByRole('button', { name: 'Save' }))
 
   await waitForExpect(() => {
