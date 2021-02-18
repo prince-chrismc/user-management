@@ -20,7 +20,6 @@ export const AddUser = async ([name, email], props, { signal }) => {
     },
     body: JSON.stringify({ name: name, email: email })
   }
-  console.log('from add user')
   return await fetch(process.env.API_URL + '/um/v1/users', requestOptions)
     .then(res => (res.ok ? res : Promise.reject(res)))
     .then(res => res.json())

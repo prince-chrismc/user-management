@@ -123,7 +123,7 @@ test('faulty backend > add user', async () => {
 
 test('delete users', async () => {
   const etag = Etag(JSON_USER_123.id, JSON_USER_123.name, JSON_USER_123.email)
-  const json = await DeleteUser(123, etag)
+  const json = await DeleteUser([123, etag], null, { signal: null })
   console.log(json)
 
   expect(json).toBeNull()
@@ -141,7 +141,7 @@ test('faulty backend > delete user', async () => {
   __error = true
   expect.assertions(1)
 
-  await expect(DeleteUser(123)).rejects.toBeInstanceOf(Response)
+  await expect(DeleteUser([123, 'etag'], null, { signal: null })).rejects.toBeInstanceOf(Response)
 })
 
 test('faulty backend > edit user', async () => {

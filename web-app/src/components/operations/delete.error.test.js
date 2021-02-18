@@ -7,15 +7,15 @@ import RemoveUser from './Delete'
 
 jest.mock('../../core/services/User', () => {
   return {
-    EditUser: jest.fn((id, name, email) => { }),
-    DeleteUser: jest.fn((id) => { return new Promise((resolve, reject) => reject(new Error('mock network error'))) })
+    EditUser: jest.fn(),
+    DeleteUser: jest.fn(() => { return new Promise((resolve, reject) => reject(new Error('mock network error'))) })
   }
 })
 
 test('handles errors', async () => {
+  const user = { id: 0, name: 'Jenny Doe', email: 'jenny@example.com' }
   const mockCallback = jest.fn()
-  const { getByRole, getByText } = render(
-    <RemoveUser id="0" name="Jenny Doe" email="jenny@example.com" onDelete={mockCallback} />)
+  const { getByRole, getByText } = render(<RemoveUser user={user} onDelete={mockCallback} />)
 
   userEvent.click(getByRole('button', { name: 'Delete' }))
   await waitFor(() => getByRole('button', { name: 'Confirm' }))

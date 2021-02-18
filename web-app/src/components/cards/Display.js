@@ -22,7 +22,7 @@ const User = ({ user, onDelete }) => {
         <Button.Group widths='2'>
           <ModifyUser user={u} onChange={onChange} />
           <Button.Or />
-          <RemoveUser id={u.id} name={u.name} email={u.email} onDelete={() => onDelete(u.id)} />
+          <RemoveUser user={u} onDelete={() => onDelete(u.id)} />
         </Button.Group>
       </Card.Content>
     </Card>
