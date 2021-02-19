@@ -15,7 +15,7 @@ pulumi stack select dev
 Install dependencies
 
 ```sh
-npm install
+yarn install
 ```
 
 ## Development
@@ -35,7 +35,7 @@ pulumi preview
 ### Updating dependencies
 
 ```sh
-npm update
+yarn upgrade --latest
 ```
 
 ## Usage
