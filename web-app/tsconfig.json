@@ -1,28 +1,17 @@
 {
     "compilerOptions": {
         "sourceMap": true,
-        "noImplicitAny": false,
-        "module": "commonjs",
-        "target": "es5",
-        "lib": [
-            "esnext",
-            "dom",
-            "dom.iterable"
-        ],
-        "removeComments": true,
-        "allowSyntheticDefaultImports": true,
-        "jsx": "react",
+        "module": "es2020",
+        "target": "es6",
+        
+        "jsx": "react-jsx",
         "allowJs": true,
-        "baseUrl": "./",
-        "esModuleInterop": true,
-        "resolveJsonModule": true,
-        "moduleResolution": "node",
-        "downlevelIteration": true,
-        "paths": {
-            "components/*": [
-                "src/components/*"
-            ]
-        }
+        "noImplicitAny": false,
+
+        "allowSyntheticDefaultImports": true, // https://www.typescriptlang.org/tsconfig#allowSyntheticDefaultImports
+        "esModuleInterop": true, // https://www.typescriptlang.org/tsconfig#esModuleInterop
+        "moduleResolution": "node", // https://www.typescriptlang.org/docs/handbook/module-resolution.html
+        "removeComments": true,
     },
     "include": [
         "./src",
