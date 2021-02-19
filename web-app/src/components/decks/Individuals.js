@@ -11,8 +11,10 @@ const MakeCards = ({ users }) => {
   const onAdd = (user) => { setList(prevState => [...prevState, user]) }
 
   const onDelete = (id) => {
-    const newList = list.filter((user) => { return user.id !== id })
-    setList(newList)
+    setTimeout(() => {
+      const newList = list.filter((user) => { return user.id !== id })
+      setList(newList)
+    }, 500)
   }
 
   return (

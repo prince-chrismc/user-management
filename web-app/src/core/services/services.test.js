@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import { enableFetchMocks } from 'jest-fetch-mock' // mock fetch within list endpoints
 
 import { LoadUsers, AddUser } from './List'
@@ -101,7 +102,7 @@ test('get list of users', async () => {
 })
 
 test('add new user to list', async () => {
-  const json = await AddUser('James Does', 'james@example.com')
+  const json = await AddUser(['James Does', 'james@example.com'], null, { signal: null })
   console.log(json)
 
   expect(json).toEqual({ id: 543, name: 'James Does', email: 'james@example.com' })
@@ -118,12 +119,12 @@ test('faulty backend > add user', async () => {
   __error = true
   expect.assertions(1)
 
-  await expect(AddUser('James Does', 'james@example.com')).rejects.toBeInstanceOf(Response)
+  await expect(AddUser(['James Does', 'james@example.com'], null, { signal: null })).rejects.toBeInstanceOf(Response)
 })
 
 test('delete users', async () => {
   const etag = Etag(JSON_USER_123.id, JSON_USER_123.name, JSON_USER_123.email)
-  const json = await DeleteUser(123, etag)
+  const json = await DeleteUser([123, etag], null, { signal: null })
   console.log(json)
 
   expect(json).toBeNull()
@@ -131,7 +132,7 @@ test('delete users', async () => {
 
 test('edit users', async () => {
   const etag = Etag(JSON_USER_123.id, JSON_USER_123.name, JSON_USER_123.email)
-  const json = await EditUser(123, 'James Does', 'james@example.com', etag)
+  const json = await EditUser([123, 'James Does', 'james@example.com', etag], null, { signal: null })
   console.log(json)
 
   expect(json).toEqual({ email: 'james@example.com', id: '123', name: 'James Does' })
@@ -141,12 +142,12 @@ test('faulty backend > delete user', async () => {
   __error = true
   expect.assertions(1)
 
-  await expect(DeleteUser(123)).rejects.toBeInstanceOf(Response)
+  await expect(DeleteUser([123, 'etag'], null, { signal: null })).rejects.toBeInstanceOf(Response)
 })
 
 test('faulty backend > edit user', async () => {
   __error = true
   expect.assertions(1)
 
-  await expect(EditUser(123, 'James Does', 'james@example.com')).rejects.toBeInstanceOf(Response)
+  await expect(EditUser([123, 'James Does', 'james@example.com', 'etag'], null, { signal: null })).rejects.toBeInstanceOf(Response)
 })

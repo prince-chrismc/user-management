@@ -1,4 +1,4 @@
-export const EditUser = async (id, name, email, etag) => {
+export const EditUser = async ([id, name, email, etag], props, { signal }) => {
   const requestOptions = {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', 'If-Match': '"' + etag + '"' },
@@ -9,7 +9,7 @@ export const EditUser = async (id, name, email, etag) => {
     .then(res => res.json())
 }
 
-export const DeleteUser = async (id, etag) => {
+export const DeleteUser = async ([id, etag], props, { signal }) => {
   const requestOptions = {
     method: 'DELETE',
     headers: { 'If-Match': '"' + etag + '"' }

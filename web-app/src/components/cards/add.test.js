@@ -20,7 +20,7 @@ test('updates on add', async () => {
     <AddCard onAdd={mockCallback} />)
 
   userEvent.click(getByRole('button', { name: 'Add' }))
-  waitFor(() => getByRole('button', { name: 'Save' })) // Wait for module to pop up
+  await waitFor(() => getByRole('button', { name: 'Save' })) // Wait for module to pop up
 
   fireEvent.change(getByPlaceholderText('Name'), { target: { value: 'Jane Doe' } })
   fireEvent.change(getByPlaceholderText('Email'), { target: { value: 'jane@example.com' } })

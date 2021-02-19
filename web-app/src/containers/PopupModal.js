@@ -11,9 +11,7 @@ const PopupModal = ({ button, header, children, onClose }) => {
   return (
     <>
       <button.type {...button.props} onClick={() => setOpen(true)} />
-      <Modal open={open}
-        onClose={doClose}
-        closeIcon>
+      <Modal open={open} onClose={doClose} closeIcon >
         <Modal.Header>{header}</Modal.Header>
         <Modal.Content>
           <Modal.Description>
@@ -28,7 +26,7 @@ const PopupModal = ({ button, header, children, onClose }) => {
 PopupModal.propTypes = {
   button: PropTypes.element.isRequired,
   header: PropTypes.string.isRequired,
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node,
   onClose: PropTypes.func.isRequired
 }
 

@@ -1,54 +1,67 @@
-import { Component } from 'react'
-import { Button, Message } from 'semantic-ui-react'
+import { useState } from 'react'
+import { useAsync } from 'react-async'
+import { Button } from 'semantic-ui-react'
 
-import FormConfirm from '../dialogs/ConfirmForm'
 import PopupModal from '../../containers/PopupModal'
+import ConfirmForm from '../forms/Confirm'
+import SelectMessage from '../../containers/messages/Select'
+import WarningMessage from '../../containers/messages/Warning'
 import { DeleteUser } from '../../core/services/User'
 import { Etag } from '../../core/tools/Etag'
 
-class RemoveUser extends Component {
-  state = { id: this.props.id, name: this.props.name, email: this.props.email, showError: false, errMsg: '', showOkay: false }
+const ShowMessages = ({ isFulfilled, isPending, error }) => {
+  const success = isFulfilled ? { message: 'The user was successfully deleted' } : null
+  const loading = isPending ? { message: 'Currently proccessing delete of user' } : null
+  return (
+    <SelectMessage success={success} loading={loading} error={error} />
+  )
+}
 
-  toggleError = (err) => {
-    this.setState((prevState) => {
-      return { showError: !prevState.showError, errMsg: '' + err }
-    })
-  };
+ShowMessages.propTypes = {
+  isFulfilled: PropTypes.bool.isRequired,
+  isPending: PropTypes.bool.isRequired,
+  error: PropTypes.shape({
+    message: PropTypes.string.isRequired
+  })
+}
 
-  toggleSuccess = () => {
-    this.setState({ showOkay: true })
-    this.props.onDelete()
-  };
+const RemoveUser = ({ user, onDelete }) => {
+  const [isSubmitting, setSubmmiting] = useState(false)
+  const { isFulfilled, isPending, error, run, cancel } = useAsync({
+    deferFn: DeleteUser, onResolve: () => { onDelete() }
+  })
 
-  clearMessages = () => {
-    this.setState({ showError: false, showOkay: false })
+  const handleSubmit = () => {
+    setSubmmiting(true)
+
+    const etag = Etag(user.id, user.name, user.email)
+    run(user.id, etag)
   }
 
-  handleDelete = () => {
-    const etag = Etag(this.state.id, this.state.name, this.state.email)
-    DeleteUser(this.state.id, etag)
-      .then(() => this.toggleSuccess())
-      .catch((err) => this.toggleError(err))
+  const doClose = () => {
+    cancel()
+    setSubmmiting(false)
   }
 
-  render () {
-    return (
-      <PopupModal button={<Button color='red' content='Delete' icon='user cancel' labelPosition='right' floated='right' />}
-        header='Delete User' onClose={this.clearMessages}>
-        <FormConfirm name={this.state.name} handleSubmit={this.handleDelete}
-          sucess={this.state.showError} error={this.state.showOkay}>
-          <Message error
-            header='Oh no! Something went horribly wrong'
-            content={this.state.errMsg}
-          />
-          <Message success
-            header='Success! The operation completed without any issue'
-            content='The user was successfully modified'
-          />
-        </FormConfirm>
-      </PopupModal>
-    )
-  }
+  return (
+    <PopupModal button={<Button color='red' content='Delete' icon='user cancel' labelPosition='right' floated='right' />}
+      header='Delete User' onClose={doClose}>
+
+      {isSubmitting && <ShowMessages isFulfilled={isFulfilled} isPending={isPending} error={error} />}
+      {!isSubmitting && <WarningMessage message={'You are about to delete "' + user.name + '". Are you sure about that?'} />}
+
+      <ConfirmForm handleSubmit={handleSubmit} disabled={isSubmitting} />
+    </PopupModal>
+  )
+}
+
+RemoveUser.propTypes = {
+  user: PropTypes.exact({
+    id: PropTypes.number,
+    name: PropTypes.string,
+    email: PropTypes.string
+  }).isRequired,
+  onDelete: PropTypes.func.isRequired
 }
 
 export default RemoveUser

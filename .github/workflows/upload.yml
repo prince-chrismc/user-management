@@ -413,7 +413,7 @@ jobs:
         name: deploy
         run: |
           pulumi stack select dev
-          pulumi up --yes
+          pulumi up --yes || pulumi up --yes
       - if: github.event_name == 'push'
         name: report
         run: |

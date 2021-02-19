@@ -9,11 +9,7 @@ const User = ({ user, onDelete }) => {
   useEffect(() => { setUser(user) }, [user])
 
   const onChange = (name, email) => {
-    setUser(prevState => ({
-      ...prevState,
-      name: name,
-      email: email
-    }))
+    setUser(prevState => ({ ...prevState, name: name, email: email }))
   }
 
   return (
@@ -24,9 +20,9 @@ const User = ({ user, onDelete }) => {
       </Card.Content>
       <Card.Content extra>
         <Button.Group widths='2'>
-          <ModifyUser id={u.id} name={u.name} email={u.email} onChange={onChange} />
+          <ModifyUser user={u} onChange={onChange} />
           <Button.Or />
-          <RemoveUser id={u.id} name={u.name} email={u.email} onDelete={() => onDelete(u.id)} />
+          <RemoveUser user={u} onDelete={() => onDelete(u.id)} />
         </Button.Group>
       </Card.Content>
     </Card>

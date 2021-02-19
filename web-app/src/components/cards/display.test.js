@@ -24,7 +24,7 @@ test('updates on edit', async () => {
     <User user={user} onDelete={mockCallback} />)
 
   userEvent.click(getByRole('button', { name: 'Edit' }))
-  waitFor(() => getByRole('button', { name: 'Save' }))
+  await waitFor(() => getByRole('button', { name: 'Save' }))
 
   fireEvent.change(getByPlaceholderText('Name'), { target: { value: 'John Doe' } })
   fireEvent.change(getByPlaceholderText('Email'), { target: { value: 'john@example.com' } })
@@ -56,7 +56,7 @@ test('notifies id on delete', async () => {
     <User user={user} onDelete={mockCallback} />)
 
   userEvent.click(getByRole('button', { name: 'Delete' }))
-  waitFor(() => getByRole('button', { name: 'Confirm' }))
+  await waitFor(() => getByRole('button', { name: 'Confirm' }))
   userEvent.click(getByRole('button', { name: 'Confirm' }))
 
   await waitForExpect(() => {

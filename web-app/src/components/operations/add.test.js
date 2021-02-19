@@ -7,30 +7,32 @@ import CreateUser from './Add'
 
 jest.mock('../../core/services/List')
 
-test('renders', () => {
-  render(<CreateUser onAdd={(id, name, email) => { expect(true).toBe(false) }} />)
+test('renders', async () => {
+  const mockCallback = jest.fn()
+  const { getByRole, getByPlaceholderText } = render(<CreateUser onAdd={mockCallback} />)
 
-  userEvent.click(screen.getByRole('button', { name: 'Add' }))
-  waitFor(() => screen.getByRole('button', { name: 'Save' }))
+  userEvent.click(getByRole('button', { name: 'Add' }))
+  await waitFor(() => getByRole('button', { name: 'Save' }))
 
-  expect(screen.getByPlaceholderText('Name')).toHaveValue('John Doe')
-  expect(screen.getByPlaceholderText('Email')).toHaveValue('john@example.com')
-  expect(screen.getByRole('button', { name: 'Save' })).toHaveTextContent('Save')
+  expect(getByPlaceholderText('Name')).toHaveValue('John Doe')
+  expect(getByPlaceholderText('Email')).toHaveValue('john@example.com')
+  expect(getByRole('button', { name: 'Save' })).toHaveTextContent('Save')
 
-  userEvent.type(screen.getByPlaceholderText('Name'), '{esc}')
+  userEvent.type(getByPlaceholderText('Name'), '{esc}')
 
   expect(screen.queryByPlaceholderText('Name')).not.toBeInTheDocument()
   expect(screen.queryByPlaceholderText('Email')).not.toBeInTheDocument()
   expect(screen.queryByRole('button', { name: 'Save' })).not.toBeInTheDocument()
   expect(screen.queryByText('Success!', { exact: false })).not.toBeInTheDocument()
+  expect(mockCallback).not.toHaveBeenCalled()
 })
 
 test('default data on submit', async () => {
-  const mockCallback = jest.fn((id, name, email) => { })
+  const mockCallback = jest.fn()
   const { getByRole } = render(<CreateUser onAdd={mockCallback} />)
 
   userEvent.click(getByRole('button', { name: 'Add' }))
-  waitFor(() => getByRole('button', { name: 'Save' }))
+  await waitFor(() => getByRole('button', { name: 'Save' }))
   userEvent.click(getByRole('button', { name: 'Save' }))
   expect(mockCallback).not.toHaveBeenCalled()
 
@@ -42,11 +44,11 @@ test('default data on submit', async () => {
 })
 
 test('new data on submit', async () => {
-  const mockCallback = jest.fn((id, name, email) => { })
+  const mockCallback = jest.fn()
   const { getByPlaceholderText, getByRole } = render(<CreateUser onAdd={mockCallback} />)
 
   userEvent.click(screen.getByText('Add'))
-  waitFor(() => getByRole('button', { name: 'Save' }))
+  await waitFor(() => getByRole('button', { name: 'Save' }))
 
   fireEvent.change(getByPlaceholderText('Name'), { target: { value: 'Jenny Doe' } })
   fireEvent.change(getByPlaceholderText('Email'), { target: { value: 'jenny@example.com' } })
