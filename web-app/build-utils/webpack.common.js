@@ -18,7 +18,12 @@ const config = {
         options: {
           presets: ["@babel/preset-env"],
         },
-      }
+      },
+      {
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        loader: 'ts-loader',
+      },
     ]
   },
   plugins: [

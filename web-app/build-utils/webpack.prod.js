@@ -5,7 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const config = {
   mode: 'production',
   entry: {
-    app: [`${commonPaths.appEntry}/index.js`],
+    app: [`${commonPaths.appEntry}/index.tsx`],
   },
   output: {
     filename: 'static/[name].[fullhash].js',

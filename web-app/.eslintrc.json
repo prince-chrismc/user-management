@@ -12,20 +12,38 @@
         "plugin:react-hooks/recommended",
         "plugin:import/errors",
         "plugin:jest/recommended",
-        "plugin:jest/style"
+        "plugin:jest/style",
+        "plugin:@typescript-eslint/recommended"
     ],
     "parserOptions": {
+        "project": [
+            "tsconfig.json"
+        ],
+        "ecmaVersion": 2020,
+        "sourceType": "module",
         "ecmaFeatures": {
             "jsx": true
-        },
-        "ecmaVersion": 11,
-        "sourceType": "module"
+        }
     },
     "plugins": [
+        "@typescript-eslint",
         "react",
+        "react-hooks",
+        "eslint-plugin-import",
         "jest"
     ],
     "rules": {
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "react/jsx-filename-extension": [
+            "warn",
+            {
+                "extensions": [
+                    ".jsx",
+                    ".tsx"
+                ]
+            }
+        ],
         "react/prefer-es6-class": "error",
         "react/react-in-jsx-scope": "off",
         "react/default-props-match-prop-types": "error",
