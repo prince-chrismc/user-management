@@ -10,7 +10,7 @@ jest.mock('../../core/services/User')
 test('renders', async () => {
   const user = { id: 0, name: 'Jenny Doe', email: 'jenny@example.com' }
   const mockCallback = jest.fn()
-  const { getByRole, queryByRole, queryByText } = render(<RemoveUser user={user} onChange={mockCallback} />)
+  const { getByRole, queryByRole, queryByText } = render(<RemoveUser user={user} onDelete={mockCallback} />)
 
   userEvent.click(getByRole('button', { name: 'Delete' }))
   await waitFor(() => getByRole('button', { name: 'Confirm' }))
