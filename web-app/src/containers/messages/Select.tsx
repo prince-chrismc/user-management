@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'react'
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
 
 import { Message } from '../../core/models/Message'
 import PendingMessage from './Pending'
@@ -22,16 +22,16 @@ const SelectMessage: FunctionComponent<SelectMessageProps> = ({ success, loading
   )
 }
 
-SelectMessage.propTypes = {
-  success: PropTypes.shape({
-    message: PropTypes.string.isRequired
-  }),
-  loading: PropTypes.shape({
-    message: PropTypes.string.isRequired
-  }),
-  error: PropTypes.shape({
-    message: PropTypes.string.isRequired
-  })
-}
+// SelectMessage.propTypes = {
+//   success: PropTypes.shape({
+//     message: PropTypes.string.isRequired
+//   }),
+//   loading: PropTypes.shape({
+//     message: PropTypes.string.isRequired
+//   }),
+//   error: PropTypes.shape({
+//     message: PropTypes.string.isRequired
+//   })
+// }
 
 export default SelectMessage
