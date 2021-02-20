@@ -10,6 +10,7 @@ const commonPaths = {
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const MomentTimezoneDataPlugin = require('moment-timezone-data-webpack-plugin')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
 const config = {
   entry: {
@@ -40,7 +41,16 @@ const config = {
       matchZones: ['Etc/UTC'],
       startYear: 2021,
       endYear: 2024
-    })
+    }),
+    new ForkTsCheckerWebpackPlugin({
+      typescript: {
+        diagnosticOptions: {
+          semantic: true,
+          syntactic: true,
+        },
+        mode: "write-references",
+      },
+    }),
   ]
 }
 
