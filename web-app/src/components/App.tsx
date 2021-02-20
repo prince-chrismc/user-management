@@ -1,9 +1,9 @@
 import { useAsync } from 'react-async'
 
-import Layout from './Layout'
 import { LoadUsers } from '../core/services/List'
 import { Placeholders } from './decks/Placeholders'
 import MakeCards from './decks/Individuals'
+import Layout from '../containers/layout/Layout'
 import ErrorMessage from '../containers/messages/Error'
 import PendingMessage from '../containers/messages/Pending'
 
