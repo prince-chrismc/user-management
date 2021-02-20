@@ -1,4 +1,4 @@
-import 'cross-fetch/polyfill';
+import 'cross-fetch/polyfill'
 
 import { LoadUsers, AddUser } from './List'
 import { EditUser, DeleteUser } from './User'

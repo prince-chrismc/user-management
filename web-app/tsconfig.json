@@ -3,11 +3,9 @@
         "sourceMap": true,
         "module": "es2020",
         "target": "es6",
-        
         "jsx": "react-jsx",
         "allowJs": true,
         "noImplicitAny": false,
-
         "allowSyntheticDefaultImports": true, // https://www.typescriptlang.org/tsconfig#allowSyntheticDefaultImports
         "esModuleInterop": true, // https://www.typescriptlang.org/tsconfig#esModuleInterop
         "moduleResolution": "node", // https://www.typescriptlang.org/docs/handbook/module-resolution.html
@@ -15,5 +13,8 @@
     },
     "include": [
         "./src/**/*"
+    ],
+    "exclude": [
+        "node_modules"
     ]
 }
