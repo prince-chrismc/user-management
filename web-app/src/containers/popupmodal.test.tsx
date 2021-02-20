@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import PopupModal from './PopupModal'
 
 test('renders a PopupModal', async () => {
-  const mockCallback = jest.fn(() => { })
+  const mockCallback = jest.fn()
   const { container, getByTestId, getByText } = render(
     <PopupModal
       button={<button data-testid="button">Click Me!</button>}

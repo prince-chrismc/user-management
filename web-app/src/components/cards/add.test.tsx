@@ -8,14 +8,16 @@ import AddCard from './Add'
 jest.mock('../../core/services/List')
 
 test('renders', () => {
-  const { getByText, getByRole } = render(<AddCard onAdd={() => {}} />)
+  const mockCallback = jest.fn()
+  const { getByText, getByRole } = render(<AddCard onAdd={mockCallback} />)
   expect(getByText('Create New User')).toBeInTheDocument()
   expect(getByText('Someone New', { exact: false })).toBeInTheDocument()
   expect(getByRole('button', { name: 'Add' })).toHaveTextContent('Add')
+  expect(mockCallback).not.toHaveBeenCalled()
 })
 
 test('updates on add', async () => {
-  const mockCallback = jest.fn((name, email) => { })
+  const mockCallback = jest.fn()
   const { container, getByPlaceholderText, getByRole, getByText } = render(
     <AddCard onAdd={mockCallback} />)
 

@@ -19,7 +19,7 @@ test('renders', () => {
 
 test('updates on edit', async () => {
   const user = { id: 37, name: 'Jenny Doe', email: 'jenny@example.com' }
-  const mockCallback = jest.fn((id) => { })
+  const mockCallback = jest.fn()
   const { container, getByPlaceholderText, getByRole, getByText } = render(
     <User user={user} onDelete={mockCallback} />)
 
@@ -51,7 +51,7 @@ test('updates on edit', async () => {
 
 test('notifies id on delete', async () => {
   const user = { id: 27, name: 'James Doe', email: 'james@example.com' }
-  const mockCallback = jest.fn((id) => { })
+  const mockCallback = jest.fn()
   const { getByRole } = render(
     <User user={user} onDelete={mockCallback} />)
 
