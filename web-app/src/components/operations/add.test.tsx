@@ -1,6 +1,5 @@
 import { render, waitFor, screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import '@testing-library/jest-dom/extend-expect'
 import waitForExpect from 'wait-for-expect'
 
 import CreateUser from './Add'

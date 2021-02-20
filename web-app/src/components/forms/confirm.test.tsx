@@ -1,5 +1,4 @@
 import { render } from '@testing-library/react'
-import '@testing-library/jest-dom/extend-expect'
 import waitForExpect from 'wait-for-expect'
 import userEvent from '@testing-library/user-event'
 
