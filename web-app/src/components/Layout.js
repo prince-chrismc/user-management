@@ -1,7 +1,7 @@
 import Clock from 'react-live-clock'
 import { Header, Container, Divider, Icon, Grid } from 'semantic-ui-react'
 
-import { pullRight, h1 } from './layout.css'
+import { pullRight, h1 } from './layout.scss'
 
 const Layout = ({ children }) => {
   return (

@@ -13,7 +13,7 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.css$/,
+        test: /\.s[ac]ss$/,
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
@@ -31,7 +31,6 @@ const config = {
               modules: {
                 namedExport: true,
               },
-              importLoaders: 1
             }
           },
           {
@@ -47,6 +46,13 @@ const config = {
                   ],
                 ],
               },
+            },
+          },
+          {
+            loader: "sass-loader",
+            options: {
+              // Prefer `dart-sass`
+              implementation: require("sass"),
             },
           },
         ],
