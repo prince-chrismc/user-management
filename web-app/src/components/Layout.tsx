@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import Clock from 'react-live-clock'
 import { Header, Container, Divider, Icon, Grid } from 'semantic-ui-react'
 

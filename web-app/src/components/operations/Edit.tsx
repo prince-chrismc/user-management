@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAsync } from 'react-async'
+import PropTypes from 'prop-types'
 import { Button } from 'semantic-ui-react'
 
 import PopupModal from '../../containers/PopupModal'

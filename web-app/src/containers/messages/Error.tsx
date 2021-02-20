@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { Message, Icon } from 'semantic-ui-react'
 
 const ErrorMessage = ({ message }) => (

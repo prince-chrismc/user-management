@@ -1,5 +1,6 @@
-import { Form } from 'semantic-ui-react'
+import PropTypes from 'prop-types'
 import useInput from '@rooks/use-input'
+import { Form } from 'semantic-ui-react'
 
 const UserForm = ({ user, handleSubmit, disabled }) => {
   const name = useInput(user.name)

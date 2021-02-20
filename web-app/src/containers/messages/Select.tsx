@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import PendingMessage from './Pending'
 import SuccessMessage from './Success'
 import ErrorMessage from './Error'

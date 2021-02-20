@@ -31,9 +31,6 @@ const config = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.ProvidePlugin({
-      PropTypes: 'prop-types'
-    })
   ],
   resolve: {
     alias: {

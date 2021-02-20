@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { Card, Button } from 'semantic-ui-react'
 
 import CreateUser from '../operations/Add'
