@@ -1,5 +1,5 @@
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-  .BundleAnalyzerPlugin;
+  .BundleAnalyzerPlugin
 
 module.exports = {
   plugins: [
@@ -7,4 +7,4 @@ module.exports = {
       analyzerMode: 'server'
     })
   ]
-};
+}
