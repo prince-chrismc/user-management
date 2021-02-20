@@ -15,7 +15,7 @@ module.exports = env => {
   if (!env['env']) {
     throw new Error(`You must pass an '--env env=dev|prod' flag into your build for webpack to work!`);
   }
-  
+
   if (!env['API_URL']) {
     console.log(`${chalk.yellow('Warning! API_URL is undefined')}`);
   }
@@ -28,7 +28,9 @@ module.exports = env => {
     {
       plugins: [
         new webpack.DefinePlugin({
-          'process.env.API_URL': JSON.stringify(`${env.API_URL}`)
+          'process.env.API_URL': JSON.stringify(`${env.API_URL}`),
+          "process.env.NAME": JSON.stringify(require("./package.json").name),
+          "process.env.VERSION": JSON.stringify(require("./package.json").version),
         }),
         new webpack.ProvidePlugin({
           'React': 'react',

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { Card, Button } from 'semantic-ui-react'
 
 import ModifyUser from '../operations/Edit'

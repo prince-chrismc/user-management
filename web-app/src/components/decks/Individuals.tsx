@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { Card } from 'semantic-ui-react'
 
 import User from '../cards/Display'

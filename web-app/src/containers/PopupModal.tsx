@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 import { Modal } from 'semantic-ui-react'
 
 const PopupModal = ({ button, header, children, onClose }) => {
