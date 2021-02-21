@@ -1,5 +1,6 @@
 window.React = require('react')
 window.PropTypes = require('prop-types')
+import '@testing-library/jest-dom/extend-expect'
 
 /**
  * This is just a little hack to silence a warning that we'll get until react fixes this
