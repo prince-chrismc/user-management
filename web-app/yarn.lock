@@ -1208,10 +1208,10 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.7.2.tgz#00644825ce478065101954bdb2f7f2d062365b7f"
   integrity sha512-3LC1/M2ZFcmDrSkD1byT/hZzoPehZkDucbDShLnZ+/Gwkr6CAxiQ2kWy1UtJeLGADe58hTWkx22YEHqjPGUKzw==
 
-"@rooks/use-input@^4.9.1":
-  version "4.9.1"
-  resolved "https://registry.yarnpkg.com/@rooks/use-input/-/use-input-4.9.1.tgz#3a8ef981e797914de8c816b089cf56a5327c782a"
-  integrity sha512-vgJ9TqKhToGxdd/kM6v2TRzlvmU/uru/YSlqdub0WN2s/jtMVbQ1jeucw/zzSDApBohWIVqL7xBUAZ8jE1XIvA==
+"@rooks/use-input@^4.9.2":
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/@rooks/use-input/-/use-input-4.9.2.tgz#356bf49a98bd9aa71492f09ba82e8c72f24b26fc"
+  integrity sha512-WHorD92uAkxthsL1ajDu64hKp2vmeFsAA/Xu9JMoUaIjdLcahiCaiJA/zZ8Qm3V7MAhrrdaGWHFHlr4I6HsAjA==
 
 "@semantic-ui-react/event-stack@^3.1.2":
   version "3.1.2"
