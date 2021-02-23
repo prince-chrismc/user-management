@@ -311,19 +311,16 @@ jobs:
     - uses: actions/setup-node@v2.1.4
       with:
         node-version: 14.x # Current LTS
-    - uses: actions/cache@v2.1.4
+        always-auth: true
+        registry-url: ${{ env.NPM_REGISTRY_URL }}
+    - uses: ./.github/actions/replace-version
       with:
-        path: '**/node_modules'
-        key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - run: |
-        cd web-app/
-        sed -i "s/1.0.0-dev.1/$BUILD_VERSION/1" package.json
-        npm config set registry $NPM_REGISTRY_URL
-        echo '_auth = ${{ secrets.JFROG_RTFACT_NPM_AUTH }}' > ~/.npmrc
-        echo 'email = prince.chrismc@gmail.com' >> ~/.npmrc
-        echo 'always-auth = true' >> ~/.npmrc
-        npm pack
-        npm publish --registry $NPM_REGISTRY_URL $NAME-frontend-$BUILD_VERSION.tgz
+        new-version: ${{ env.BUILD_VERSION }}
+        target-file: web-app/package.json
+    - env:
+        NODE_AUTH_TOKEN: ${{ secrets.JFROG_RTFACT_NPM_AUTH }}
+      working-directory: web-app/
+      run: yarn pack && yarn publish $NAME-frontend-$BUILD_VERSION.tgz
 
   test:
     needs: [setup, backend-image, frontend-image]
