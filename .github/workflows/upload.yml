@@ -322,6 +322,22 @@ jobs:
       working-directory: web-app/
       run: yarn pack && yarn publish $NAME-frontend-v$BUILD_VERSION.tgz
 
+  frontend-pack-test:
+    needs: [frontend-pack]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-node@v2.1.4
+      with:
+        node-version: 14.x # Current LTS
+        always-auth: true
+        registry-url: ${{ env.NPM_REGISTRY_URL }}
+    - env:
+        NODE_AUTH_TOKEN: ${{ secrets.JFROG_RTFACT_NPM_AUTH }}
+      run: |
+        mkdir -p /tmp/umfe-unpacked
+        npm install --prefix /tmp/umfe-unpacked -g
+        ls -laR /tmp/umfe-unpacked
+
   test:
     needs: [setup, backend-image, frontend-image]
     runs-on: ubuntu-latest    
