@@ -320,7 +320,7 @@ jobs:
     - env:
         NODE_AUTH_TOKEN: ${{ secrets.JFROG_RTFACT_NPM_AUTH }}
       working-directory: web-app/
-      run: yarn pack && yarn publish $NAME-frontend-$BUILD_VERSION.tgz
+      run: yarn pack && yarn publish $NAME-frontend-v$BUILD_VERSION.tgz
 
   test:
     needs: [setup, backend-image, frontend-image]
