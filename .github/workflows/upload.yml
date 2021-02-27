@@ -331,15 +331,11 @@ jobs:
     - uses: actions/setup-node@v2.1.4
       with:
         node-version: 14.x # Current LTS
-        always-auth: true
-        registry-url: ${{ env.NPM_REGISTRY_URL }}
-    - run: |
-        mkdir -p /tmp/umfe-unpacked
-        npm install --ignore-scripts --prefix /tmp/umfe-unpacked -g $NAME-frontend@$BUILD_VERSION
-        ls -laR /tmp/umfe-unpacked
     - run: |
         echo '_auth = ${{ secrets.JFROG_RTFACT_NPM_AUTH }}' >> ~/.npmrc
+        echo 'always-auth = true' >> ~/.npmrc
         echo 'email = prince.chrismc@gmail.com' >> ~/.npmrc
+        echo 'registry = ${{ env.NPM_REGISTRY_URL }}' >> ~/.npmrc
         
         mkdir -p /tmp/umfe-unpacked
         npm install --ignore-scripts --prefix /tmp/umfe-unpacked -g $NAME-frontend@$BUILD_VERSION
