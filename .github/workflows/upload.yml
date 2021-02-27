@@ -311,7 +311,7 @@ jobs:
     - uses: actions/setup-node@v2.1.4
       with:
         node-version: 14.x # Current LTS
-    - uses: ./.github/actions/replace-version
+    - uses: ./.github/actions/setup-rtfact-npm
       with:
         registry: ${{ env.NPM_REGISTRY_URL }}
         auth_token: ${{ secrets.JFROG_RTFACT_NPM_AUTH }}
