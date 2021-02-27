@@ -1,12 +1,5 @@
-FROM ubuntu:latest
+FROM user-management-frontend:latest as fe
 
-ADD build/user_database_app /usr/local/bin
-ADD build/web-app.tar.gz /tmp
-ADD backend/certs /opt/um/certs
+FROM user-management-backend:latest
 
-RUN tar -zxf /tmp/web-app.tar.gz -C /opt/um \
- && chmod +x /usr/local/bin/user_database_app
-
-WORKDIR /opt/um
-
-ENTRYPOINT user_database_app dist certs -a "0.0.0.0" -p 8443 -n 4
+COPY --from=fe /usr/share/nginx/html /opt/um/dist/

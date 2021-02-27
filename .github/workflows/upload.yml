@@ -346,7 +346,7 @@ jobs:
         
         docker pull ${{ env.frontend-image }}
         docker tag ${{ env.frontend-image }} $NAME-frontend:latest
-    - run: docker build . --file Dockerfile.alt --tag test-image --tag ${{ env.um-image }} --tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
+    - run: docker build . --file Dockerfile --tag test-image --tag ${{ env.um-image }} --tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
     - run: docker run --name test -p 8443:8443 --rm -d test-image
     - name: test HTTPS
       run: |
