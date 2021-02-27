@@ -313,15 +313,16 @@ jobs:
         node-version: 14.x # Current LTS
     - uses: ./.github/actions/replace-version
       with:
+        registry: ${{ env.NPM_REGISTRY_URL }}
+        auth_token: ${{ secrets.JFROG_RTFACT_NPM_AUTH }}
+        email: 'prince.chrismc@gmail.com'
+    - uses: ./.github/actions/replace-version
+      with:
         new-version: ${{ env.BUILD_VERSION }}
         target-file: web-app/package.json
     - working-directory: web-app/
       run: |
-        echo '_auth = ${{ secrets.JFROG_RTFACT_NPM_AUTH }}' > ~/.npmrc
-        echo 'always-auth = true' >> ~/.npmrc
-        echo 'email = prince.chrismc@gmail.com' >> ~/.npmrc
-        echo 'registry = ${{ env.NPM_REGISTRY_URL }}' >> ~/.npmrc
-        
+        rm .gitignore
         npm pack
         npm publish $NAME-frontend-$BUILD_VERSION.tgz
 
