@@ -323,7 +323,7 @@ jobs:
         echo 'registry = ${{ env.NPM_REGISTRY_URL }}' >> ~/.npmrc
         
         npm pack
-        npm yarn publish $NAME-frontend-v$BUILD_VERSION.tgz
+        npm publish $NAME-frontend-v$BUILD_VERSION.tgz
 
   frontend-pack-test:
     needs: [frontend-pack]
