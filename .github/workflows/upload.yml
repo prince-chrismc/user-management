@@ -311,16 +311,19 @@ jobs:
     - uses: actions/setup-node@v2.1.4
       with:
         node-version: 14.x # Current LTS
-        always-auth: true
-        registry-url: ${{ env.NPM_REGISTRY_URL }}
     - uses: ./.github/actions/replace-version
       with:
         new-version: ${{ env.BUILD_VERSION }}
         target-file: web-app/package.json
-    - env:
-        NODE_AUTH_TOKEN: ${{ secrets.JFROG_RTFACT_NPM_AUTH }}
-      working-directory: web-app/
-      run: yarn pack && yarn publish $NAME-frontend-v$BUILD_VERSION.tgz
+    - working-directory: web-app/
+      run: |
+        echo '_auth = ${{ secrets.JFROG_RTFACT_NPM_AUTH }}' > ~/.npmrc
+        echo 'always-auth = true' >> ~/.npmrc
+        echo 'email = prince.chrismc@gmail.com' >> ~/.npmrc
+        echo 'registry = ${{ env.NPM_REGISTRY_URL }}' >> ~/.npmrc
+        
+        npm pack
+        npm yarn publish $NAME-frontend-v$BUILD_VERSION.tgz
 
   frontend-pack-test:
     needs: [frontend-pack]
@@ -332,7 +335,7 @@ jobs:
       with:
         node-version: 14.x # Current LTS
     - run: |
-        echo '_auth = ${{ secrets.JFROG_RTFACT_NPM_AUTH }}' >> ~/.npmrc
+        echo '_auth = ${{ secrets.JFROG_RTFACT_NPM_AUTH }}' > ~/.npmrc
         echo 'always-auth = true' >> ~/.npmrc
         echo 'email = prince.chrismc@gmail.com' >> ~/.npmrc
         echo 'registry = ${{ env.NPM_REGISTRY_URL }}' >> ~/.npmrc
