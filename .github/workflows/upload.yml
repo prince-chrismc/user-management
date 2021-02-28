@@ -301,10 +301,9 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: download
-      working-directory: /tmp/umfe-unpacked
       run: |
-        npm install --ignore-scripts --prefix . -g $NAME-frontend@$BUILD_VERSION        
-        cp -r lib/node_modules/$NAME-frontend/dist /tmp/um/dist/
+        npm install --ignore-scripts --prefix /tmp/umfe-unpacked -g $NAME-frontend@$BUILD_VERSION        
+        cp -r /tmp/umfe-unpackedlib/node_modules/$NAME-frontend/dist /tmp/um/dist/
     - name: build
       run: |
         docker build /tmp/um --file web-app/Dockerfile --tag ${{ env.name }}
