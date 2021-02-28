@@ -303,6 +303,7 @@ jobs:
     - name: download
       run: |
         npm install --ignore-scripts --prefix /tmp/umfe-unpacked -g $NAME-frontend@$BUILD_VERSION        
+        mkdir -p /tmp/um
         cp -r /tmp/umfe-unpacked/lib/node_modules/$NAME-frontend/dist /tmp/um/dist/
     - name: build
       run: |
