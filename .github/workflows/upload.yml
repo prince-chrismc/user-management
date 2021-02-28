@@ -259,16 +259,29 @@ jobs:
     - uses: actions/setup-node@v2
       with:
         node-version: 14.x # Current LTS
+    - uses: ./.github/actions/setup-rtfact-npm
+      with:
+        registry: ${{ env.NPM_REGISTRY_URL }}
+        auth_token: ${{ secrets.JFROG_RTFACT_NPM_AUTH }}
+        email: 'prince.chrismc@gmail.com'
+    - uses: ./.github/actions/replace-version
+      with:
+        new-version: ${{ env.BUILD_VERSION }}
+        target-file: web-app/package.json
     - uses: actions/cache@v2.1.4
       with:
         path: '**/node_modules'
         key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - run: |
-        cd web-app/
+    - working-directory: web-app/
+      name: build
+      run: |
         yarn install
         yarn build --env API_URL=https://ec2-18-222-250-141.us-east-2.compute.amazonaws.com
-        GZIP=-9 tar -zcf $NAME-static-fe-$BUILD_VERSION.tar.gz dist/
-        curl -uprince-chrismc:${{ secrets.JFROG_RTFACT_PASSWORD }} -T $NAME-static-fe-$BUILD_VERSION.tar.gz "$DIST_URL/$NAME-static-fe-$BUILD_VERSION.tar.gz"
+    - working-directory: web-app/
+      name: pack
+      run: |
+        npm pack
+        npm publish $NAME-frontend-$BUILD_VERSION.tgz
         
   frontend-image:
     needs: [setup, frontend]
@@ -277,6 +290,11 @@ jobs:
       name: docker.pkg.github.com/${{ github.repository }}/user-management-frontend:${{ needs.setup.outputs.build-version }}
     steps:
     - uses: actions/checkout@v2
+    - uses: ./.github/actions/setup-rtfact-npm
+      with:
+        registry: ${{ env.NPM_REGISTRY_URL }}
+        auth_token: ${{ secrets.JFROG_RTFACT_NPM_AUTH }}
+        email: 'prince.chrismc@gmail.com'
     - uses: docker/login-action@v1
       with:
         registry: docker.pkg.github.com
@@ -284,9 +302,9 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: download
       run: |
-        curl -L -uprince-chrismc:${{ secrets.JFROG_RTFACT_PASSWORD }} -O "$DIST_URL/$NAME-static-fe-$BUILD_VERSION.tar.gz"
+        npm install --ignore-scripts --prefix /tmp/umfe-unpacked -g $NAME-frontend@$BUILD_VERSION        
         mkdir -p /tmp/um
-        tar -C /tmp/um -zxvf $NAME-static-fe-$BUILD_VERSION.tar.gz
+        cp -r /tmp/umfe-unpacked/lib/node_modules/$NAME-frontend/dist /tmp/um/dist/
     - name: build
       run: |
         docker build /tmp/um --file web-app/Dockerfile --tag ${{ env.name }}
@@ -303,27 +321,6 @@ jobs:
         echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
         docker tag ${{ env.name }} $DOCKER_REGISTRY/$NAME-frontend:$BUILD_VERSION
         docker push $DOCKER_REGISTRY/$NAME-frontend:$BUILD_VERSION
-
-  frontend-pack:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: 14.x # Current LTS
-    - uses: actions/cache@v2.1.4
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - run: |
-        cd web-app/
-        sed -i "s/1.0.0-dev.1/$BUILD_VERSION/1" package.json
-        npm config set registry $NPM_REGISTRY_URL
-        echo '_auth = ${{ secrets.JFROG_RTFACT_NPM_AUTH }}' > ~/.npmrc
-        echo 'email = prince.chrismc@gmail.com' >> ~/.npmrc
-        echo 'always-auth = true' >> ~/.npmrc
-        npm pack
-        npm publish --registry $NPM_REGISTRY_URL $NAME-frontend-$BUILD_VERSION.tgz
 
   test:
     needs: [setup, backend-image, frontend-image]

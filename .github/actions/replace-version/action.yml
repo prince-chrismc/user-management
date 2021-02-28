@@ -1,0 +1,18 @@
+name: "Replace Version"
+description: "Inline replaces one version with another. Helpful when CI/CD dynamically generates unique artifact IDs"
+inputs:
+  old-version:
+    description: "The version that needs to be eliminated"
+    required: false
+    default: "1.0.0-dev.1"
+  new-version:
+    description: "The version that needs to be inserted"
+    required: true
+  target-file:
+    description: "The file which needs to be modified"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: sed -i "s/${{ inputs.old-version }}/${{ inputs.new-version }}/1" ${{ inputs.target-file }}
+      shell: bash
