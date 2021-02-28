@@ -320,30 +320,40 @@ jobs:
       with:
         new-version: ${{ env.BUILD_VERSION }}
         target-file: web-app/package.json
+    - uses: actions/cache@v2.1.4
+      with:
+        path: '**/node_modules'
+        key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     - working-directory: web-app/
+      name: build
       run: |
-        rm .gitignore
+        yarn install
+        yarn build --env API_URL=https://ec2-18-222-250-141.us-east-2.compute.amazonaws.com
+    - working-directory: web-app/
+      name: pack
+      run: |
         npm pack
         npm publish $NAME-frontend-$BUILD_VERSION.tgz
 
   frontend-pack-test:
     needs: [frontend-pack]
     runs-on: ubuntu-latest
-    env:
-        NODE_AUTH_TOKEN: ${{ secrets.JFROG_RTFACT_NPM_AUTH }}
     steps:
     - uses: actions/setup-node@v2.1.4
       with:
         node-version: 14.x # Current LTS
-    - run: |
-        echo '_auth = ${{ secrets.JFROG_RTFACT_NPM_AUTH }}' > ~/.npmrc
-        echo 'always-auth = true' >> ~/.npmrc
-        echo 'email = prince.chrismc@gmail.com' >> ~/.npmrc
-        echo 'registry = ${{ env.NPM_REGISTRY_URL }}' >> ~/.npmrc
-        
+    - uses: ./.github/actions/setup-rtfact-npm
+      with:
+        registry: ${{ env.NPM_REGISTRY_URL }}
+        auth_token: ${{ secrets.JFROG_RTFACT_NPM_AUTH }}
+        email: 'prince.chrismc@gmail.com'
+    - run: |        
         mkdir -p /tmp/umfe-unpacked
         npm install --ignore-scripts --prefix /tmp/umfe-unpacked -g $NAME-frontend@$BUILD_VERSION
         ls -laR /tmp/umfe-unpacked
+        
+        cp -r /tmp/umfe-unpacked/lib/node_modules/user-management-frontend/dist dist/
+        ls -laR dist/
 
   test:
     needs: [setup, backend-image, frontend-image]
