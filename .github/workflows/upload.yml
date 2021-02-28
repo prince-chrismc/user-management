@@ -339,7 +339,8 @@ jobs:
     needs: [frontend-pack]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-node@v2.1.4
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
       with:
         node-version: 14.x # Current LTS
     - uses: ./.github/actions/setup-rtfact-npm
