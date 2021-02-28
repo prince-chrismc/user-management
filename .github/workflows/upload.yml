@@ -303,7 +303,7 @@ jobs:
     - name: download
       run: |
         npm install --ignore-scripts --prefix /tmp/umfe-unpacked -g $NAME-frontend@$BUILD_VERSION        
-        cp -r /tmp/umfe-unpackedlib/node_modules/$NAME-frontend/dist /tmp/um/dist/
+        cp -r /tmp/umfe-unpacked/lib/node_modules/$NAME-frontend/dist /tmp/um/dist/
     - name: build
       run: |
         docker build /tmp/um --file web-app/Dockerfile --tag ${{ env.name }}
