@@ -1,12 +1,12 @@
-name: "Determine Version"
-description: "Calculates the version tag based off the git reference. SemVer tags are presevered, default branch is latest, other branch are untouched, PRs output alternate ID"
+name: "Replace Version"
+description: "Inline replaces one version with another. Helpful when CI/CD dynamically generates unique artifact IDs"
 inputs:
   old-version:
-    description: "The current reference point for the version"
+    description: "The version that needs to be eliminated"
     required: false
     default: "1.0.0-dev.1"
   new-version:
-    description: "The version to insert into the files"
+    description: "The version that needs to be inserted"
     required: true
   target-file:
     description: "The file which needs to be modified"
