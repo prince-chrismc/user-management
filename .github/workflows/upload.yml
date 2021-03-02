@@ -117,11 +117,6 @@ jobs:
       matrix: ${{ fromJson(needs.calc-deps.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2.1.4
-        if: ${{ matrix.reference != 'null' }}
-        with:
-          path: ~/.conan/data
-          key: alpine-${{ hashFiles('**/conan.lock') }}
       - uses: ./.github/actions/setup-conan
         if: ${{ matrix.reference != 'null' }}
       - name: download
