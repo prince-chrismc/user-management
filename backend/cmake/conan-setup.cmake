@@ -6,7 +6,14 @@ else()
   set(CONAN_WRAPPER "${CMAKE_CURRENT_BINARY_DIR}/conan.cmake")
 
   if(NOT EXISTS ${CONAN_WRAPPER})
-    file(DOWNLOAD "https://github.com/conan-io/cmake-conan/raw/v0.15/conan.cmake" ${CONAN_WRAPPER})
+    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.16.1/conan.cmake" ${CONAN_WRAPPER})
+  else()
+    set(CONAN_WRAPPER_SHA "396e16d0f5eabdc6a14afddbcfff62a54a7ee75c6da23f32f7a31bc85db23484")
+    file(SHA256 ${CONAN_WRAPPER} CURRENT_SHA)
+
+    if (NOT ${CONAN_WRAPPER_SHA} STREQUAL ${CURRENT_SHA})
+      message(FATAL_ERROR "Conan Setup: it appears the conan-io/cmake wrapper is out of date!")
+    endif()
   endif()
 
   include(${CONAN_WRAPPER})
@@ -24,12 +31,17 @@ else()
     message(FATAL_ERROR "Conan Setup: failed to generate full lockfile!")
   endif()
 
-  # Populate the 'build' folder with the correct file to locate dependencies
-  execute_process(
-    COMMAND conan install ${CMAKE_CURRENT_SOURCE_DIR}/conanfile.py -l ${CMAKE_CURRENT_BINARY_DIR}/conan.lock
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} RESULT_VARIABLE STATUS)
+  # FIXME: Once https://github.com/conan-io/cmake-conan/pull/319 is merged
+  # conan_cmake_lock_create(
+  #   PATH ${CMAKE_CURRENT_SOURCE_DIR}/conanfile.py
+  #   LOCKFILE ${CMAKE_CURRENT_SOURCE_DIR}/conan.lock
+  #   LOCKFILE_OUT ${CMAKE_CURRENT_BINARY_DIR}/conan.lock
+  #   SETTINGS build_type=${CMAKE_BUILD_TYPE} compiler.libcxx=libstdc++11
+  # )
 
-  if(STATUS AND NOT STATUS EQUAL 0)
-    message(FATAL_ERROR "Conan Setup: failed to install requirements!")
-  endif()
+  # Populate the 'build' folder with the correct file to locate dependencies
+  conan_cmake_install(
+    PATH_OR_REFERENCE ${CMAKE_CURRENT_SOURCE_DIR}/conanfile.py
+    LOCKFILE ${CMAKE_CURRENT_BINARY_DIR}/conan.lock
+  )
 endif()
