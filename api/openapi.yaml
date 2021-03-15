@@ -108,7 +108,13 @@ components:
           $ref: "#/components/headers/Access-Control-Allow-Headers"
         Access-Control-Max-Age:
           $ref: "#/components/headers/Access-Control-Max-Age"
-  headers:
+  headers: 
+    Accept-Patch:
+      schema:
+        type: string
+        enum:
+          - "application/json"
+          - "application/json-patch+json"
     Access-Control-Allow-Origin:
       schema:
         type: string
@@ -232,10 +238,7 @@ paths:
           description: OK
           headers:
             Accept-Patch:
-              schema:
-                type: string
-                enum:
-                  - "application/json"
+              $ref: "#/components/headers/Accept-Patch"
             Access-Control-Allow-Origin:
               $ref: "#/components/headers/Access-Control-Allow-Origin"
             Last-Modified:
