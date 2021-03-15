@@ -45,6 +45,11 @@ inline bool operator>=(const user &lhs, const user &rhs) {
 inline void to_json(json &json, const user &user) {
   json = json::object({{"id", user.id}, {"name", user.name}, {"email", user.email}});
 }
+inline void from_json(const json &json, user &user) {
+  json.at("id").get_to(user.id);
+  json.at("name").get_to(user.name);
+  json.at("email").get_to(user.email);
+}
 
 class user_does_not_exist : public std::runtime_error {
  public:
@@ -110,7 +115,7 @@ class user_modifier {
  public:
   explicit user_modifier(user &user) : user_(user) {}
 
-  void apply(const json &data) {
+  void apply_edit(const json &data) {
     nlohmann::json_schema::json_validator validator(impl::loader, nlohmann::json_schema::default_string_format_check);
     validator.set_root_schema(api::edit);
     validator.validate(data);
@@ -122,6 +127,22 @@ class user_modifier {
     if (data.find("email") != std::end(data)) {
       user_.email = data["email"].get<std::string>();
     }
+  }
+
+  void apply_patch(const json &data) {
+    // TODO(prince-chrismc): Does it need to validate the syntax of the JSON Patch
+    // nlohmann::json_schema::json_validator validator(impl::loader,
+    // nlohmann::json_schema::default_string_format_check); validator.set_root_schema(api::edit);
+    // validator.validate(data);
+
+    auto initially = json(user_);
+    const auto result = initially.patch(data);
+
+    nlohmann::json_schema::json_validator validator(impl::loader, nlohmann::json_schema::default_string_format_check);
+    validator.set_root_schema(api::user);
+    validator.validate(result);
+
+    result.get_to(user_);
   }
 };
 

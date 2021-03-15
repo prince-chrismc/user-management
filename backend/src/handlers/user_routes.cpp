@@ -32,7 +32,7 @@ bool conditional_matching(const handler::request_handle &req, http_field field, 
   return false;
 }
 
-void verify_application_json(const handler::request_handle &req) {
+restinio::http_field_parsers::media_type_value_t parse_media_type(const handler::request_handle &req) {
   namespace hfp = restinio::http_field_parsers;
 
   // Try to find Content-Type field.
@@ -42,14 +42,37 @@ void verify_application_json(const handler::request_handle &req) {
     throw unsupported_media_type("The value of 'Content-Type' was invalid!");
   }
 
-  if ("application" == parsed_value->media_type.type && "json" == parsed_value->media_type.subtype) {
+  return parsed_value->media_type;
+}
+
+void verify_application_json(const handler::request_handle &req) {
+  const auto media_type = parse_media_type(req);
+  if ("application" == media_type.type && "json" == media_type.subtype) {
     return;
   }
 
   throw unsupported_media_type(
       fmt::format("The value of 'Content-Type' was '{}/{}' which is not a unsupported media type."
                   " Only 'application/json' is supported",
-                  parsed_value->media_type.type, parsed_value->media_type.subtype));
+                  media_type.type, media_type.subtype));
+}
+
+enum class media_type { json, json_patch };
+
+media_type verify_application_json_or_json_path(const handler::request_handle &req) {
+  const auto media_type = parse_media_type(req);
+  if ("application" == media_type.type && "json" == media_type.subtype) {
+    return media_type::json;
+  }
+
+  if ("application" == media_type.type && "json-patch+json" == media_type.subtype) {
+    return media_type::json_patch;
+  }
+
+  throw unsupported_media_type(
+      fmt::format("The value of 'Content-Type' was '{}/{}' which is not a unsupported media type."
+                  " Only 'application/json' or 'application/json-patch+json' is supported",
+                  media_type.type, media_type.subtype));
 }
 
 void verify_if_match(const handler::request_handle &req) {
@@ -62,7 +85,8 @@ void verify_etag(const handler::request_handle &req, user_management::user_key i
   verify_if_match(req);
   if (conditional_matching(req, http_field::if_match, etag)) return;
 
-  throw precondition_failed(fmt::format("the user '{}' was modified without you knowledge. New 'ETag' is: {}", id, etag));
+  throw precondition_failed(
+      fmt::format("the user '{}' was modified without you knowledge. New 'ETag' is: {}", id, etag));
 }
 }  // namespace
 
@@ -130,15 +154,29 @@ request_status remove::operator()(const request_handle &req, route_params params
 request_status edit::operator()(const request_handle &req, route_params params) {
   log.trace("processing edit operation");
   try {
-    verify_application_json(req);
+    const auto media_type = verify_application_json_or_json_path(req);
+
     const auto id = restinio::cast_to<user_key>(params["id"]);
-    verify_etag(req, id, db_.etag(id));
-    const auto user = db_.edit(id, json::parse(req->body()));
+    const auto body = json::parse(req->body());
+
+    nonstd::optional<database::user::entry> potential_user;
+
+    switch (media_type) {
+      case media_type::json:
+        verify_etag(req, id, db_.etag(id));
+        potential_user.emplace(db_.edit(id, body));
+        break;
+      case media_type::json_patch: {
+        // TODO(prince-chrismc): Verify ETag when there is no `"op": "test"` in the patch
+        potential_user.emplace(db_.patch(id, body));
+      } break;
+    }
+
     log.info("edit operation completed");
     return response::builders::user(req, restinio::status_accepted())
-        .append_header(http_field::last_modified, db_.last_modified(user.id))
-        .append_header(http_field::etag, db_.etag(user.id))
-        .set_body(json(user).dump())
+        .append_header(http_field::last_modified, db_.last_modified(potential_user->id))
+        .append_header(http_field::etag, db_.etag(potential_user->id))
+        .set_body(json(potential_user.value()).dump())
         .done();
   } catch (const unsupported_media_type &e) {
     log.warn("edit operation block by unsupported media type");
