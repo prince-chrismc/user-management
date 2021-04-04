@@ -77,7 +77,7 @@
     "context": "host"
    },
    "13": {
-    "ref": "spdlog/1.8.5#2cecd4a5f8cd2a175460b206b71e26cf",
+    "ref": "spdlog/1.8.5#b6e2b540c3c92d2ce95458e4cd1c744f",
     "requires": [
      "3"
     ],
