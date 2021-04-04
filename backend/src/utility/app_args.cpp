@@ -24,7 +24,8 @@ nonstd::expected<app_args_t, app_args_t::result> app_args_t::parse(
       lyra::opt(args.pool_size, "thread-pool size")["-n"]["--thread-pool-size"](
           fmt::format("The size of a thread pool to run server (default: {})", args.pool_size)) |
       lyra::arg(args.root_dir, "root-dir")("root directory for the server to obtain requested files").required() |
-      lyra::arg(args.certs_dir, "certs-dir")("directory containing certificate(s) and key(s) to host the HTTP endpoint");
+      lyra::arg(args.certs_dir,
+                "certs-dir")("directory containing certificate(s) and key(s) to host the HTTP endpoint");
 
   const auto parse_args = cli.parse({argc, argv});
   if (!parse_args) {

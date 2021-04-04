@@ -2,8 +2,8 @@
 
 #include "web_app.hpp"
 
-#include "utility/content_type_from_ext.hpp"
 #include "utility/add_headers.hpp"
+#include "utility/content_type_from_ext.hpp"
 
 namespace handler {
 namespace web_app {
