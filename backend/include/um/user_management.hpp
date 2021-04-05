@@ -108,13 +108,18 @@ inline void loader(const nlohmann::json_uri &uri, json &schema) {
 }
 }  // namespace impl
 
+class invalid_mutation_error : public std::runtime_error {
+ public:
+  using runtime_error::runtime_error;
+};
+
 class user_modifier {
   user &user_;
 
  public:
   explicit user_modifier(user &user) : user_(user) {}
 
-  void apply_edit(const json &data) {
+  void edit(const json &data) {
     nlohmann::json_schema::json_validator validator(impl::loader, nlohmann::json_schema::default_string_format_check);
     validator.set_root_schema(api::edit);
     validator.validate(data);
@@ -128,7 +133,7 @@ class user_modifier {
     }
   }
 
-  void apply_patch(const json &data) {
+  void patch(const json &data) {
     // TODO(prince-chrismc): Does it need to validate the syntax of the JSON Patch
     // nlohmann::json_schema::json_validator validator(impl::loader,
     // nlohmann::json_schema::default_string_format_check); validator.set_root_schema(api::edit);
@@ -140,6 +145,10 @@ class user_modifier {
     nlohmann::json_schema::json_validator validator(impl::loader, nlohmann::json_schema::default_string_format_check);
     validator.set_root_schema(api::user);
     validator.validate(result);
+
+    if (initially["id"].get<user_key>() != result["id"].get<user_key>()) {
+      throw invalid_mutation_error("it is forbiden to mutate the user's ID!");
+    }
 
     result.get_to(user_);
   }

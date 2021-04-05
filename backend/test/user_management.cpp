@@ -60,10 +60,10 @@ TEST_CASE("List") {
 TEST_CASE("Edit") {
   um::user_list list;
   auto& user = list.add("John Doe", "j@example.com");
-  um::user_modifier(user).apply(R"##({"name": "Jane Doe"})##"_json);
+  um::user_modifier(user).edit(R"##({"name": "Jane Doe"})##"_json);
   CHECK_THAT(user.name, Catch::Equals("Jane Doe"));
 
-  um::user_modifier(user).apply(R"##({"email": "jane@example.com"})##"_json);
+  um::user_modifier(user).edit(R"##({"email": "jane@example.com"})##"_json);
   CHECK_THAT(user.email, Catch::Equals("jane@example.com"));
 }
 
@@ -93,4 +93,44 @@ TEST_CASE("Loader") {
   CHECK(json == api::user);
 
   CHECK_THROWS_AS(um::impl::loader(nlohmann::json_uri{"/unknown.json"}, json), um::impl::user_schema_error);
+}
+
+TEST_CASE("Patch") {
+  um::user_list list;
+  auto& user = list.add("John Doe", "j@example.com");
+
+  SECTION("Each Member") {
+    um::user_modifier(user).patch(R"##([
+  { "op": "test", "path": "/name", "value": "John Doe" },
+  { "op": "replace", "path": "/name", "value": "Jane Doe" }
+])##"_json);
+    CHECK_THAT(user.name, Catch::Equals("Jane Doe"));
+
+    um::user_modifier(user).patch(R"##([
+  { "op": "test", "path": "/email", "value": "j@example.com" },
+  { "op": "replace", "path": "/email", "value": "jane@example.com" }
+])##"_json);
+    CHECK_THAT(user.email, Catch::Equals("jane@example.com"));
+  }
+
+  SECTION("All Members") {
+    um::user_modifier(user).patch(R"##([
+  { "op": "replace", "path": "/name", "value": "Jane Doe" },
+  { "op": "replace", "path": "/email", "value": "jane@example.com" }
+])##"_json);
+    CHECK_THAT(user.name, Catch::Equals("Jane Doe"));
+    CHECK_THAT(user.email, Catch::Equals("jane@example.com"));
+  }
+
+  SECTION("Invalid Mutation") {
+    CHECK_THROWS_AS(um::user_modifier(user).patch(R"##([{ "op": "remove", "path": "/id"}])##"_json),
+                    std::invalid_argument);
+
+    CHECK_THROWS_AS(
+        um::user_modifier(user).patch(R"##([{ "op": "replace", "path": "/id", "value": "Jane Doe"}])##"_json),
+        std::invalid_argument);
+
+    CHECK_THROWS_AS(um::user_modifier(user).patch(R"##([{ "op": "replace", "path": "/id", "value": 99999}])##"_json),
+                    um::invalid_mutation_error);
+  }
 }
