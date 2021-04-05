@@ -129,6 +129,9 @@ jobs:
         run: |
           conan profile update settings.compiler.musl=1.2 default
           
+          conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
+          conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+          
           conan install ${{ matrix.reference }} -l conan.lock -b missing
       - name: upload
         if: ${{ matrix.reference != 'null' }}
