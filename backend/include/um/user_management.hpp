@@ -106,12 +106,18 @@ inline void loader(const nlohmann::json_uri &uri, json &schema) {
 
   throw user_schema_error("unkown schema");
 }
-}  // namespace impl
 
 class invalid_mutation_error : public std::runtime_error {
  public:
   using runtime_error::runtime_error;
 };
+
+class throwing_error_handler : public nlohmann::json_schema::error_handler {
+  void error(const json::json_pointer &ptr, const json &instance, const std::string &message) override {
+    throw invalid_mutation_error(std::string("At '") + ptr.to_string() + "' of " + instance.dump() + " - " + message);
+  }
+};
+}  // namespace impl
 
 class user_modifier {
   user &user_;
@@ -134,20 +140,16 @@ class user_modifier {
   }
 
   void patch(const json &data) {
-    // TODO(prince-chrismc): Does it need to validate the syntax of the JSON Patch
-    // nlohmann::json_schema::json_validator validator(impl::loader,
-    // nlohmann::json_schema::default_string_format_check); validator.set_root_schema(api::edit);
-    // validator.validate(data);
+    const auto id = user_.id;
+    const auto result = json(user_).patch(data);
 
-    auto initially = json(user_);
-    const auto result = initially.patch(data);
-
+    impl::throwing_error_handler err;
     nlohmann::json_schema::json_validator validator(impl::loader, nlohmann::json_schema::default_string_format_check);
     validator.set_root_schema(api::user);
-    validator.validate(result);
+    validator.validate(result, err);
 
-    if (initially["id"].get<user_key>() != result["id"].get<user_key>()) {
-      throw invalid_mutation_error("it is forbiden to mutate the user's ID!");
+    if (id != result["id"].get<user_key>()) {
+      throw impl::invalid_mutation_error("it is forbiden to mutate the user's ID!");
     }
 
     result.get_to(user_);

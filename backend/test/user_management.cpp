@@ -123,14 +123,16 @@ TEST_CASE("Patch") {
   }
 
   SECTION("Invalid Mutation") {
+    CHECK_THROWS(um::user_modifier(user).patch(R"##({ "op": "remove", "path": "/email"})##"_json));
+
     CHECK_THROWS_AS(um::user_modifier(user).patch(R"##([{ "op": "remove", "path": "/id"}])##"_json),
-                    std::invalid_argument);
+                    um::impl::invalid_mutation_error);
 
     CHECK_THROWS_AS(
         um::user_modifier(user).patch(R"##([{ "op": "replace", "path": "/id", "value": "Jane Doe"}])##"_json),
-        std::invalid_argument);
+        um::impl::invalid_mutation_error);
 
     CHECK_THROWS_AS(um::user_modifier(user).patch(R"##([{ "op": "replace", "path": "/id", "value": 99999}])##"_json),
-                    um::invalid_mutation_error);
+                    um::impl::invalid_mutation_error);
   }
 }
