@@ -7,11 +7,11 @@ import { pullRight, h1 } from './layout.scss'
 const Layout = ({ children }) => {
   return (
     <Container>
-      <Header as="h1" className={h1}>
+      <Header className={h1}>
         <Grid columns={2}>
           <Grid.Row>
             <Grid.Column>
-              Users Management
+              Users Management <sup>v{process.env.VERSION}</sup>
             </Grid.Column>
             <Grid.Column>
               <span className={pullRight}>
