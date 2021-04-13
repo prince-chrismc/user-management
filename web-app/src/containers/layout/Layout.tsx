@@ -7,7 +7,7 @@ import { pullRight, h1 } from './layout.scss'
 const Layout = ({ children }) => {
   return (
     <Container>
-      <Header className={h1}>
+      <Header as="h1" className={h1}>
         <Grid columns={2}>
           <Grid.Row>
             <Grid.Column>
