@@ -383,3 +383,72 @@ TEST_CASE("User Endpoints") {
                    Catch::Contains(nlohmann::json(user_management::user{1, "Jane Doe", "jane@example.com"}).dump()));
   }
 }
+
+// TODO(prince-chrismc): Merge with above... just for simplicity
+TEST_CASE("User Endpoints 2") {  // application/json-patch+json
+  database::user list;
+  const auto user = list.add(R"##({"name": "John Doe", "email": "john@example.com"})##"_json);
+
+  auto router = std::make_unique<router_t>();
+  handler::user::fill::user(*router, list);
+  http_server http_server(std::move(router));
+
+  SECTION("PATCH 400 op: test") {
+    const std::string patch_list{
+        "PATCH /um/v1/users/1 HTTP/1.0\r\n"
+        "From: unit-test\r\n"
+        "User-Agent: unit-test\r\n"
+        "Content-Type: application/json-patch+json\r\n"
+        "Content-Length: 115\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+        R"##([{ "op": "test", "path": "/name", "value": "James Doe" },{ "op": "replace", "path": "/name", "value": "Jane Doe" }])##"};
+
+    std::string response;
+    REQUIRE_NOTHROW(response = do_request(patch_list));
+    CHECK_THAT(response, Catch::Contains("400") && Catch::Contains("Bad Request") &&
+                             Catch::Contains(fmt::format("ETag: {}\r\n", list.etag(1))) &&
+                             Catch::Contains("'/name' is 'John Doe'"));
+  }
+
+  SECTION("PATCH If-Match") {
+    const std::string patch_list{
+        "PATCH /um/v1/users/1 HTTP/1.0\r\n"
+        "From: unit-test\r\n"
+        "User-Agent: unit-test\r\n"
+        "If-Match: " +
+        list.etag(1) +
+        "\r\n"
+        "Content-Type: application/json-patch+json\r\n"
+        "Content-Length: 59\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+        R"##([{ "op": "replace", "path": "/name", "value": "Jane Doe" }])##"};
+
+    std::string response;
+    REQUIRE_NOTHROW(response = do_request(patch_list));
+    CHECK_THAT(response,
+               Catch::Contains("202") && Catch::Contains("Accepted") &&
+                   Catch::Contains(fmt::format("ETag: {}\r\n", list.etag(1))) &&
+                   Catch::Contains(nlohmann::json(user_management::user{1, "Jane Doe", "john@example.com"}).dump()));
+  }
+
+  SECTION("PATCH op: test") {
+    const std::string patch_list{
+        "PATCH /um/v1/users/1 HTTP/1.0\r\n"
+        "From: unit-test\r\n"
+        "User-Agent: unit-test\r\n"
+        "Content-Type: application/json-patch+json\r\n"
+        "Content-Length: 114\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+        R"##([{ "op": "test", "path": "/name", "value": "John Doe" },{ "op": "replace", "path": "/name", "value": "Jane Doe" }])##"};
+
+    std::string response;
+    REQUIRE_NOTHROW(response = do_request(patch_list));
+    CHECK_THAT(response,
+               Catch::Contains("202") && Catch::Contains("Accepted") &&
+                   Catch::Contains(fmt::format("ETag: {}\r\n", list.etag(1))) &&
+                   Catch::Contains(nlohmann::json(user_management::user{1, "Jane Doe", "jane@example.com"}).dump()));
+  }
+}
