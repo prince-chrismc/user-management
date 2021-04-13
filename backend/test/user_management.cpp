@@ -19,10 +19,13 @@ TEST_CASE("User") {
   CHECK(user.name == "John Doe");
   CHECK(user.email == "john@example.com");
 
-  CHECK_THAT(nlohmann::json(user).dump(), Catch::StartsWith("{") && Catch::Contains("0") &&
-                                              Catch::Contains("John Doe") && Catch::Contains("john@example.com") &&
-                                              Catch::EndsWith("}"));
-  CHECK(nlohmann::json(user) == R"##({"email":"john@example.com","id":0,"name":"John Doe"})##"_json);
+  CHECK_THAT(um::json(user).dump(), Catch::StartsWith("{") && Catch::Contains("0") && Catch::Contains("John Doe") &&
+                                        Catch::Contains("john@example.com") && Catch::EndsWith("}"));
+  CHECK(um::json(user) == R"##({"email":"john@example.com","id":0,"name":"John Doe"})##"_json);
+
+  um::user temp{};
+  R"##({"email":"john@example.com","id":0,"name":"John Doe"})##"_json.get_to(temp);
+  CHECK(user == temp);
 }
 
 TEST_CASE("Comparison") {
@@ -51,10 +54,9 @@ TEST_CASE("List") {
   CHECK(user.name == "John Doe");
   CHECK(user.email == "john@example.com");
 
-  CHECK_THAT(nlohmann::json(list).dump(), Catch::StartsWith("[{") && Catch::Contains("1") &&
-                                              Catch::Contains("John Doe") && Catch::Contains("john@example.com") &&
-                                              Catch::EndsWith("}]"));
-  CHECK(nlohmann::json(list) == R"##([{"email":"john@example.com","id":1,"name":"John Doe"}])##"_json);
+  CHECK_THAT(um::json(list).dump(), Catch::StartsWith("[{") && Catch::Contains("1") && Catch::Contains("John Doe") &&
+                                        Catch::Contains("john@example.com") && Catch::EndsWith("}]"));
+  CHECK(um::json(list) == R"##([{"email":"john@example.com","id":1,"name":"John Doe"}])##"_json);
 }
 
 TEST_CASE("Edit") {
@@ -81,14 +83,14 @@ TEST_CASE("Remove") {
   auto& user = um::list_modifier(list).add(R"##({"name": "Jane Doe", "email": "jane@example.com"})##"_json);
   CHECKED_IF(user.id == 1) {
     CHECK(list.get(1) == user);
-    CHECK(list.remove(1) == user_management::user{1, "Jane Doe", "jane@example.com"});
+    CHECK(list.remove(1) == um::user{1, "Jane Doe", "jane@example.com"});
     CHECK_THROWS(list.get(1));
   }
   CHECK(list.count() == 0);
 }
 
 TEST_CASE("Loader") {
-  nlohmann::json json;
+  um::json json;
   um::impl::loader(nlohmann::json_uri{"/user.json"}, json);
   CHECK(json == api::user);
 

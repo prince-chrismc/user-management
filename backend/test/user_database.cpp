@@ -46,7 +46,7 @@ TEST_CASE("Tracks Last-Modified") {
   CHECK_FALSE(user_database.last_modified() == user_database.last_modified(second_id));
 }
 
-TEST_CASE("Handles ETAg") {
+TEST_CASE("Handles ETag") {
   database::user user_database;
   const auto db_empty_hash = user_database.etag();
   CHECK_THAT(db_empty_hash, Catch::Matches(R"###(([wW]/)?"([^"]|\\")*")###"));
