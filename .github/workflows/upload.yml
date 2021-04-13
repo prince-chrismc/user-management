@@ -163,6 +163,10 @@ jobs:
 
           conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
           conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+      - uses: ./.github/actions/replace-version
+        with:
+          new-version: ${{ env.BUILD_VERSION }}
+          target-file: backend/include/um/user_management.hpp
       - name: build
         run: conan create backend/conanfile.py $BUILD_VERSION@ --lockfile conan.lock
       - name: upload

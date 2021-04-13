@@ -26,7 +26,10 @@ test('renders a layout', () => {
             <div
               class="column"
             >
-              Users Management
+              Users Management 
+              <sup>
+                v
+              </sup>
             </div>
             <div
               class="column"

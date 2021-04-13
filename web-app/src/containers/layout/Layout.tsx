@@ -11,7 +11,7 @@ const Layout = ({ children }) => {
         <Grid columns={2}>
           <Grid.Row>
             <Grid.Column>
-              Users Management
+              Users Management <sup>v{process.env.VERSION}</sup>
             </Grid.Column>
             <Grid.Column>
               <span className={pullRight}>

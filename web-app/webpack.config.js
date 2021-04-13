@@ -29,7 +29,6 @@ module.exports = env => {
       plugins: [
         new webpack.DefinePlugin({
           'process.env.API_URL': JSON.stringify(`${env.API_URL}`),
-          "process.env.NAME": JSON.stringify(require("./package.json").name),
           "process.env.VERSION": JSON.stringify(require("./package.json").version),
         }),
         new webpack.ProvidePlugin({
