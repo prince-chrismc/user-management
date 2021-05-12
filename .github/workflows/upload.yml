@@ -24,7 +24,7 @@ jobs:
     outputs:
       build-version: ${{ steps.version.outputs.build-version }} 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - id: version
       uses: ./.github/actions/determine-version
       with:
@@ -38,7 +38,7 @@ jobs:
     env:
       name: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - id: version
       run: echo "::set-output name=version::$(echo ${{ hashFiles('backend/Dockerfile.build') }})"        
     - uses: docker/login-action@v1
@@ -67,7 +67,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
       empty_matrix: ${{ steps.check-matrix.outputs.empty_matrix }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - uses: actions/cache@v2.1.5
       with:
         path: ~/.conan/data
@@ -116,7 +116,7 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.calc-deps.outputs.matrix) }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - uses: ./.github/actions/setup-conan
         if: ${{ matrix.reference != 'null' }}
       - name: download
@@ -148,7 +148,7 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ github.token }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - uses: actions/cache@v2.1.5
         with:
           path: ~/.conan/data
@@ -183,7 +183,7 @@ jobs:
     env:
       name: docker.pkg.github.com/${{ github.repository }}/user-management-backend:${{ needs.setup.outputs.build-version }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - uses: actions/cache@v2.1.5
         with:
           path: ~/.conan/data
@@ -224,7 +224,7 @@ jobs:
         logging: [syslog, console]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - uses: actions/cache@v2.1.5
       with:
         path: ~/.conan/data
@@ -254,7 +254,7 @@ jobs:
   frontend:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - uses: actions/setup-node@v2
       with:
         node-version: 14.x # Current LTS
@@ -288,7 +288,7 @@ jobs:
     env:
       name: docker.pkg.github.com/${{ github.repository }}/user-management-frontend:${{ needs.setup.outputs.build-version }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - uses: ./.github/actions/setup-rtfact-npm
       with:
         registry: ${{ env.NPM_REGISTRY_URL }}
@@ -329,7 +329,7 @@ jobs:
       frontend-image: docker.pkg.github.com/${{ github.repository }}/user-management-frontend:${{ needs.setup.outputs.build-version }}
       um-image: docker.pkg.github.com/${{ github.repository }}/user-management:${{ needs.setup.outputs.build-version }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - uses: docker/login-action@v1
       with:
         registry: docker.pkg.github.com
@@ -372,7 +372,7 @@ jobs:
       fail-fast: true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - uses: docker/login-action@v1
         with:
           registry: princechrismc.jfrog.io
@@ -396,7 +396,7 @@ jobs:
       run:
         working-directory: .infra/
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - uses: pulumi/action-install-pulumi-cli@v1.0.1
       - run: yarn install
       - if: github.event_name == 'pull_request'
