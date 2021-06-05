@@ -368,7 +368,7 @@ jobs:
     needs: [setup, test]
     strategy:
       matrix:
-        image: ['user-management', 'user-management-backend' ]
+        image: ['user-management', 'user-management-backend', 'user-management-frontend' ]
       fail-fast: true
     runs-on: ubuntu-latest
     steps:
@@ -386,6 +386,7 @@ jobs:
           docker push $DOCKER_REGISTRY/${{ matrix.image }}:${{ needs.setup.outputs.build-version }}
 
   deploy:
+    if: ${{ false }}  # disable for now
     needs: [upload]
     runs-on: ubuntu-latest
     env: 

@@ -15,19 +15,21 @@ This repository contains a distributed cloud native application comprised of two
 
 ## :rocket: Cloud Deployments
 
-> :information_source: The goal for this project is to span multiple public :cloud: clouds, some information may be out of date.
+> :information_source: The goal for this project is to span multiple public :cloud: clouds all the while costing the least amount possible
 
 | Component | Status | Link
 | --- | --- | --- |
-| Back-end | ![staging is online][staging-online] | [AWS ECS Fargate][be]
-| Front-end | ![staging is online][staging-online] | [AWS ECS Fargate][fe]
+| Back-end | ![staging is offline][staging-offline] | [AWS ECS Fargate][be]
+| Front-end | ![staging is online][staging-warning] | [Azure Container][fe]
 | Unified (deprecated) | ![production is stable][prod-stable] | [AWS EC2][u] |
 
 [staging-online]: https://img.shields.io/badge/Staging-online-blue
+[staging-offline]: https://img.shields.io/badge/Staging-offline-red
+[staging-warning]: https://img.shields.io/badge/Staging-TLS%20Warning-yellow
 [prod-stable]: https://img.shields.io/badge/Production-stable-brightgreen
 
 [be]: http://backend-b54ef0d-1b76226fd6250e07.elb.us-east-2.amazonaws.com:8080
-[fe]: http://frontend-aec25d0-96d61837c91fead3.elb.us-east-2.amazonaws.com
+[fe]: http://user-management-front-end.centralus.azurecontainer.io/
 [u]: https://ec2-18-222-250-141.us-east-2.compute.amazonaws.com
 
 ## :man_scientist: Development Summary
