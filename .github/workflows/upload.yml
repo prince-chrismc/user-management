@@ -398,7 +398,7 @@ jobs:
         working-directory: .infra/
     steps:
       - uses: actions/checkout@v2
-      - uses: pulumi/action-install-pulumi-cli@v1.0.1
+      - uses: pulumi/action-install-pulumi-cli@v2
       - run: yarn install
       - if: github.event_name == 'pull_request'
         name: test
