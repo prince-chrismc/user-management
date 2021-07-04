@@ -36,10 +36,10 @@ A _light_ update within semver range (low risk to break)
 yarn upgrade
 ```
 
-or more agressively to change `package.json`
+to manage which version and changes to adopt
 
 ```sh
-yarn upgrade --latest
+yarn upgrade-interactive
 ```
 
 #### Webpack Bundle Analyzer
@@ -69,7 +69,7 @@ yarn build
 Optionally, when deploying on the cloud you may specify the URL of the back-end
 
 ```sh
-yarn build --env.API_URL=https://ec2-18-222-250-141.us-east-2.compute.amazonaws.com
+yarn build --env API_URL=https://ec2-18-222-250-141.us-east-2.compute.amazonaws.com
 ```
 
 Depending on your needs, you might want to do more optimization to the production build.

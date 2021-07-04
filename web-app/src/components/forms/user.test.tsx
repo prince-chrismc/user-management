@@ -1,4 +1,8 @@
-import { render, fireEvent } from '@testing-library/react'
+/**
+ * @jest-environment jsdom
+ */
+
+ import { render, fireEvent } from '@testing-library/react'
 import waitForExpect from 'wait-for-expect'
 import userEvent from '@testing-library/user-event'
 
