@@ -1,4 +1,8 @@
-import { render, waitFor } from '@testing-library/react'
+/**
+ * @jest-environment jsdom
+ */
+
+ import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import PopupModal from './PopupModal'
