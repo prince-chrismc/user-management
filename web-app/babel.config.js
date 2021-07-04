@@ -1,4 +1,4 @@
-const presets = ["@babel/preset-react", "@babel/preset-typescript"];
+const presets = [["@babel/preset-react", {"runtime": "automatic"}], "@babel/preset-typescript"];
 const plugins = [
   "react-hot-loader/babel",
   "@babel/plugin-syntax-dynamic-import",
