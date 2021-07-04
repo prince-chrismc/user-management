@@ -1,5 +1,3 @@
-window.React = require('react')
-window.PropTypes = require('prop-types')
 import '@testing-library/jest-dom/extend-expect'
 
 /**
