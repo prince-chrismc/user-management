@@ -14,10 +14,7 @@ const config = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              esModule: true,
-              modules: {
-                namedExport: true
-              }
+              esModule: true
             }
           },
           styles.cssLoader,
