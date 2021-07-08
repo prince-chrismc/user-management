@@ -115,7 +115,7 @@ class invalid_mutation_error : public std::runtime_error {
 class throwing_error_handler : public nlohmann::json_schema::error_handler {
   void error(const json::json_pointer &ptr, const json &instance, const std::string &message) override {
     throw invalid_mutation_error(
-        fmt::format("At '{}' of {} - {}", ptr.to_string(), instance.dump(), message);
+        fmt::format("At '{}' of {} - {}", ptr.to_string(), instance.dump(), message));
   }
 };
 }  // namespace impl
