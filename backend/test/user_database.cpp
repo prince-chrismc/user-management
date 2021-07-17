@@ -27,6 +27,13 @@ TEST_CASE("Tracks Last-Modified") {
   user_database.edit(new_id, R"##({"name": "Jane Down"})##"_json);
   CHECK(user_database.last_modified() == user_database.last_modified(new_id));
 
+  // Patch
+  user_database.patch(new_id, R"##([
+  { "op": "test", "path": "/name", "value": "Jane Down" },
+  { "op": "replace", "path": "/name", "value": "Jane Doe" }
+])##"_json);
+  CHECK(user_database.last_modified() == user_database.last_modified(new_id));
+
   // Multiple Users
   const auto second_id = user_database.add(R"##({"name": "John Doe", "email": "john@example.com"})##"_json).id;
   CHECK(user_database.last_modified() == user_database.last_modified(second_id));
@@ -39,7 +46,7 @@ TEST_CASE("Tracks Last-Modified") {
   CHECK_FALSE(user_database.last_modified() == user_database.last_modified(second_id));
 }
 
-TEST_CASE("Handles ETAg") {
+TEST_CASE("Handles ETag") {
   database::user user_database;
   const auto db_empty_hash = user_database.etag();
   CHECK_THAT(db_empty_hash, Catch::Matches(R"###(([wW]/)?"([^"]|\\")*")###"));
@@ -54,6 +61,14 @@ TEST_CASE("Handles ETAg") {
   user_database.edit(new_id, R"##({"name": "Jane Down"})##"_json);
   CHECK(user_database.etag() != db_empty_hash);
   CHECK(user_database.etag(new_id) != new_user_hash);
+
+  // Patch
+  user_database.patch(new_id, R"##([
+  { "op": "test", "path": "/name", "value": "Jane Down" },
+  { "op": "replace", "path": "/name", "value": "Jane Doe" }
+])##"_json);
+  CHECK(user_database.etag() != db_empty_hash);
+  CHECK(user_database.etag(new_id) == new_user_hash);
 
   user_database.remove(new_id);
   CHECK(user_database.etag() == db_empty_hash);

@@ -5,7 +5,6 @@
     "ref": "user-management/1.0.0-dev.1",
     "requires": [
      "1",
-     "3",
      "10",
      "12",
      "13"
@@ -59,7 +58,7 @@
     "context": "host"
    },
    "9": {
-    "ref": "openssl/1.1.1j#8e78761867c9a85805eaa65a157bcebf",
+    "ref": "openssl/1.1.1k#688f7f1454ac56b46b0276cea3300296",
     "context": "host"
    },
    "10": {
@@ -78,14 +77,14 @@
     "context": "host"
    },
    "13": {
-    "ref": "spdlog/1.8.1#bc83c6710733bf9bee8c664389158565",
+    "ref": "spdlog/1.8.5#b6e2b540c3c92d2ce95458e4cd1c744f",
     "requires": [
      "3"
     ],
     "context": "host"
    },
    "14": {
-    "ref": "catch2/2.13.4#d28e651c93804db90fc79835b058ee96",
+    "ref": "catch2/2.13.4#0ce54fc9e052a331512dba669f244cad",
     "context": "host"
    }
   },

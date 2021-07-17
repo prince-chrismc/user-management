@@ -34,11 +34,10 @@ SOFTWARE.
 #include <sdkddkver.h>
 #endif
 
-#include <restinio/all.hpp>
-#include <restinio/tls.hpp>
-
 #include <iostream>
 #include <map>
+#include <restinio/all.hpp>
+#include <restinio/tls.hpp>
 
 using namespace std::chrono_literals;  // NOLINT(google-build-using-namespace)
 using user_database = handler::user::database;

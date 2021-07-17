@@ -16,9 +16,7 @@ void add_cors_headers(builder& builder) {
       .append_header(http_field::access_control_allow_headers, "Content-Type")
       .append_header(http_field::access_control_max_age, "86400");
 }
-void add_api_headers(builder& builder) {
-  builder.append_header(http_field::content_type, "application/json");
-}
+void add_api_headers(builder& builder) { builder.append_header(http_field::content_type, "application/json"); }
 }  // namespace impl
 
 builder::builder(const request_handle& req, const http_status_line& status) : builder_{req->create_response(status)} {

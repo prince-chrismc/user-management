@@ -45,7 +45,16 @@ user::entry& user::add(const json& json) {
 user::entry& user::edit(key id, const json& json) {
   database_last_modified = clock::now();
   auto& user = get(id);
-  user_management::user_modifier{user}.apply(json);
+  user_management::user_modifier{user}.edit(json);
+  users_last_modified[id] = clock::now();
+  log.info("modified user ({:d})", id);
+  log.trace("{}", raw{user});
+  return user;
+}
+user::entry& user::patch(key id, const json& json) {
+  database_last_modified = clock::now();
+  auto& user = get(id);
+  user_management::user_modifier{user}.patch(json);
   users_last_modified[id] = clock::now();
   log.info("modified user ({:d})", id);
   log.trace("{}", raw{user});

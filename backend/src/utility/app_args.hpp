@@ -2,7 +2,6 @@
 
 #include <nonstd/expected.hpp>
 #include <nonstd/optional.hpp>
-
 #include <string>
 
 struct app_args_t {

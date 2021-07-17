@@ -5,12 +5,11 @@
 #ifndef UM_USER_MANAGEMENT_HPP_
 #define UM_USER_MANAGEMENT_HPP_
 
+#include <nlohmann/json-schema.hpp>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <utility>
-
-#include <nlohmann/json-schema.hpp>
 
 #include "schemas.hpp"
 
@@ -44,6 +43,11 @@ inline bool operator>=(const user &lhs, const user &rhs) {
 
 inline void to_json(json &json, const user &user) {
   json = json::object({{"id", user.id}, {"name", user.name}, {"email", user.email}});
+}
+inline void from_json(const json &json, user &user) {
+  json.at("id").get_to(user.id);
+  json.at("name").get_to(user.name);
+  json.at("email").get_to(user.email);
 }
 
 class user_does_not_exist : public std::runtime_error {
@@ -102,6 +106,17 @@ inline void loader(const nlohmann::json_uri &uri, json &schema) {
 
   throw user_schema_error("unkown schema");
 }
+
+class invalid_mutation_error : public std::runtime_error {
+ public:
+  using runtime_error::runtime_error;
+};
+
+class throwing_error_handler : public nlohmann::json_schema::error_handler {
+  void error(const json::json_pointer &ptr, const json &instance, const std::string &message) override {
+    throw invalid_mutation_error(std::string("At '") + ptr.to_string() + "' of " + instance.dump() + " - " + message);
+  }
+};
 }  // namespace impl
 
 class user_modifier {
@@ -110,7 +125,7 @@ class user_modifier {
  public:
   explicit user_modifier(user &user) : user_(user) {}
 
-  void apply(const json &data) {
+  void edit(const json &data) {
     nlohmann::json_schema::json_validator validator(impl::loader, nlohmann::json_schema::default_string_format_check);
     validator.set_root_schema(api::edit);
     validator.validate(data);
@@ -122,6 +137,22 @@ class user_modifier {
     if (data.find("email") != std::end(data)) {
       user_.email = data["email"].get<std::string>();
     }
+  }
+
+  void patch(const json &data) {
+    const auto id = user_.id;
+    const auto result = json(user_).patch(data);
+
+    impl::throwing_error_handler err;
+    nlohmann::json_schema::json_validator validator(impl::loader, nlohmann::json_schema::default_string_format_check);
+    validator.set_root_schema(api::user);
+    validator.validate(result, err);
+
+    if (id != result["id"].get<user_key>()) {
+      throw impl::invalid_mutation_error("it is forbiden to mutate the user's ID!");
+    }
+
+    result.get_to(user_);
   }
 };
 

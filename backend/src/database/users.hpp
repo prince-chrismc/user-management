@@ -24,6 +24,7 @@ class user : public user_management::user_list {
 
   entry& add(const json& json);
   entry& edit(key id, const json& json);
+  entry& patch(key id, const json& json);
   entry remove(key id);
 
  private:

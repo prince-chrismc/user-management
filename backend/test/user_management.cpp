@@ -19,10 +19,13 @@ TEST_CASE("User") {
   CHECK(user.name == "John Doe");
   CHECK(user.email == "john@example.com");
 
-  CHECK_THAT(nlohmann::json(user).dump(), Catch::StartsWith("{") && Catch::Contains("0") &&
-                                              Catch::Contains("John Doe") && Catch::Contains("john@example.com") &&
-                                              Catch::EndsWith("}"));
-  CHECK(nlohmann::json(user) == R"##({"email":"john@example.com","id":0,"name":"John Doe"})##"_json);
+  CHECK_THAT(um::json(user).dump(), Catch::StartsWith("{") && Catch::Contains("0") && Catch::Contains("John Doe") &&
+                                        Catch::Contains("john@example.com") && Catch::EndsWith("}"));
+  CHECK(um::json(user) == R"##({"email":"john@example.com","id":0,"name":"John Doe"})##"_json);
+
+  um::user temp{};
+  R"##({"email":"john@example.com","id":0,"name":"John Doe"})##"_json.get_to(temp);
+  CHECK(user == temp);
 }
 
 TEST_CASE("Comparison") {
@@ -51,19 +54,18 @@ TEST_CASE("List") {
   CHECK(user.name == "John Doe");
   CHECK(user.email == "john@example.com");
 
-  CHECK_THAT(nlohmann::json(list).dump(), Catch::StartsWith("[{") && Catch::Contains("1") &&
-                                              Catch::Contains("John Doe") && Catch::Contains("john@example.com") &&
-                                              Catch::EndsWith("}]"));
-  CHECK(nlohmann::json(list) == R"##([{"email":"john@example.com","id":1,"name":"John Doe"}])##"_json);
+  CHECK_THAT(um::json(list).dump(), Catch::StartsWith("[{") && Catch::Contains("1") && Catch::Contains("John Doe") &&
+                                        Catch::Contains("john@example.com") && Catch::EndsWith("}]"));
+  CHECK(um::json(list) == R"##([{"email":"john@example.com","id":1,"name":"John Doe"}])##"_json);
 }
 
 TEST_CASE("Edit") {
   um::user_list list;
   auto& user = list.add("John Doe", "j@example.com");
-  um::user_modifier(user).apply(R"##({"name": "Jane Doe"})##"_json);
+  um::user_modifier(user).edit(R"##({"name": "Jane Doe"})##"_json);
   CHECK_THAT(user.name, Catch::Equals("Jane Doe"));
 
-  um::user_modifier(user).apply(R"##({"email": "jane@example.com"})##"_json);
+  um::user_modifier(user).edit(R"##({"email": "jane@example.com"})##"_json);
   CHECK_THAT(user.email, Catch::Equals("jane@example.com"));
 }
 
@@ -81,16 +83,58 @@ TEST_CASE("Remove") {
   auto& user = um::list_modifier(list).add(R"##({"name": "Jane Doe", "email": "jane@example.com"})##"_json);
   CHECKED_IF(user.id == 1) {
     CHECK(list.get(1) == user);
-    CHECK(list.remove(1) == user_management::user{1, "Jane Doe", "jane@example.com"});
+    CHECK(list.remove(1) == um::user{1, "Jane Doe", "jane@example.com"});
     CHECK_THROWS(list.get(1));
   }
   CHECK(list.count() == 0);
 }
 
 TEST_CASE("Loader") {
-  nlohmann::json json;
+  um::json json;
   um::impl::loader(nlohmann::json_uri{"/user.json"}, json);
   CHECK(json == api::user);
 
   CHECK_THROWS_AS(um::impl::loader(nlohmann::json_uri{"/unknown.json"}, json), um::impl::user_schema_error);
+}
+
+TEST_CASE("Patch") {
+  um::user_list list;
+  auto& user = list.add("John Doe", "j@example.com");
+
+  SECTION("Each Member") {
+    um::user_modifier(user).patch(R"##([
+  { "op": "test", "path": "/name", "value": "John Doe" },
+  { "op": "replace", "path": "/name", "value": "Jane Doe" }
+])##"_json);
+    CHECK_THAT(user.name, Catch::Equals("Jane Doe"));
+
+    um::user_modifier(user).patch(R"##([
+  { "op": "test", "path": "/email", "value": "j@example.com" },
+  { "op": "replace", "path": "/email", "value": "jane@example.com" }
+])##"_json);
+    CHECK_THAT(user.email, Catch::Equals("jane@example.com"));
+  }
+
+  SECTION("All Members") {
+    um::user_modifier(user).patch(R"##([
+  { "op": "replace", "path": "/name", "value": "Jane Doe" },
+  { "op": "replace", "path": "/email", "value": "jane@example.com" }
+])##"_json);
+    CHECK_THAT(user.name, Catch::Equals("Jane Doe"));
+    CHECK_THAT(user.email, Catch::Equals("jane@example.com"));
+  }
+
+  SECTION("Invalid Mutation") {
+    CHECK_THROWS(um::user_modifier(user).patch(R"##({ "op": "remove", "path": "/email"})##"_json));
+
+    CHECK_THROWS_AS(um::user_modifier(user).patch(R"##([{ "op": "remove", "path": "/id"}])##"_json),
+                    um::impl::invalid_mutation_error);
+
+    CHECK_THROWS_AS(
+        um::user_modifier(user).patch(R"##([{ "op": "replace", "path": "/id", "value": "Jane Doe"}])##"_json),
+        um::impl::invalid_mutation_error);
+
+    CHECK_THROWS_AS(um::user_modifier(user).patch(R"##([{ "op": "replace", "path": "/id", "value": 99999}])##"_json),
+                    um::impl::invalid_mutation_error);
+  }
 }

@@ -1,10 +1,10 @@
 // MIT License
 
+#include <openssl/evp.h>
+
 #include <stdexcept>
 #include <string>
 #include <vector>
-
-#include <openssl/evp.h>
 
 namespace encode {
 std::string base64(const std::string& input) {

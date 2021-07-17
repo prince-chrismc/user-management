@@ -3,6 +3,7 @@
 #include "add_headers.hpp"
 
 #include <fmt/compile.h>
+
 #include <restinio/version.hpp>
 
 #include "um/user_management.hpp"
