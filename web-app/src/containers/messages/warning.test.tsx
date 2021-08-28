@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
- import { render } from '@testing-library/react'
+import { render } from '@testing-library/react'
 
 import WarningMessage from './Warning'
 
