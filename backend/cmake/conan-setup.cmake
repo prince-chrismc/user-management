@@ -17,7 +17,7 @@ else()
   endif()
 
   include(${CONAN_WRAPPER})
-  conan_check(VERSION 1.32.0 REQUIRED)
+  conan_check(VERSION 1.33.0 REQUIRED)
 
   # Create the complete lockfile
   execute_process(
