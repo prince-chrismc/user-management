@@ -4,9 +4,9 @@ import { LoadUsers, AddUser } from './List'
 import { EditUser, DeleteUser } from './User'
 import { Etag } from '../tools/Etag'
 
-const express = require('express')
-const { createHttpTerminator } = require('http-terminator')
-const app = express()
+import e, { json } from 'express'
+import { createHttpTerminator } from 'http-terminator'
+const app = e()
 const port = 3001
 
 let __error = false
@@ -26,7 +26,7 @@ const JSON_USER_LIST = [
   JSON_USER_256
 ]
 
-app.use(express.json())
+app.use(json())
 
 app.get('/um/v1/users', (req, res) => {
   console.log('GET /um/v1/users')
