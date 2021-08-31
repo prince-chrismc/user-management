@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
- import { render, waitFor } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import waitForExpect from 'wait-for-expect'
 

@@ -18,13 +18,13 @@ class UserManagementConanFile(ConanFile):
         self.copy("api/schema/*.json", src=schema_source)
 
     def build_requirements(self):
-        self.build_requires("catch2/2.13.4")
+        self.build_requires("catch2/2.13.7")
 
     def requirements(self):
         self.requires("restinio/0.6.13")
         self.requires("json-schema-validator/2.1.0")
-        self.requires("lyra/1.5.0")
-        self.requires("spdlog/1.8.5")
+        self.requires("lyra/1.5.1")
+        self.requires("spdlog/1.9.2")
 
     def build(self):
         cmake = CMake(self)
