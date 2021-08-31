@@ -346,14 +346,16 @@ jobs:
     - run: docker run --name test -p 8443:8443 --rm -d test-image
     - name: test HTTPS
       run: |
-        curl -s -k --key backend/certs/key.pem --cert backend/certs/server.pem -o output.log --url https://localhost:8443/index.html
-        cat output.log | grep -q "<title>User Management</title>"
+        curl -s -k --key backend/certs/key.pem --cert backend/certs/server.pem -o index.html --url https://localhost:8443/index.html
+        cat index.html
+        cat index.html | grep -q "<title>User Management</title>"
     - run: docker kill test
     - run: docker run --name test -p 8080:8080 --rm -d test-image dist -a "0.0.0.0" -p 8080 -n 4
     - name: test HTTP
       run: |
-        curl -s -o output.log --url http://localhost:8080/index.html
-        cat output.log | grep -q "<title>User Management</title>"
+        curl -s -o index.html --url http://localhost:8080/index.html
+        cat index.html
+        cat index.html | grep -q "<title>User Management</title>"
     - run: docker kill test
     - run: docker push ${{ env.um-image }}
     - uses: docker/login-action@v1
