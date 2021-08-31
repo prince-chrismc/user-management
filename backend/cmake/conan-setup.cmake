@@ -1,5 +1,5 @@
 if(CONAN_EXPORTED)
-  # Running from conan conan
+  # Running from conan create
   include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
   conan_basic_setup()
 else()
