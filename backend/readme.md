@@ -67,8 +67,8 @@ conan lock create conanfile.py --version=1.0.0-dev.1 --base --update
 ```
 
 ```sh
-conan lock create conanfile.py -s build_type=Debug --lockfile=build/conan.lock
-conan install conanfile.py --lockfile=build/conan.lock
+conan lock create conanfile.py --version=1.0.0-dev.1 -s build_type=Debug --lockfile=conan.lock --lockfile-out=build/conan.lock -u
+conan install conanfile.py --lockfile=build/conan.lock -if build
 ```
 
 *Note*: You will need to change the "build type" to match your intentions
