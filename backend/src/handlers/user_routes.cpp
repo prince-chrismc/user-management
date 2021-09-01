@@ -88,6 +88,14 @@ void verify_etag(const handler::request_handle &req, user_management::user_key i
   throw precondition_failed(
       fmt::format("the user '{}' was modified without you knowledge. New 'ETag' is: {}", id, etag));
 }
+
+bool missing_json_patch_op(const user_management::json &body) {
+  if (!body.is_array()) {
+    throw nlohmann::detail::parse_error::create(104, 0, "JSON patch must be an array of objects");
+  }
+  const auto lambda = [](const user_management::json &j) { return j["op"].get<std::string>() == "test"; };
+  return std::none_of(body.begin(), body.end(), lambda);
+}
 }  // namespace
 
 using user_management::json;
@@ -166,10 +174,16 @@ request_status edit::operator()(const request_handle &req, route_params params) 
         verify_etag(req, id, db_.etag(id));
         potential_user.emplace(db_.edit(id, body));
         break;
-      case media_type::json_patch: {
-        // TODO(prince-chrismc): Verify ETag when there is no `"op": "test"` in the patch
+      case media_type::json_patch:
+        if (missing_json_patch_op(body)) {
+          if (req->header().has_field(http_field::if_match)) {
+            verify_etag(req, id, db_.etag(id));
+          }
+          throw precondition_required(
+              "an '\"op\": \"test\"' in the body or an 'If-Match <ETag>' header must be provided");
+        }
         potential_user.emplace(db_.patch(id, body));
-      } break;
+        break;
     }
 
     log.info("edit operation completed");
