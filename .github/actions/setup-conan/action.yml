@@ -11,13 +11,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-    - uses: actions/cache@v2
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
     - uses: actions/cache@v2
       with:
         path: ~/.conan/data

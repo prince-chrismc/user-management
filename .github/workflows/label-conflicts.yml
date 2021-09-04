@@ -1,4 +1,4 @@
-name: Auto Label Conflicts
+name: Label Pull Requests
 on:
   push:
     branches: [master]
@@ -8,6 +8,7 @@ on:
 
 jobs:
   auto_label:
+    name: Merge Conflicts
     runs-on: ubuntu-latest
     steps:
       - uses: prince-chrismc/label-merge-conflicts-action@v1
