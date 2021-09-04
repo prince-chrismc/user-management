@@ -1,4 +1,4 @@
-name: Upload CD
+name: User-Management CI/CD
 
 on:
   push:
@@ -140,8 +140,43 @@ jobs:
           conan upload ${{ matrix.reference }} -r $CONAN_REMOTE --all
       - run: exit 0
   
+  backend-coverage:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./.github/actions/setup-python
+    - uses: ./.github/actions/setup-conan
+      with:
+        conan_cache: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
+
+    - name: install cmake
+      uses: lukka/get-cmake@latest
+
+    - name: install lcov
+      run: sudo apt-get install lcov
+
+    - name: configure
+      working-directory: backend
+      run: |
+        cmake -E make_directory build
+        cmake -S . -B build -DBUILD_TESTS=ON -DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
+
+    - name: build
+      working-directory: backend/build
+      run: cmake --build . --target user_tests
+
+    - name: coverage
+      working-directory: backend/build
+      run: cmake --build . --target coverage
+
+    - name: upload to coveralls
+      uses: coverallsapp/github-action@1.1.3
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: backend/build/coverage.info
+
   alpine-backend:
-    needs: [build-image, build-deps]
+    needs: [build-image, build-deps, backend-coverage]
     runs-on: ubuntu-latest
     container: 
       image: ${{ needs.build-image.outputs.name }}
@@ -213,7 +248,8 @@ jobs:
           docker tag ${{ env.name }} $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
           docker push $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
 
-  backend:
+  backend-logging:
+    needs: [backend-coverage]
     strategy:
       fail-fast: true
       matrix:
@@ -240,7 +276,31 @@ jobs:
         
         conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
 
+  frontend-coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+
+      - name: coverage
+        working-directory: web-app/
+        run: yarn install && yarn coverage
+
+      - uses: codecov/codecov-action@v2
+        with:
+          file: web-app/coverage/lcov.info
+          name: react-frontend-unit-test-${{ matrix.node-version }}
+          fail_ci_if_error: true
+
   frontend:
+    needs: [frontend-coverage]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -256,7 +316,7 @@ jobs:
       with:
         new-version: ${{ env.BUILD_VERSION }}
         target-file: web-app/package.json
-    - uses: actions/cache@v2.1.6
+    - uses: actions/cache@v2
       with:
         path: '**/node_modules'
         key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
