@@ -34,16 +34,18 @@ jobs:
       run: sudo apt-get install lcov
 
     - name: configure
-      working-directory: backend/build
-      run: cmake .. -DBUILD_TESTS=ON -DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
+      working-directory: backend
+      run: |
+        cmake -E make_directory build
+        cmake -S . -B build -DBUILD_TESTS=ON -DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
 
     - name: build
       working-directory: backend/build
-      run: make user_tests
+      run: cmake --build . --target user_tests
 
     - name: coverage
       working-directory: backend/build
-      run: make coverage
+      run: cmake --build . --target coverage
 
     - name: upload to coveralls
       uses: coverallsapp/github-action@1.1.3
