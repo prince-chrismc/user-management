@@ -10,7 +10,6 @@ on:
 
 jobs:
   analyze:
-    name: Analyze
     runs-on: ubuntu-latest
 
     strategy:
@@ -23,16 +22,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-      
-    - name: setup python
-      if: ${{ matrix.language == 'cpp' }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
 
     - name: setup conan
       if: ${{ matrix.language == 'cpp' }}
       uses: ./.github/actions/setup-conan
+      with:
+        conan_cache: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
       
     - uses: github/codeql-action/init@v1
       with:

@@ -68,11 +68,9 @@ jobs:
       empty_matrix: ${{ steps.check-matrix.outputs.empty_matrix }}
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/cache@v2.1.6
+      uses: ./.github/actions/setup-conan
       with:
-        path: ~/.conan/data
-        key: apline-${{ hashFiles('**/conan.lock') }}
-    - uses: ./.github/actions/setup-conan
+        conan_cache: apline-${{ hashFiles('**/conan.lock') }}
     - name: calc
       run: |
         conan profile update settings.compiler.musl=1.2 default
@@ -117,8 +115,11 @@ jobs:
       matrix: ${{ fromJson(needs.calc-deps.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/setup-conan
+      - name: setup conan
         if: ${{ matrix.reference != 'null' }}
+        uses: ./.github/actions/setup-conan
+        with:
+          conan_cache: apline-${{ hashFiles('**/conan.lock') }}
       - name: download
         if: ${{ matrix.reference != 'null' }}
         uses: actions/download-artifact@v2
@@ -149,14 +150,12 @@ jobs:
         password: ${{ github.token }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2.1.6
+      - uses: ./.github/actions/setup-conan
         with:
-          path: ~/.conan/data
-          key: alpine-${{ hashFiles('**/conan.lock') }}
+          conan_cache: apline-${{ hashFiles('**/conan.lock') }}
       - uses: actions/download-artifact@v2
         with:
           name: conan-lockfile
-      - uses: ./.github/actions/setup-conan
       - name: setup
         run: |
           conan profile update settings.compiler.musl=1.2 default
@@ -184,14 +183,12 @@ jobs:
       name: docker.pkg.github.com/${{ github.repository }}/user-management-backend:${{ needs.setup.outputs.build-version }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2.1.6
+      - uses: ./.github/actions/setup-conan
         with:
-          path: ~/.conan/data
-          key: alpine-${{ hashFiles('**/conan.lock') }}
+          conan_cache: apline-${{ hashFiles('**/conan.lock') }}
       - uses: actions/download-artifact@v2
         with:
           name: conan-lockfile
-      - uses: ./.github/actions/setup-conan
       - name: download
         run: |
           conan profile update settings.compiler.musl=1.2 default
@@ -225,18 +222,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/cache@v2.1.6
-      with:
-        path: ~/.conan/data
-        key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
-    - uses: actions/cache@v2.1.6
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-    - uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
     - uses: ./.github/actions/setup-conan
+      with:
+        conan_cache: apline-${{ hashFiles('**/conan.lock') }}
     - uses: lukka/get-cmake@latest
     - name: build and upload
       run: |
