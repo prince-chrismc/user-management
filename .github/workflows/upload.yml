@@ -68,7 +68,7 @@ jobs:
       empty_matrix: ${{ steps.check-matrix.outputs.empty_matrix }}
     steps:
     - uses: actions/checkout@v2
-      uses: ./.github/actions/setup-conan
+    - uses: ./.github/actions/setup-conan
       with:
         conan_cache: apline-${{ hashFiles('**/conan.lock') }}
     - name: calc
