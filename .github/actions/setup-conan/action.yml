@@ -15,7 +15,7 @@ runs:
       with:
         path: ~/.conan/data
         key: ${{ inputs.conan_cache }}
-    - run: python -m pip install conan --upgrade
+    - run: python3 -m pip install conan --upgrade
       shell: bash
     - run: conan config set general.revisions_enabled=1
       shell: bash
