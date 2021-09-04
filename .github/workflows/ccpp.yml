@@ -21,9 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-
-    - name: setup conan
-      uses: ./.github/actions/setup-conan
+    - uses: ./.github/actions/setup-python
+    - uses: ./.github/actions/setup-conan
       with:
         conan_cache: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
 

@@ -23,6 +23,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - if: ${{ matrix.language == 'cpp' }}
+      uses: ./.github/actions/setup-python
+
     - name: setup conan
       if: ${{ matrix.language == 'cpp' }}
       uses: ./.github/actions/setup-conan

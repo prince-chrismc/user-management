@@ -222,9 +222,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: ./.github/actions/setup-python
     - uses: ./.github/actions/setup-conan
       with:
-        conan_cache: apline-${{ hashFiles('**/conan.lock') }}
+        conan_cache: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
     - uses: lukka/get-cmake@latest
     - name: build and upload
       run: |
