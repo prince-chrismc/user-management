@@ -1,13 +1,27 @@
 name: 'Setup Conan'
 description: 'Install and configure the conan client'
 inputs:
+  conan_cache:
+    description: 'Cache key for the `~/.conan/data` folder'
+    required: true
   libcxx:
     description: 'C++ standard ABI version to use'
     required: false
     default: 'libstdc++11'
 runs:
   using: "composite"
-  steps: 
+  steps:
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - uses: actions/cache@v2.1.6
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+    - uses: actions/cache@v2.1.6
+      with:
+        path: ~/.conan/data
+        key: ${{ inputs.conan_cache }}
     - run: python3 -m pip install conan --upgrade
       shell: bash
     - run: conan config set general.revisions_enabled=1
