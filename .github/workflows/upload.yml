@@ -68,7 +68,7 @@ jobs:
       empty_matrix: ${{ steps.check-matrix.outputs.empty_matrix }}
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/cache@v2.1.6
+    - uses: actions/cache@v3.0.2
       with:
         path: ~/.conan/data
         key: apline-${{ hashFiles('**/conan.lock') }}
@@ -149,7 +149,7 @@ jobs:
         password: ${{ github.token }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2.1.6
+      - uses: actions/cache@v3.0.2
         with:
           path: ~/.conan/data
           key: alpine-${{ hashFiles('**/conan.lock') }}
@@ -184,7 +184,7 @@ jobs:
       name: docker.pkg.github.com/${{ github.repository }}/user-management-backend:${{ needs.setup.outputs.build-version }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2.1.6
+      - uses: actions/cache@v3.0.2
         with:
           path: ~/.conan/data
           key: alpine-${{ hashFiles('**/conan.lock') }}
@@ -225,11 +225,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/cache@v2.1.6
+    - uses: actions/cache@v3.0.2
       with:
         path: ~/.conan/data
         key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
-    - uses: actions/cache@v2.1.6
+    - uses: actions/cache@v3.0.2
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
@@ -267,7 +267,7 @@ jobs:
       with:
         new-version: ${{ env.BUILD_VERSION }}
         target-file: web-app/package.json
-    - uses: actions/cache@v2.1.6
+    - uses: actions/cache@v3.0.2
       with:
         path: '**/node_modules'
         key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
