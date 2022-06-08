@@ -134,7 +134,7 @@ jobs:
         if: ${{ matrix.reference != 'null' }}
         run: |
           conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
-          conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+          conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
 
           conan upload ${{ matrix.reference }} -r $CONAN_REMOTE --all
       - run: exit 0
@@ -162,7 +162,7 @@ jobs:
           conan profile update settings.compiler.musl=1.2 default
 
           conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
-          conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+          conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
       - uses: ./.github/actions/replace-version
         with:
           new-version: ${{ env.BUILD_VERSION }}
@@ -197,7 +197,7 @@ jobs:
           conan profile update settings.compiler.musl=1.2 default
 
           conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
-          conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+          conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
 
           conan install $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE -l conan.lock -if backend
       - name: build
@@ -212,7 +212,7 @@ jobs:
       - if: github.event_name == 'push'
         name: upload
         run: |
-          echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
+          echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u christopherm@jfrog.com --password-stdin
           docker tag ${{ env.name }} $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
           docker push $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
 
@@ -247,7 +247,7 @@ jobs:
       - if: github.event_name == 'push' || matrix.build-type == 'Release'
         run: |
           conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
-          conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE prince-chrismc
+          conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
 
           conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
 
@@ -317,7 +317,7 @@ jobs:
       - if: github.event_name == 'push'
         name: upload
         run: |
-          echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u prince-chrismc --password-stdin
+          echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u christopherm@jfrog.com --password-stdin
           docker tag ${{ env.name }} $DOCKER_REGISTRY/$NAME-frontend:$BUILD_VERSION
           docker push $DOCKER_REGISTRY/$NAME-frontend:$BUILD_VERSION
 
