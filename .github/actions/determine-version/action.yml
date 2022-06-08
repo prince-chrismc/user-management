@@ -18,7 +18,7 @@ runs:
     run: |
       VERSION=$(echo "${{ inputs.github-ref }}" | sed -e 's,.*/\(.*\),\1,')
       [[ "${{ inputs.github-ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-      [ "$VERSION" == "master" ] && VERSION=latest
+      [ "$VERSION" == "main" ] && VERSION=latest
       [ "$VERSION" == "merge" ] && VERSION=$(echo "${{ inputs.unique-alt-id }}")
       echo "::set-output name=version::$(echo $VERSION)"
     shell: bash

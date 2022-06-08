@@ -3,7 +3,7 @@ name: Upload CD
 on:
   push:
     branches:
-      - master # tagged latest
+      - main # tagged latest
     tags:
       - v* # semver release
   pull_request: # runs tests

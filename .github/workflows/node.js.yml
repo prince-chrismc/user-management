@@ -2,12 +2,12 @@ name: Frontend CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths: 
       - 'web-app/**'
       - '.github/workflows/node.js.yml'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths: 
       - 'web-app/**'
       - '.github/workflows/node.js.yml'
