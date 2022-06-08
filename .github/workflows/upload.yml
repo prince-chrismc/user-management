@@ -13,7 +13,7 @@ env:
   NAME: user-management
   BUILD_VERSION: 1.0.0-commit.${{ github.run_number }}
   CONAN_REMOTE: user-management-conan
-  CONAN_REMOTE_URL: https://superfrogchrismc.jfrog.io/artifactory/api/conan/user-management
+  CONAN_REMOTE_URL: https://superfrogchrismc.jfrog.io/artifactory/api/conan/user-management-conan
   DIST_URL: https://superfrogchrismc.jfrog.io/artifactory/user-management-dist
   NPM_REGISTRY_URL: https://princechrismc.jfrog.io/artifactory/api/npm/user-management-npm/
   DOCKER_REGISTRY: superfrogchrismc.jfrog.io/user-management-docker
