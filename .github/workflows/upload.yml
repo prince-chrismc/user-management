@@ -15,7 +15,7 @@ env:
   CONAN_REMOTE: user-management-conan
   CONAN_REMOTE_URL: https://superfrogchrismc.jfrog.io/artifactory/api/conan/user-management-conan
   DIST_URL: https://superfrogchrismc.jfrog.io/artifactory/user-management-dist
-  NPM_REGISTRY_URL: https://princechrismc.jfrog.io/artifactory/api/npm/user-management-npm/
+  NPM_REGISTRY_URL: https://superfrogchrismc.jfrog.io/artifactory/api/npm/user-management-npm/
   DOCKER_REGISTRY: superfrogchrismc.jfrog.io/user-management-docker
 
 jobs:
@@ -262,7 +262,7 @@ jobs:
         with:
           registry: ${{ env.NPM_REGISTRY_URL }}
           auth_token: ${{ secrets.JFROG_RTFACT_NPM_AUTH }}
-          email: "prince.chrismc@gmail.com"
+          email: "christopherm@jfrog.com"
       - uses: ./.github/actions/replace-version
         with:
           new-version: ${{ env.BUILD_VERSION }}
@@ -293,7 +293,7 @@ jobs:
         with:
           registry: ${{ env.NPM_REGISTRY_URL }}
           auth_token: ${{ secrets.JFROG_RTFACT_NPM_AUTH }}
-          email: "prince.chrismc@gmail.com"
+          email: "christopherm@jfrog.com"
       - uses: docker/login-action@v1
         with:
           registry: docker.pkg.github.com
