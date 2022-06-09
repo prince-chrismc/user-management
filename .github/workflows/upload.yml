@@ -343,16 +343,18 @@ jobs:
           docker tag ${{ env.frontend-image }} $NAME-frontend:latest
       - run: docker build . --file Dockerfile --tag test-image --tag ${{ env.um-image }} --tag $DOCKER_REGISTRY/$NAME:$BUILD_VERSION
       - run: docker run --name test -p 8443:8443 --rm -d test-image
+      - run: docker ps -a
       - name: test HTTPS
         run: |
-          curl -s -k --key backend/certs/key.pem --cert backend/certs/server.pem -o index.html --url https://localhost:8443/index.html
+          curl -vv -s -k --key backend/certs/key.pem --cert backend/certs/server.pem -o index.html --url https://localhost:8443/index.html
           cat index.html
           cat index.html | grep -q "<title>User Management</title>"
       - run: docker kill test
       - run: docker run --name test -p 8080:8080 --rm -d test-image dist -a "0.0.0.0" -p 8080 -n 4
+      - run: docker ps -a
       - name: test HTTP
         run: |
-          curl -s -o index.html --url http://localhost:8080/index.html
+          curl -vv -s -o index.html --url http://localhost:8080/index.html
           cat index.html
           cat index.html | grep -q "<title>User Management</title>"
       - run: docker kill test
