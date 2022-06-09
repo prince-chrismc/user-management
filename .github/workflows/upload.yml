@@ -19,6 +19,17 @@ env:
   DOCKER_REGISTRY: superfrogchrismc.jfrog.io/user-management-docker
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      permitted: ${{ steps.check.outputs.permitted }}
+    steps:
+      - id: check
+        continue-on-error: true
+        uses: prince-chrismc/check-actor-permissions-action@v1
+        with:
+          permission: write
+
   setup:
     runs-on: ubuntu-latest
     outputs:
@@ -56,7 +67,8 @@ jobs:
         run: docker push ${{ env.name }}:${{ steps.version.outputs.version }}
 
   calc-deps:
-    needs: [build-image]
+    needs: [build-image, check]
+    if: needs.check.outputs.permitted == 'true'
     runs-on: ubuntu-latest
     container:
       image: ${{ needs.build-image.outputs.name }}
@@ -217,6 +229,7 @@ jobs:
           docker push $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
 
   backend:
+    needs: check
     strategy:
       fail-fast: true
       matrix:
@@ -238,13 +251,14 @@ jobs:
           python-version: 3.8
       - uses: ./.github/actions/setup-conan
       - uses: lukka/get-cmake@latest
-      - name: build and upload
+      - name: build
         run: |
           cd backend
 
           conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=${{ matrix.build-type }} -s compiler.libcxx=libstdc++11 -o user-management:logging=${{ matrix.logging }}
           conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock
-      - if: github.event_name == 'push' || matrix.build-type == 'Release'
+      - name: upload
+        if: (github.event_name == 'push' || matrix.build-type == 'Release') && needs.check.outputs.permitted == 'true'
         run: |
           conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
           conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
@@ -252,6 +266,7 @@ jobs:
           conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
 
   frontend:
+    needs: check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -278,12 +293,14 @@ jobs:
           yarn build --env API_URL=https://ec2-18-222-250-141.us-east-2.compute.amazonaws.com
       - working-directory: web-app/
         name: pack
+        if: needs.check.outputs.permitted == 'true'
         run: |
           npm pack
           npm publish $NAME-frontend-$BUILD_VERSION.tgz
 
   frontend-image:
-    needs: [setup, frontend]
+    needs: [setup, frontend, check]
+    if: needs.check.outputs.permitted == 'true'
     runs-on: ubuntu-latest
     env:
       name: docker.pkg.github.com/${{ github.repository }}/user-management-frontend:${{ needs.setup.outputs.build-version }}
