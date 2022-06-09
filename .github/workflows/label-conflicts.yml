@@ -1,10 +1,10 @@
 name: Auto Label Conflicts
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
     types: [opened, synchronize, reopened]
-    branches: [master]
+    branches: [main]
 
 jobs:
   auto_label:

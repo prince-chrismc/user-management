@@ -1,4 +1,4 @@
-name: "Setup Artifactor NPM Resgistry"
+name: "Setup Artifactory NPM Registry"
 description: "Configures the default global registry to be that hosted by a specific Artifactory instance"
 inputs:
   registry:
