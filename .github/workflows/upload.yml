@@ -133,7 +133,7 @@ jobs:
         if: ${{ matrix.reference != 'null' }}
       - name: download
         if: ${{ matrix.reference != 'null' }}
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: conan-lockfile
       - name: build
@@ -165,7 +165,7 @@ jobs:
         with:
           path: ~/.conan/data
           key: alpine-${{ hashFiles('**/conan.lock') }}
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: conan-lockfile
       - uses: ./.github/actions/setup-conan
@@ -200,7 +200,7 @@ jobs:
         with:
           path: ~/.conan/data
           key: alpine-${{ hashFiles('**/conan.lock') }}
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: conan-lockfile
       - uses: ./.github/actions/setup-conan
