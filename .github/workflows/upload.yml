@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@v3
       - id: version
         run: echo "::set-output name=version::$(echo ${{ hashFiles('backend/Dockerfile.build') }})"
-      - uses: docker/login-action@v1
+      - uses: docker/login-action@v2
         with:
           registry: docker.pkg.github.com
           username: ${{ github.repository_owner }}
@@ -294,7 +294,7 @@ jobs:
           registry: ${{ env.NPM_REGISTRY_URL }}
           auth_token: ${{ secrets.JFROG_RTFACT_NPM_AUTH }}
           email: "christopherm@jfrog.com"
-      - uses: docker/login-action@v1
+      - uses: docker/login-action@v2
         with:
           registry: docker.pkg.github.com
           username: ${{ github.repository_owner }}
@@ -309,7 +309,7 @@ jobs:
           docker build /tmp/um --file web-app/Dockerfile --tag ${{ env.name }}
           docker push ${{ env.name }}
       - if: github.event_name == 'push'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: superfrogchrismc.jfrog.io
           username: christopherm@jfrog.com
@@ -329,7 +329,7 @@ jobs:
       um-image: docker.pkg.github.com/${{ github.repository }}/user-management:${{ needs.setup.outputs.build-version }}
     steps:
       - uses: actions/checkout@v3
-      - uses: docker/login-action@v1
+      - uses: docker/login-action@v2
         with:
           registry: docker.pkg.github.com
           username: ${{ github.repository_owner }}
@@ -359,7 +359,7 @@ jobs:
           cat index.html | grep -q "<title>User Management</title>"
       - run: docker kill test
       - run: docker push ${{ env.um-image }}
-      - uses: docker/login-action@v1
+      - uses: docker/login-action@v2
         with:
           registry: superfrogchrismc.jfrog.io
           username: christopherm@jfrog.com
@@ -381,7 +381,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: docker/login-action@v1
+      - uses: docker/login-action@v2
         with:
           registry: superfrogchrismc.jfrog.io
           username: christopherm@jfrog.com
