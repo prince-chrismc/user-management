@@ -1,0 +1,9 @@
+include(default)
+
+[settings]
+os=Linux
+arch=x86_64
+compiler=gcc
+compiler.version=9
+compiler.libcxx=libstdc++11
+compiler.musl=1.2

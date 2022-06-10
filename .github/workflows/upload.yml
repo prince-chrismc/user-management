@@ -77,23 +77,18 @@ jobs:
         password: ${{ github.token }}
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
-      empty_matrix: ${{ steps.check-matrix.outputs.empty_matrix }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
         with:
           path: ~/.conan/data
-          key: apline-${{ hashFiles('**/conan.lock') }}
+          key: alpine-${{ hashFiles('**/conan.lock') }}
       - uses: ./.github/actions/setup-conan
-      - name: calc
-        run: |
-          conan profile update settings.compiler.musl=1.2 default
-
-          cd backend
-          conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
-          conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
-
-          conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=Release        
+      - run: conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
+      - name: build order
+        working-directory: backend
+        run: |          
+          conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -pr alpine-3-12 -s build_type=Release        
           conan lock build-order locks/conan.lock --json=build_order.json
       - uses: actions/upload-artifact@v3
         with:
@@ -108,14 +103,6 @@ jobs:
           MATRIX=$(cat matrix.json)
           echo "${MATRIX}"
           echo "::set-output name=matrix::${MATRIX}"
-      - id: check-matrix
-        name: Check matrix
-        run: |
-          if [[ ${{ steps.set-matrix.outputs.matrix }} == *"[]"* ]]; then
-            echo "::set-output name=empty_matrix::true"
-          else
-            echo "::set-output name=empty_matrix::false"        
-          fi
 
   build-deps:
     needs: [build-image, calc-deps]
@@ -129,8 +116,10 @@ jobs:
       matrix: ${{ fromJson(needs.calc-deps.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup-conan
-        if: ${{ matrix.reference != 'null' }}
+      - if: ${{ matrix.reference != 'null' }}
+        uses: ./.github/actions/setup-conan
+      - if: ${{ matrix.reference != 'null' }}
+        run: conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
       - name: download
         if: ${{ matrix.reference != 'null' }}
         uses: actions/download-artifact@v3
@@ -138,17 +127,10 @@ jobs:
           name: conan-lockfile
       - name: build
         if: ${{ matrix.reference != 'null' }}
-        run: |
-          conan profile update settings.compiler.musl=1.2 default
-
-          conan install ${{ matrix.reference }} -l conan.lock -b missing
+        run: conan install ${{ matrix.reference }} -l conan.lock -b missing
       - name: upload
         if: ${{ matrix.reference != 'null' }}
-        run: |
-          conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
-          conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
-
-          conan upload ${{ matrix.reference }} -r $CONAN_REMOTE --all
+        run: conan upload ${{ matrix.reference }} -r $CONAN_REMOTE --all
       - run: exit 0
 
   alpine-backend:
@@ -169,12 +151,7 @@ jobs:
         with:
           name: conan-lockfile
       - uses: ./.github/actions/setup-conan
-      - name: setup
-        run: |
-          conan profile update settings.compiler.musl=1.2 default
-
-          conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
-          conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
+      - run: conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
       - uses: ./.github/actions/replace-version
         with:
           new-version: ${{ env.BUILD_VERSION }}
@@ -204,13 +181,9 @@ jobs:
         with:
           name: conan-lockfile
       - uses: ./.github/actions/setup-conan
+      - run: conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
       - name: download
         run: |
-          conan profile update settings.compiler.musl=1.2 default
-
-          conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
-          conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
-
           conan install $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE -l conan.lock -if backend
       - name: build
         run: |
@@ -252,15 +225,13 @@ jobs:
       - uses: ./.github/actions/setup-conan
       - uses: lukka/get-cmake@latest
       - name: build
+        working-directory: backend
         run: |
-          cd backend
-
           conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=${{ matrix.build-type }} -s compiler.libcxx=libstdc++11 -o user-management:logging=${{ matrix.logging }}
           conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock
       - name: upload
         if: (github.event_name == 'push' || matrix.build-type == 'Release') && needs.check.outputs.permitted == 'true'
         run: |
-          conan remote add $CONAN_REMOTE $CONAN_REMOTE_URL
           conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
 
           conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
@@ -272,7 +243,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 14.x # Current LTS
+          node-version: 16.x # Current LTS
       - uses: ./.github/actions/setup-rtfact-npm
         with:
           registry: ${{ env.NPM_REGISTRY_URL }}
@@ -386,6 +357,7 @@ jobs:
 
   upload:
     needs: [setup, test]
+    if: github.event_name == 'push'
     strategy:
       matrix:
         image:
@@ -403,7 +375,6 @@ jobs:
           registry: superfrogchrismc.jfrog.io
           username: christopherm@jfrog.com
           password: ${{ secrets.JFROG_RTFACT_PASSWORD }}
-      - if: github.event_name == 'push'
         name: push
         run: |
           docker pull $DOCKER_REGISTRY/${{ matrix.image }}:$BUILD_VERSION
