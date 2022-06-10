@@ -2,12 +2,12 @@ name: Frontend CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths: 
       - 'web-app/**'
       - '.github/workflows/node.js.yml'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths: 
       - 'web-app/**'
       - '.github/workflows/node.js.yml'
@@ -21,15 +21,15 @@ jobs:
         node-version: [12.x, 14.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
 
     - name: Cache Node Modules
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v3
       with:
         path: '**/node_modules'
         key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
@@ -45,15 +45,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       
     - name: Use Node.js 12.x
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: 12.x
 
     - name: Cache Node Modules
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v3
       with:
         path: '**/node_modules'
         key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
@@ -69,17 +69,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 2
 
       - name: Use Node.js 14.x
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 14.x
 
       - name: Cache Node Modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
@@ -91,7 +91,7 @@ jobs:
           yarn coverage
 
       - name: CodeCov GitHub Action
-        uses: codecov/codecov-action@v2.0.3
+        uses: codecov/codecov-action@v3.1.0
         with:
           file: web-app/coverage/lcov.info
           name: react-frontend-unit-test-${{ matrix.node-version }}

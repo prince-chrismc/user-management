@@ -2,9 +2,9 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
   schedule:
     - cron: '0 17 * * 3'
 
@@ -22,11 +22,11 @@ jobs:
         language: ['cpp', 'javascript']
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       
     - name: setup python
       if: ${{ matrix.language == 'cpp' }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: 3.8
 
@@ -34,8 +34,8 @@ jobs:
       if: ${{ matrix.language == 'cpp' }}
       uses: ./.github/actions/setup-conan
       
-    - uses: github/codeql-action/init@v1
+    - uses: github/codeql-action/init@v2
       with:
         languages: ${{ matrix.language }}
-    - uses: github/codeql-action/autobuild@v1
-    - uses: github/codeql-action/analyze@v1
+    - uses: github/codeql-action/autobuild@v2
+    - uses: github/codeql-action/analyze@v2

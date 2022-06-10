@@ -2,14 +2,14 @@ name: Backend CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths: 
       - 'backend/**'
       - 'api/schema/**'
       - '.github/actions/**'
       - '.github/workflows/ccpp.yml'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths: 
       - 'backend/**'
       - 'api/schema/**'
@@ -20,21 +20,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: setup python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: 3.8
 
     - name: cache conan data
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v3
       with:
         path: ~/.conan/data
         key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
 
     - name: cache pip data
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v3
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
