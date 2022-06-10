@@ -95,7 +95,7 @@ jobs:
 
           conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=Release        
           conan lock build-order locks/conan.lock --json=build_order.json
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: conan-lockfile
           path: backend/locks/conan.lock
