@@ -5,31 +5,29 @@
 ### Conan Configuration
 
 > :warning: This **must** be done before any usage!
-If that is not possible, you will need to clear your conan cache. This can be done using `conan remove -f '*'`
+> It assumes the default configutation is present. This can reset yours with `conan config init --force`.
+> Old packages in your local conan cache will become invalid. This can be cleared using `conan remove -f '*'`.
 
-Enable recipe revisions
+Install the extended settings model, setup the custom remote, and configure the necessary settings:
 
 ```sh
-conan config set general.revisions_enabled=1
+conan config install -t dir backend/.conan
 ```
 
 #### Targeting different `C` library implementations
 
-The Conan default `settings.yml` does not take these into account. The settings model can be extended by doing the following:
+The Conan default `settings.yml` does not take these into account. You will need to sign into the `user-management` remote that was installed
+with the configuration to download the pre-compiled binaries.
 
-1. install an extended settings model
-
-```sh
-conan config install .conan/settings.yml
-```
-
-2. configure your profile (or build settings)
+The settings model can be extended by configuring your default profile (or build settings)
 
 ```sh
 conan profile update settings.compiler.musl=1.2 default
 # or
 conan profile update settings.compiler.glibc=2.32 default
 ```
+
+For more option see [Profiles](https://docs.conan.io/en/latest/reference/profiles.html) documentation.
 
 ## Development
 
@@ -46,19 +44,21 @@ Build the project
 cmake --build . # from the build folder
 ```
 
+### Configuration Options
+
 Enable building tests
 
 ```sh
 cmake .. -DBUILD_TESTS=ON
 ```
 
-Enable building tests
+Enable running linters
 
 ```sh
 cmake .. -DRUN_TIDY=ON
 ```
 
-### Updating dependencies
+### Updating Dependencies
 
 To update the top level `conan.lock` run:
 
@@ -75,7 +75,7 @@ conan install conanfile.py --lockfile=build/conan.lock -if build
 
 ## Usage
 
-### Lock Dependency graph
+### Lock Dependency Graph
 
 ```sh
 conan lock create conanfile.py --version 1.0.0-dev.1+`git rev-parse --short HEAD` --lockfile=conan.lock --lockfile-out=locks/conan.lock
