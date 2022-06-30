@@ -19,12 +19,17 @@ else()
   include(${CONAN_WRAPPER})
   conan_check(VERSION 1.33.0 REQUIRED)
 
+  set(CONAN_CPPSTD libstdc++11)
+  if(APPLE)
+    set(CONAN_CPPSTD libstdc++)
+  endf()
+
   # Create the complete lockfile
   execute_process(
     COMMAND
       conan lock create ${CMAKE_CURRENT_SOURCE_DIR}/conanfile.py -l ${CMAKE_CURRENT_SOURCE_DIR}/conan.lock
       --lockfile-out=${CMAKE_CURRENT_BINARY_DIR}/conan.lock -s build_type=${CMAKE_BUILD_TYPE} -s
-      compiler.libcxx=libstdc++11
+      compiler.libcxx=${CONAN_CPPSTD}
     RESULT_VARIABLE STATUS)
 
   if(STATUS AND NOT STATUS EQUAL 0)
@@ -36,7 +41,7 @@ else()
   #   PATH ${CMAKE_CURRENT_SOURCE_DIR}/conanfile.py
   #   LOCKFILE ${CMAKE_CURRENT_SOURCE_DIR}/conan.lock
   #   LOCKFILE_OUT ${CMAKE_CURRENT_BINARY_DIR}/conan.lock
-  #   SETTINGS build_type=${CMAKE_BUILD_TYPE} compiler.libcxx=libstdc++11
+  #   SETTINGS build_type=${CMAKE_BUILD_TYPE} compiler.libcxx=${CONAN_CPPSTD}
   # )
 
   # Populate the 'build' folder with the correct file to locate dependencies
