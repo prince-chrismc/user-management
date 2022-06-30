@@ -97,6 +97,7 @@ jobs:
       uses: lukka/get-cmake@latest
 
     - run: |
+        cd backeend
         conan lock create conanfile.py --version 1.0.0-dev.1 --lockfile=conan.lock --lockfile-out=build/conan.lock -pr:b=default
         conan install conanfile.py 1.0.0-dev.1@ --lockfile=build/conan.lock --lockfile-out=build/conan.lock --build=missing -if /tmp
 
