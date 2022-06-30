@@ -16,6 +16,9 @@ on:
       - '.github/actions/**'
       - '.github/workflows/ccpp.yml'
 
+env:
+  CONAN_REMOTE: user-management-conan
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -88,6 +91,7 @@ jobs:
 
     - name: setup conan
       uses: ./.github/actions/setup-conan
+    - run: conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
 
     - name: install cmake
       uses: lukka/get-cmake@latest
