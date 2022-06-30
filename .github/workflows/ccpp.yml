@@ -17,7 +17,7 @@ on:
       - '.github/workflows/ccpp.yml'
 
 env:
-  CONAN_REMOTE: user-management-conan
+  CONAN_REMOTE: user-management
 
 jobs:
   build:
