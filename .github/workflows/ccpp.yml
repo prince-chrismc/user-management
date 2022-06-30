@@ -105,7 +105,6 @@ jobs:
 
     - name: configure
       run: |
-        mkdir backend/build
         cd backend/build
         cmake .. -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Release
 
