@@ -161,7 +161,7 @@ request_status edit::operator()(const request_handle &req, route_params params) 
 request_status get_user::operator()(const request_handle &req, route_params params) {
   log.trace("processing get user operation");
   try {
-    const auto user = db_.get(restinio::cast_to<size_t>(params["id"]));
+    const auto user = db_.get(restinio::cast_to<user_key>(params["id"]));
     log.info("get user operation completed");
     if (conditional_matching(req, http_field::if_none_match, db_.etag(user.id))) {
       log.trace("get user operation cache hit");

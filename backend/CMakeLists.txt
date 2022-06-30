@@ -35,12 +35,12 @@ set(SCHEMA_LIST
     "${SCHEMAS_ROOT}/api/schema/users.json")
 pack_schemas("${SCHEMA_LIST}" schemas)
 
-add_library(user_management "include/um/user_management.hpp")
+add_library(user_management INTERFACE "include/um/user_management.hpp")
 add_library(user_management::user_management ALIAS user_management)
 set_target_properties(user_management PROPERTIES LINKER_LANGUAGE CXX)
-target_compile_features(user_management PUBLIC cxx_std_14)
-target_include_directories(user_management PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(user_management PUBLIC schemas nlohmann_json_schema_validator::nlohmann_json_schema_validator)
+target_compile_features(user_management INTERFACE cxx_std_14)
+target_include_directories(user_management INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(user_management INTERFACE schemas nlohmann_json_schema_validator::nlohmann_json_schema_validator)
 
 if(RUN_TIDY)
   include("clang-tidy")

@@ -1,9 +1,9 @@
 find_package(restinio 0.6.10 REQUIRED)
 
-add_library(routing "routing.hpp")
-target_include_directories(routing PUBLIC "..")
-set_target_properties(routing PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(routing PUBLIC restinio::restinio nonstd::string-view-lite) # Temporary work
+add_library(routing INTERFACE "routing.hpp")
+target_include_directories(routing INTERFACE "..")
+set_target_properties(routing PROPERTIES LINKER_LANGUAGE CXX CXX_STANDARD 14 CXX_STANDARD_REQUIRED TRUE)
+target_link_libraries(routing INTERFACE restinio::restinio nonstd::string-view-lite) # Temporary work
 
 add_library(add_headers "add_headers.hpp" "add_headers.cpp")
 target_include_directories(add_headers PUBLIC "..")
