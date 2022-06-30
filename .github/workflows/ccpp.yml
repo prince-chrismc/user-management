@@ -70,3 +70,40 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: backend/build/coverage.info
+
+  macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: setup python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+    - name: cache pip data
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+
+    - name: setup conan
+      uses: ./.github/actions/setup-conan
+
+    - name: install cmake
+      uses: lukka/get-cmake@latest
+
+    - name: configure
+      run: |
+        mkdir backend/build
+        cd backend/build
+        cmake .. -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Release
+
+    - name: build
+      run: |
+        cd backend/build
+        make user_tests
+
+    - name: test
+      run: |
+        cd backend/build
+        ./test/user_tests
