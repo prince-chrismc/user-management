@@ -21,7 +21,7 @@ else()
 
   set(CONAN_CPPSTD libstdc++11)
   if(APPLE)
-    set(CONAN_CPPSTD libstdc++)
+    set(CONAN_CPPSTD libc++)
   endif()
 
   # Create the complete lockfile
