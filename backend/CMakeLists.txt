@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8) # using cxx_std_17
+cmake_minimum_required(VERSION 3.19) # using interface libraries with sources https://cmake.org/cmake/help/latest/command/add_library.html#interface-libraries
 
 project(user-management)
 
