@@ -18,7 +18,7 @@ namespace user_management {
 constexpr auto version = "1.0.0-dev.1";
 
 using json = api::json;
-using user_key = size_t;
+using user_key = std::uint32_t;
 struct user {
   user_key id;
   std::string name;

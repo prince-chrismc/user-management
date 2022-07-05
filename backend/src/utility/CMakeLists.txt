@@ -6,13 +6,13 @@ find_package(spdlog 1.8.1 REQUIRED)
 
 add_library(app_args "app_args.hpp" "app_args.cpp")
 target_include_directories(app_args PUBLIC "..")
-set_target_properties(app_args PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(app_args PROPERTIES LINKER_LANGUAGE CXX CXX_STANDARD 11 CXX_STANDARD_REQUIRED TRUE)
 target_link_libraries(app_args PUBLIC nonstd::expected-lite nonstd::optional-lite PRIVATE bfg::lyra fmt::fmt)
 
-add_library(server_logger "server_logger.hpp")
-target_include_directories(server_logger PUBLIC "..")
+add_library(server_logger INTERFACE "server_logger.hpp")
+target_include_directories(server_logger INTERFACE "..")
 set_target_properties(server_logger PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(server_logger PUBLIC logger)
+target_link_libraries(server_logger INTERFACE logger)
 
 if(RUN_TIDY)
   setup_clang_tidy(app_args)
