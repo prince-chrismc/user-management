@@ -91,18 +91,12 @@ jobs:
 
     - name: setup conan
       uses: ./.github/actions/setup-conan
-    - run: conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
+
+    - name: loggin to private remote
+      run: conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
 
     - name: install cmake
       uses: lukka/get-cmake@latest
-
-    - if: false
-      run: |
-        cd backend
-        conan lock create conanfile.py --version 1.0.0-dev.1 --lockfile=conan.lock --lockfile-out=build/conan.lock -pr:b=default
-        conan install conanfile.py 1.0.0-dev.1@ --lockfile=build/conan.lock --lockfile-out=build/conan.lock --build=missing -if /tmp
-
-        conan upload --all -r $CONAN_REMOTE -c '*'
 
     - name: configure
       run: |
