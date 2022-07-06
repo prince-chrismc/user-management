@@ -52,19 +52,20 @@ jobs:
       run: |
         sudo apt-get install lcov
 
-    - name: setup
+    - name: conan install
       working-directory: backend
       run: |
-        mkdir build
+        conan lock create conanfile.py --version=0.0.0 -pr:b=debug -pr:h=debug --lockfile=conan.lock --lockfile-out=build/conan.lock
+        conan install conanfile.py --lockfile=build/conan.lock -if build -of build
 
     - name: configure
-      working-directory: backend/build
+      working-directory: backend
       run: |
-        cmake .. -DBUILD_TESTS=ON -DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
+        cmake --preset debug -B build -DBUILD_TESTS=ON -DCOVERAGE=ON
 
     - name: build
-      working-directory: backend/build
-      run: make user_tests 
+      working-directory: backend
+      run: cmake --build build/
 
     - name: coverage
       working-directory: backend/build
@@ -101,15 +102,16 @@ jobs:
     - name: install cmake
       uses: lukka/get-cmake@latest
 
-    - name: setup
+    - name: conan install
       working-directory: backend
       run: |
-        mkdir build
+        conan lock create conanfile.py --version=0.0.0 -pr:b=default --lockfile=conan.lock --lockfile-out=build/conan.lock
+        conan install conanfile.py --lockfile=build/conan.lock -if build -of build
 
     - name: configure
-      working-directory: backend/build
+      working-directory: backend
       run: |
-        cmake .. -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Release
+        cmake --preset release -B build -DBUILD_TESTS=ON 
 
     - name: build
       working-directory: backend

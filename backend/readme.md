@@ -60,6 +60,21 @@ cmake --preset release -B build
 cmake --build build/
 ```
 
+### Setting up in Debug
+
+Generate a lockfile with the provided `debug` profile and run the `conan install` command.
+
+```sh
+conan lock create conanfile.py --version=0.0.0 -pr:b=debug -pr:h=debug --lockfile=conan.lock --lockfile-out=build/conan.lock
+conan install conanfile.py --lockfile=build/conan.lock -if build -of build
+```
+
+Select the `debug` preset when configuration CMake
+
+```sh
+cmake --preset debug -B build
+```
+
 ### VS Code and Extensions
 
 The bare minium to work on the user management back-end is
@@ -78,7 +93,7 @@ does not load the toolchain. If the `Using Conan toolchain` does not appear in t
 
 When configuring CMake using `cmake --preset release -B build` you can also add addition flags to enable:
 
-- building tests `-DBUILD_TESTS=ON` 
+- building tests `-DBUILD_TESTS=ON`
 - running linters `-DRUN_TIDY=ON`
 
 ### Updating Dependencies

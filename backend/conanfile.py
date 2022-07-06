@@ -20,11 +20,10 @@ class UserManagementConanFile(ConanFile):
         self.folders.root = ".."
         self.folders.source = "backend"
         self.folders.build = "backend/build"
-        self.folders.generators = "backend/build"
 
     def export(self):
         git = Git(self, self.recipe_folder)
-        scm_url, scm_commit = git.get_url_and_commit()
+        scm_url, scm_commit = git.get_remote_url(), git.get_commit()
         update_conandata(self, {"sources": {"commit": scm_commit, "url": scm_url}})
 
     def export_sources(self):
