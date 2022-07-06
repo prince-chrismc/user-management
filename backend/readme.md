@@ -2,6 +2,12 @@
 
 ## Setup
 
+In order to get started you will need to satisfy the following requirements:
+
+- C++14 capable build environment
+- CMake v3.19 (recommend v3.23 to take advantage of presets when working locally)
+- Conan v1.50
+
 ### Conan Configuration
 
 > :warning: This **must** be done before any usage!
@@ -31,34 +37,49 @@ conan profile update settings.compiler.glibc=2.32 default
 
 For more option see [Profiles](https://docs.conan.io/en/latest/reference/profiles.html) documentation.
 
-## Development
+## Local Development
 
-Generate build files via CMake
+### Conan Install
 
-```sh
-mkdir build
-cmake ..
-```
-
-Build the project
+Conan takes the "tool integration" approach that CMake offers and no longer supports being called from CMake.
+This means you'll need to call `conan install` before you start working.
 
 ```sh
-cmake --build . # from the build folder
+# Prepare Conan
+conan lock create conanfile.py --version=0.0.0 -pr:b=default --lockfile=conan.lock --lockfile-out=build/conan.lock
+conan install conanfile.py --lockfile=build/conan.lock -if build -of build
 ```
+
+### Configure CMake
+
+```sh
+# Configure CMake
+cmake --preset release -B build
+
+# Build
+cmake --build build/
+```
+
+### VS Code and Extensions
+
+The bare minium to work on the user management back-end is
+
+- [C/C++ Extension Pack v1.2.0](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools-extension-pack)
+
+For the CMake extension, make sure you have at least version 1.12.3 or greater installed so it can
+take advantage of the features Conan offers. You may need to install the [nightly preview](https://github.com/microsoft/vscode-cmake-tools/pull/2544#issuecomment-1164797621).
+
+- [CMake Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools)
+
+:information_source: It's important to note that the opening VS Code before `conan install` may populate a CMake cache that
+does not load the toolchain. If the `Using Conan toolchain` does not appear in the logs, delete your `CMakeCache.txt` and try again.
 
 ### Configuration Options
 
-Enable building tests
+When configuring CMake using `cmake --preset release -B build` you can also add addition flags to enable:
 
-```sh
-cmake .. -DBUILD_TESTS=ON
-```
-
-Enable running linters
-
-```sh
-cmake .. -DRUN_TIDY=ON
-```
+- building tests `-DBUILD_TESTS=ON` 
+- running linters `-DRUN_TIDY=ON`
 
 ### Updating Dependencies
 
@@ -68,19 +89,15 @@ To update the top level `conan.lock` run:
 conan lock create conanfile.py --version=1.0.0-dev.1 --base --update
 ```
 
-```sh
-conan lock create conanfile.py --version=1.0.0-dev.1 -s build_type=Debug --lockfile=conan.lock --lockfile-out=build/conan.lock -u
-conan install conanfile.py --lockfile=build/conan.lock -if build
-```
-
-*Note*: You will need to change the "build type" to match your intentions
+You'll also need to refresh the Conan lockfile and generated information.
+Simply re-run the [`conan install`](#conan-install) command.
 
 ## Usage
 
 ### Lock Dependency Graph
 
 ```sh
-conan lock create conanfile.py --version 1.0.0-dev.1+`git rev-parse --short HEAD` --lockfile=conan.lock --lockfile-out=build/conan.lock
+conan lock create conanfile.py --version 1.0.0-dev.1+`git rev-parse --short HEAD` --lockfile=conan.lock --lockfile-out=build/conan.lock -pr:b=default
 ```
 
 ### Package Back-end

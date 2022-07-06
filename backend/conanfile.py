@@ -1,6 +1,10 @@
-from conans import ConanFile, CMake
-from os import path, getcwd
+from conan import ConanFile
+from conan.tools.cmake import CMake, CMakeToolchain, CMakeDeps
+from conan.tools.files import copy, update_conandata
+from conan.tools.scm import Git
+from os import path
 
+required_conan_version = ">=1.50.0"
 
 class UserManagementConanFile(ConanFile):
     name = "user-management"
@@ -8,17 +12,38 @@ class UserManagementConanFile(ConanFile):
     url = "https://github.com/prince-chrismc/user-management"
     description = "An open-source application delivering a responsive user management experience."
     settings = "os", "compiler", "build_type", "arch"
-    generators = "cmake_find_package"
-    exports_sources = "CMakeLists.txt", "cmake/*", "src/*", "include/*"
     options = {"logging": ["console", "syslog"]}
     default_options = {"logging": "syslog", "restinio:with_openssl": True}
 
+    def layout(self):
+        # Describe mono repo structure
+        self.folders.root = ".."
+        self.folders.source = "backend"
+        self.folders.build = "backend/build"
+        self.folders.generators = "backend/build"
+
+    def export(self):
+        git = Git(self, self.recipe_folder)
+        scm_url, scm_commit = git.get_url_and_commit()
+        update_conandata(self, {"sources": {"commit": scm_commit, "url": scm_url}})
+
     def export_sources(self):
-        schema_source = path.normpath(path.join(getcwd(), ".."))
-        self.copy("api/schema/*.json", src=schema_source)
+        source_folder = path.normpath(path.join(self.recipe_folder, ".."))
+        for pattern in ["CMakeLists.txt", "cmake/*", "src/*", "include/*"]:
+            copy(self, path.join("backend", pattern), source_folder, self.export_sources_folder)
+        copy(self, "api/schema/*.json", source_folder, self.export_sources_folder)
+
+    def generate(self):
+        toolchain = CMakeToolchain(self)
+        toolchain.variables["CONAN_SETUP"] = False
+        toolchain.variables["SCHEMAS_ROOT"] = ".."
+        toolchain.variables["LOGGING"] = self.options.logging
+        toolchain.generate()
+        deps = CMakeDeps(self)
+        deps.generate()
 
     def build_requirements(self):
-        self.build_requires("catch2/2.13.9")
+        self.test_requires("catch2/2.13.9")
 
     def requirements(self):
         self.requires("restinio/0.6.15")
@@ -28,9 +53,6 @@ class UserManagementConanFile(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.definitions["CONAN_SETUP"] = False
-        cmake.definitions["SCHEMAS_ROOT"] = "."
-        cmake.definitions["LOGGING"] = self.options.logging
         cmake.configure()
         cmake.build()
 

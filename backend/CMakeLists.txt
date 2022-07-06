@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.19) # using interface libraries with sources ht
 
 project(user-management)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_BINARY_DIR})
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 include("options")
 
@@ -20,10 +20,6 @@ option(COVERAGE "Enable code coverage testing" OFF)
 
 if(COVERAGE)
   cmake_policy(SET CMP0079 NEW)
-endif()
-
-if(CONAN_SETUP)
-  include("conan-setup")
 endif()
 
 find_package(nlohmann_json_schema_validator 2.1.0 REQUIRED)
