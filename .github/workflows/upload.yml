@@ -375,7 +375,7 @@ jobs:
           registry: superfrogchrismc.jfrog.io
           username: christopherm@jfrog.com
           password: ${{ secrets.JFROG_RTFACT_PASSWORD }}
-        name: push
+      - name: push
         run: |
           docker pull $DOCKER_REGISTRY/${{ matrix.image }}:$BUILD_VERSION
           docker tag $DOCKER_REGISTRY/${{ matrix.image }}:$BUILD_VERSION $DOCKER_REGISTRY/${{ matrix.image }}:${{ needs.setup.outputs.build-version }}
