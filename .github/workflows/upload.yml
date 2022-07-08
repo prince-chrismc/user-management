@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main # tagged latest
+      - upload-test
     tags:
       - v* # semver release
   pull_request: # runs tests
@@ -195,9 +196,14 @@ jobs:
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
           docker push ${{ env.name }}
       - if: github.event_name == 'push'
+        uses: docker/login-action@v2
+        with:
+          registry: superfrogchrismc.jfrog.io
+          username: christopherm@jfrog.com
+          password: ${{ secrets.JFROG_RTFACT_PASSWORD }}
+      - if: github.event_name == 'push'
         name: upload
         run: |
-          echo "${{ secrets.JFROG_RTFACT_PASSWORD }}" | docker login princechrismc.jfrog.io -u christopherm@jfrog.com --password-stdin
           docker tag ${{ env.name }} $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
           docker push $DOCKER_REGISTRY/$NAME-backend:$BUILD_VERSION
 
