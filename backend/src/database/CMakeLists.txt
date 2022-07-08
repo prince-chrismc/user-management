@@ -4,7 +4,7 @@ add_subdirectory("encoders")
 
 add_library(users_databse "users.hpp" "users.cpp")
 target_include_directories(users_databse PUBLIC "..")
-set_target_properties(users_databse PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(users_databse PROPERTIES LINKER_LANGUAGE CXX CXX_STANDARD 14 CXX_STANDARD_REQUIRED TRUE)
 target_link_libraries(users_databse PUBLIC user_management PRIVATE logger encoders fmt::fmt)
 
 if(RUN_TIDY)

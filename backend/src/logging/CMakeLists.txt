@@ -9,7 +9,7 @@ endif()
 if(${LOGGING} MATCHES ${SYSLOG})
   target_compile_definitions(logger PRIVATE SYSLOG_LOGGING)
 endif()
-set_target_properties(logger PROPERTIES LINKER_LANGUAGE CXX CXX_STANDARD 11 CXX_STANDARD_REQUIRED TRUE)
+set_target_properties(logger PROPERTIES LINKER_LANGUAGE CXX CXX_STANDARD 14 CXX_STANDARD_REQUIRED TRUE)
 target_link_libraries(logger PUBLIC spdlog::spdlog)
 
 if(RUN_TIDY)
