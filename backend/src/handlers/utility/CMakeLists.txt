@@ -13,12 +13,12 @@ target_compile_features(add_headers PRIVATE cxx_std_17)
 
 add_library(response_builder "response_builder.hpp" "response_builder.cpp")
 target_include_directories(response_builder PUBLIC "..")
-set_target_properties(response_builder PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(response_builder PROPERTIES LINKER_LANGUAGE CXX CXX_STANDARD 14 CXX_STANDARD_REQUIRED TRUE)
 target_link_libraries(response_builder PUBLIC routing add_headers user_management)
 
 add_library(content_type "content_type_from_ext.hpp" "content_type_from_ext.cpp")
 target_include_directories(content_type PUBLIC "..")
-set_target_properties(content_type PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(content_type PROPERTIES LINKER_LANGUAGE CXX CXX_STANDARD 14 CXX_STANDARD_REQUIRED TRUE)
 target_link_libraries(content_type PUBLIC nonstd::string-view-lite)
 
 if(RUN_TIDY)
