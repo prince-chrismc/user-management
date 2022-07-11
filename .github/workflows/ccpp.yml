@@ -20,7 +20,7 @@ env:
   CONAN_REMOTE: user-management
 
 jobs:
-  build:
+  ubuntu:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -52,20 +52,23 @@ jobs:
       run: |
         sudo apt-get install lcov
 
-    - name: configure
+    - name: setup
+      working-directory: backend
       run: |
-        mkdir backend/build
-        cd backend/build
+        mkdir build
+
+    - name: configure
+      working-directory: backend/build
+      run: |
         cmake .. -DBUILD_TESTS=ON -DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug
 
     - name: build
-      run: |
-        cd backend/build
-        make user_tests
+      working-directory: backend/build
+      run: make user_tests 
 
     - name: coverage
+      working-directory: backend/build
       run: |
-        cd backend/build
         make coverage
 
     - name: Coveralls GitHub Action
@@ -98,18 +101,20 @@ jobs:
     - name: install cmake
       uses: lukka/get-cmake@latest
 
-    - name: configure
+    - name: setup
+      working-directory: backend
       run: |
-        mkdir -p backend/build
-        cd backend/build
+        mkdir build
+
+    - name: configure
+      working-directory: backend/build
+      run: |
         cmake .. -DBUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Release
 
     - name: build
-      run: |
-        cd backend/build
-        make user_tests
+      working-directory: backend
+      run: cmake --build build/
 
     - name: test
-      run: |
-        cd backend/build
-        ./test/user_tests
+      working-directory: backend/build
+      run: ./test/user_tests

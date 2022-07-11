@@ -87,13 +87,13 @@ jobs:
       - run: conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
       - name: build order
         working-directory: backend
-        run: |          
-          conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -pr alpine-3-12 -s build_type=Release        
-          conan lock build-order locks/conan.lock --json=build_order.json
+        run: |
+          conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=build/conan.lock -pr alpine-3-12 -s build_type=Release        
+          conan lock build-order build/conan.lock --json=build_order.json
       - uses: actions/upload-artifact@v3
         with:
           name: conan-lockfile
-          path: backend/locks/conan.lock
+          path: backend/build/conan.lock
       - id: set-matrix
         name: output
         run: |
@@ -150,6 +150,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: conan-lockfile
+          path: backend/build/
       - uses: ./.github/actions/setup-conan
       - run: conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
       - uses: ./.github/actions/replace-version
@@ -157,7 +158,9 @@ jobs:
           new-version: ${{ env.BUILD_VERSION }}
           target-file: backend/include/um/user_management.hpp
       - name: build
-        run: conan create backend/conanfile.py $BUILD_VERSION@ --lockfile conan.lock
+        working-directory: backend
+        run: |
+          conan create conanfile.py $BUILD_VERSION@ --lockfile=build/conan.lock
       - name: upload
         run: conan upload "*" --all -r $CONAN_REMOTE -c
 
@@ -232,10 +235,10 @@ jobs:
       - name: build
         working-directory: backend
         run: |
-          conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=locks/conan.lock -s build_type=${{ matrix.build-type }} -s compiler.libcxx=libstdc++11 -o user-management:logging=${{ matrix.logging }}
-          conan create conanfile.py $BUILD_VERSION@ --lockfile=locks/conan.lock
+          conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=build/conan.lock -s build_type=${{ matrix.build-type }} -s compiler.libcxx=libstdc++11 -o user-management:logging=${{ matrix.logging }}
+          conan create conanfile.py $BUILD_VERSION@ --lockfile=build/conan.lock
       - name: upload
-        if: (github.event_name == 'push' || matrix.build-type == 'Release') && needs.check.outputs.permitted == 'true'
+        if: github.event_name == 'push' && needs.check.outputs.permitted == 'true'
         run: |
           conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
 
