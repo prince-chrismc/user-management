@@ -29,7 +29,7 @@ nonstd::expected<app_args_t, app_args_t::result> app_args_t::parse(
 
   const auto parse_args = cli.parse({argc, argv});
   if (!parse_args) {
-    fmt::print("Invalid command-line arguments: {}\n", parse_args.errorMessage());
+    fmt::print("Invalid command-line arguments: {}\n", parse_args.message());
     return nonstd::make_unexpected(app_args_t::result::error);
   }
 
