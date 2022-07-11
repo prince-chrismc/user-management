@@ -65,7 +65,7 @@ jobs:
 
     - name: build
       working-directory: backend
-      run: cmake --build build/
+      run: cmake --build build/ --target user_tests
 
     - name: coverage
       working-directory: backend/build
