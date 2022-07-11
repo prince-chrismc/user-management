@@ -5,19 +5,21 @@
 ### Conan Configuration
 
 > :warning: This **must** be done before any usage!
-> It assumes the default configutation is present. This can reset yours with `conan config init --force`.
+> It assumes the default configuration is present. This can reset yours with `conan config init --force`.
 > Old packages in your local conan cache will become invalid. This can be cleared using `conan remove -f '*'`.
 
 Install the extended settings model, setup the custom remote, and configure the necessary settings:
 
 ```sh
-conan config install -t dir backend/.conan
+conan config install -t dir .conan
 ```
 
 #### Targeting different `C` library implementations
 
+> :information_source: This is only relevant to Linux with GCC and is primarily for the continuous integration and delivery automation
+
 The Conan default `settings.yml` does not take these into account. You will need to sign into the `user-management` remote that was installed
-with the configuration to download the pre-compiled binaries.
+with the configuration to download any pre-compiled binaries.
 
 The settings model can be extended by configuring your default profile (or build settings)
 
@@ -78,37 +80,37 @@ conan install conanfile.py --lockfile=build/conan.lock -if build
 ### Lock Dependency Graph
 
 ```sh
-conan lock create conanfile.py --version 1.0.0-dev.1+`git rev-parse --short HEAD` --lockfile=conan.lock --lockfile-out=locks/conan.lock
+conan lock create conanfile.py --version 1.0.0-dev.1+`git rev-parse --short HEAD` --lockfile=conan.lock --lockfile-out=build/conan.lock
 ```
 
 ### Package Back-end
 
 ```sh
-conan create conanfile.py 1.0.0-dev.1+`git rev-parse --short HEAD`@ --lockfile locks/conan.lock
+conan create conanfile.py 1.0.0-dev.1+`git rev-parse --short HEAD`@ --lockfile build/conan.lock
 ```
 
 ### Install Application
 
-> :notebook: This step requires the [packing](#package) to be completed first
+> :notebook: This step requires the [packing](#package-back-end) to be completed first
 
 ```sh
-conan install user-managment/1.0.0-dev.1+`git rev-parse --short HEAD`  --lockfile locks/conan.lock
+conan install user-management/1.0.0-dev.1+`git rev-parse --short HEAD`  --lockfile build/conan.lock
 ```
 
 ### Build Docker Image
 
 ```sh
-docker build . -f Dockerfile -t user-managment-backend:1.0.0-dev.1 # Docker does not support SemVer build information
+docker build . -f Dockerfile -t user-management-backend:1.0.0-dev.1 # Docker does not support SemVer build information
 ```
 
 ## Run Container
 
 ```sh
-docker run --rm -d -p 8443:8443 -v "$(pwd):/dist" user-managment-backend:1.0.0-dev.1
+docker run --rm -d -p 8443:8443 -v "$(pwd):/dist" user-management-backend:1.0.0-dev.1
 ```
 
 > :notebook: By default the back-end image is setup for HTTPS for unsecure transport use the following
 
 ```sh
-docker run --rm -d -p 8080:8080 -v "$(pwd):/dist" user-managment-backend:1.0.0-dev.1 dist -a "0.0.0.0" -p 8080 -n 4
+docker run --rm -d -p 8080:8080 -v "$(pwd):/dist" user-management-backend:1.0.0-dev.1 dist -a "0.0.0.0" -p 8080 -n 4
 ```

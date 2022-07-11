@@ -16,7 +16,7 @@
     "context": "host"
    },
    "1": {
-    "ref": "restinio/0.6.13#9ea13006124a8b74aafc068291acbe29",
+    "ref": "restinio/0.6.15#daa6d8d8449caee8421f13b542c95505",
     "requires": [
      "2",
      "3",
@@ -30,61 +30,61 @@
     "context": "host"
    },
    "2": {
-    "ref": "http_parser/2.9.4#68d0994d072e25ac7b300ff76802be9b",
+    "ref": "http_parser/2.9.4#4ab63331fb08b5ff881c3736bba666eb",
     "context": "host"
    },
    "3": {
-    "ref": "fmt/8.0.1#a5a28fc13037de5e390f44c2304bd6ba",
+    "ref": "fmt/8.1.1#b3e969f8561a85087bd0365c09bbf4fb",
     "context": "host"
    },
    "4": {
-    "ref": "expected-lite/0.5.0#be98443653439dd87e4c4afb57846f1b",
+    "ref": "expected-lite/0.5.0#b91fa89f939bffbe1ae8334984b26fef",
     "context": "host"
    },
    "5": {
-    "ref": "optional-lite/3.4.0#70a4a81fbb3b86d22c797360857f5955",
+    "ref": "optional-lite/3.5.0#00d557a26761ad5a8bd86b89e581537f",
     "context": "host"
    },
    "6": {
-    "ref": "string-view-lite/1.6.0#326afcf276c7c791558045027b294501",
+    "ref": "string-view-lite/1.6.0#e033d690ae6f90e93cede4183963e9bd",
     "context": "host"
    },
    "7": {
-    "ref": "variant-lite/2.0.0#b6754bea6123de7f5be73330babc1a3a",
+    "ref": "variant-lite/2.0.0#0a6f708984efc302bb61ba827392a897",
     "context": "host"
    },
    "8": {
-    "ref": "asio/1.18.1#358023b3793c02a2b62a085c6e906056",
+    "ref": "asio/1.22.1#9f451218a9133184e9cee71481bc2ad3",
     "context": "host"
    },
    "9": {
-    "ref": "openssl/1.1.1l#730e89b1b890b83f42824295c920d189",
+    "ref": "openssl/1.1.1n#2f4f1e70c94733801aa604f0399db280",
     "context": "host"
    },
    "10": {
-    "ref": "json-schema-validator/2.1.0#a2a0f16dc456d099ebea16329868c60d",
+    "ref": "json-schema-validator/2.1.0#33b6f056ae85b0daa06a854ad579e3da",
     "requires": [
      "11"
     ],
     "context": "host"
    },
    "11": {
-    "ref": "nlohmann_json/3.9.1#304649bcd7dae8fa24a2356e9437f9ad",
+    "ref": "nlohmann_json/3.10.5#012b57da2a4865a0807933766e19da2b",
     "context": "host"
    },
    "12": {
-    "ref": "lyra/1.5.1#4fb6e3981f4b64ebe13aa667d4fc1284",
+    "ref": "lyra/1.6.0#89fc7924763baa6984c893f24694e9f7",
     "context": "host"
    },
    "13": {
-    "ref": "spdlog/1.9.2#3724602b7b7e843c5e0a687c45e279c9",
+    "ref": "spdlog/1.10.0#6ef9a82ea41aaeb10e7736a99da3503e",
     "requires": [
      "3"
     ],
     "context": "host"
    },
    "14": {
-    "ref": "catch2/2.13.7#6833b315b413723c75f865d853959b86",
+    "ref": "catch2/2.13.9#c0c29ee0220774812c0e13b0a89a73a6",
     "context": "host"
    }
   },

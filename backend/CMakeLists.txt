@@ -40,7 +40,7 @@ add_library(user_management::user_management ALIAS user_management)
 set_target_properties(user_management PROPERTIES LINKER_LANGUAGE CXX)
 target_compile_features(user_management INTERFACE cxx_std_14)
 target_include_directories(user_management INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(user_management INTERFACE schemas nlohmann_json_schema_validator::nlohmann_json_schema_validator)
+target_link_libraries(user_management INTERFACE schemas nlohmann_json_schema_validator)
 
 if(RUN_TIDY)
   include("clang-tidy")

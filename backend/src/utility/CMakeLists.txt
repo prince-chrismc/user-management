@@ -1,8 +1,8 @@
-find_package(lyra 1.5.0 REQUIRED)
-find_package(fmt 7.1.2 REQUIRED)
+find_package(lyra 1.6.0 REQUIRED)
+find_package(fmt 8.1.1 REQUIRED)
 find_package(expected-lite 0.5.0 REQUIRED)
 find_package(optional-lite 3.4.0 REQUIRED)
-find_package(spdlog 1.8.1 REQUIRED)
+find_package(spdlog 1.10.0 REQUIRED)
 
 add_library(app_args "app_args.hpp" "app_args.cpp")
 target_include_directories(app_args PUBLIC "..")
