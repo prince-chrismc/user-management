@@ -20,7 +20,7 @@ env:
   CONAN_REMOTE: user-management
 
 jobs:
-  build:
+  ubuntu:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
