@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main # tagged latest
-      - upload-test
     tags:
       - v* # semver release
   pull_request: # runs tests
