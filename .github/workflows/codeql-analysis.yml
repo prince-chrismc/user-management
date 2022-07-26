@@ -38,5 +38,16 @@ jobs:
       with:
         languages: ${{ matrix.language }}
 
-    - uses: github/codeql-action/autobuild@v2
+    - name: conan install
+      if: ${{ matrix.language == 'cpp' }}
+      working-directory: backend
+      run: |
+        conan lock create conanfile.py --version=0.0.0 -pr:b=default --lockfile=conan.lock --lockfile-out=build/conan.lock
+        conan install conanfile.py --lockfile=build/conan.lock -if build -of build
+        cmake --preset release -B build
+        cmake --build build/
+
+    - if: ${{ matrix.language == 'javascript' }}
+      uses: github/codeql-action/autobuild@v2
+      
     - uses: github/codeql-action/analyze@v2

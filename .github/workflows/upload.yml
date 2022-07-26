@@ -160,6 +160,7 @@ jobs:
       - name: build
         working-directory: backend
         run: |
+          git config --global --add safe.directory /__w/user-management/user-management 
           conan create conanfile.py $BUILD_VERSION@ --lockfile=build/conan.lock
       - name: upload
         run: conan upload "*" --all -r $CONAN_REMOTE -c
@@ -180,14 +181,16 @@ jobs:
         with:
           path: ~/.conan/data
           key: alpine-${{ hashFiles('**/conan.lock') }}
+      - uses: ./.github/actions/setup-conan
+      - run: conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
+
       - uses: actions/download-artifact@v3
         with:
           name: conan-lockfile
-      - uses: ./.github/actions/setup-conan
-      - run: conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
       - name: download
         run: |
           conan install $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE -l conan.lock -if backend
+
       - name: build
         run: |
           # https://stackoverflow.com/a/57868193/8480874
@@ -235,7 +238,7 @@ jobs:
       - name: build
         working-directory: backend
         run: |
-          conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=build/conan.lock -s build_type=${{ matrix.build-type }} -s compiler.libcxx=libstdc++11 -o user-management:logging=${{ matrix.logging }}
+          conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=build/conan.lock -pr:b=default -o user-management:logging=${{ matrix.logging }}
           conan create conanfile.py $BUILD_VERSION@ --lockfile=build/conan.lock
       - name: upload
         if: github.event_name == 'push' && needs.check.outputs.permitted == 'true'
