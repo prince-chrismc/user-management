@@ -6,7 +6,7 @@ In order to get started you will need to satisfy the following requirements:
 
 - C++14 capable build environment
 - CMake v3.19 (recommend v3.23 to take advantage of presets when working locally)
-- Conan v1.50
+- Conan v1.51
 
 ### Conan Configuration
 
@@ -76,7 +76,7 @@ Generate a lockfile with the provided `debug` profile and run the `conan install
 
 ```sh
 conan lock create conanfile.py --version=0.0.0 -pr:h=debug -pr:b=debug --lockfile=conan.lock --lockfile-out=build/conan.lock
-conan install conanfile.py --lockfile=build/conan.lock -if build -of build
+conan install conanfile.py --lockfile=build/conan.lock -if build
 ```
 
 Select the `debug` preset when configuration CMake
