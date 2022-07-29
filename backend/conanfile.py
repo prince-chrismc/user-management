@@ -1,10 +1,10 @@
 from conan import ConanFile
-from conan.tools.cmake import CMake, CMakeToolchain, CMakeDeps
+from conan.tools.cmake import CMake, CMakeToolchain, CMakeDeps, cmake_layout
 from conan.tools.files import copy, update_conandata
 from conan.tools.scm import Git
 from os import path
 
-required_conan_version = ">=1.50.0"
+required_conan_version = ">=1.51.0"
 
 class UserManagementConanFile(ConanFile):
     name = "user-management"
@@ -18,8 +18,8 @@ class UserManagementConanFile(ConanFile):
     def layout(self):
         # Describe mono repo structure
         self.folders.root = ".."
-        self.folders.source = "backend"
-        self.folders.build = "backend/build"
+        self.folders.subproject = "backend"
+        cmake_layout(self)
 
     def export(self):
         git = Git(self, self.recipe_folder)

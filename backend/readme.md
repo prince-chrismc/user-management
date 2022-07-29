@@ -46,8 +46,8 @@ This means you'll need to call `conan install` before you start working.
 
 ```sh
 # Prepare Conan
-conan lock create conanfile.py --version=0.0.0 -pr:b=default --lockfile=conan.lock --lockfile-out=build/conan.lock
-conan install conanfile.py --lockfile=build/conan.lock -if build -of build
+conan lock create conanfile.py --version=0.0.0 -pr:h=ninja -pr:b=ninja --lockfile=conan.lock --lockfile-out=build/conan.lock
+conan install conanfile.py --lockfile=build/conan.lock -if build
 ```
 
 ### Configure CMake
