@@ -6,7 +6,7 @@ In order to get started you will need to satisfy the following requirements:
 
 - C++14 capable build environment
 - CMake v3.19 (recommend v3.23 to take advantage of presets when working locally)
-- Conan v1.50
+- Conan v1.51
 
 ### Conan Configuration
 
@@ -47,7 +47,7 @@ This means you'll need to call `conan install` before you start working.
 ```sh
 # Prepare Conan
 conan lock create conanfile.py --version=0.0.0 -pr:b=default --lockfile=conan.lock --lockfile-out=build/conan.lock
-conan install conanfile.py --lockfile=build/conan.lock -if build -of build
+conan install conanfile.py --lockfile=build/conan.lock -if build
 ```
 
 ### Configure CMake
@@ -60,13 +60,23 @@ cmake --preset release -B build
 cmake --build build/
 ```
 
+#### Using Ninja
+
+If you would like to improve build times, [Ninja](https://ninja-build.org/manual.html) is a great way to get that with little effort.
+Simply use the provided `ninja` profile when preparing Conan.
+
+```sh
+conan lock create conanfile.py --version=0.0.0 -pr:h=ninja -pr:b=ninja --lockfile=conan.lock --lockfile-out=build/conan.lock
+conan install conanfile.py --lockfile=build/conan.lock -if build
+```
+
 ### Setting up in Debug
 
 Generate a lockfile with the provided `debug` profile and run the `conan install` command.
 
 ```sh
-conan lock create conanfile.py --version=0.0.0 -pr:b=debug -pr:h=debug --lockfile=conan.lock --lockfile-out=build/conan.lock
-conan install conanfile.py --lockfile=build/conan.lock -if build -of build
+conan lock create conanfile.py --version=0.0.0 -pr:h=debug -pr:b=debug --lockfile=conan.lock --lockfile-out=build/conan.lock
+conan install conanfile.py --lockfile=build/conan.lock -if build
 ```
 
 Select the `debug` preset when configuration CMake
