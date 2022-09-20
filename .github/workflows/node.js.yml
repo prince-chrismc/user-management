@@ -91,7 +91,7 @@ jobs:
           yarn coverage
 
       - name: CodeCov GitHub Action
-        uses: codecov/codecov-action@v3.1.0
+        uses: codecov/codecov-action@v3.1.1
         with:
           file: web-app/coverage/lcov.info
           name: react-frontend-unit-test-${{ matrix.node-version }}
