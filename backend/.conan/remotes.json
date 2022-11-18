@@ -1,0 +1,14 @@
+{
+    "remotes": [
+     {
+      "name": "conancenter",
+      "url": "https://center.conan.io",
+      "verify_ssl": true
+     },
+     {
+      "name": "superfrog",
+      "url": "https://superfrogchrismc.jfrog.io/artifactory/api/conan/user-management-conan",
+      "verify_ssl": true
+     }
+    ]
+   }
