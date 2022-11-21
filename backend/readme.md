@@ -54,10 +54,10 @@ conan install conanfile.py --lockfile=build/conan.lock -if build
 
 ```sh
 # Configure CMake
-cmake --preset release -B build
+cmake --preset release
 
 # Build
-cmake --build build/
+cmake --build build/Release
 ```
 
 #### Using Ninja
