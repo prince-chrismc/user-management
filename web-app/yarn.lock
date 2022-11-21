@@ -4101,13 +4101,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^4.1.2":
-  version: 4.1.2
-  resolution: "chalk@npm:4.1.2"
-  dependencies:
-    ansi-styles: ^4.1.0
-    supports-color: ^7.1.0
-  checksum: e3901b97d953991712bf0b941d586175be7ca5da56a97d25187e07453c6b26cae0ac8d9c7aa9e87e7c5c986fff870771b3a8e2705b3becda868829e2e12c2a65
+"chalk@npm:^5.1.2":
+  version: 5.1.2
+  resolution: "chalk@npm:5.1.2"
+  checksum: 0a2a4dc837962a60f5d84967ac7ae1cd97b287b6e2c38306b4e5b76be4d2a62f49087e6cdea008aa1f2c4ce4f357174f48e9bda289400424cda1ea494ce6842e
   languageName: node
   linkType: hard
 
@@ -11779,7 +11776,7 @@ typescript@^4.3.5:
     babel-loader: ^8.2.5
     babel-plugin-transform-react-remove-prop-types: ^0.4.24
     base64-js: ^1.5.1
-    chalk: ^4.1.2
+    chalk: ^5.1.2
     core-js: ^3.22.8
     cross-env: ^7.0.3
     css-loader: ^6.7.1
