@@ -263,17 +263,17 @@ jobs:
       - uses: ./.github/actions/replace-version
         with:
           new-version: ${{ env.BUILD_VERSION }}
-          target-file: web-app/package.json
+          target-file: frontend/package.json
       - uses: actions/cache@v3
         with:
           path: "**/node_modules"
           key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-      - working-directory: web-app/
+      - working-directory: frontend/
         name: build
         run: |
           yarn install
           yarn build --env API_URL=https://ec2-18-222-250-141.us-east-2.compute.amazonaws.com
-      - working-directory: web-app/
+      - working-directory: frontend/
         name: pack
         if: needs.check.outputs.permitted == 'true'
         run: |
@@ -305,7 +305,7 @@ jobs:
           cp -r /tmp/umfe-unpacked/lib/node_modules/$NAME-frontend/dist /tmp/um/dist/
       - name: build
         run: |
-          docker build /tmp/um --file web-app/Dockerfile --tag ${{ env.name }}
+          docker build /tmp/um --file frontend/Dockerfile --tag ${{ env.name }}
           docker push ${{ env.name }}
       - if: github.event_name == 'push'
         uses: docker/login-action@v2

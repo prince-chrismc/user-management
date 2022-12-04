@@ -4,12 +4,12 @@ on:
   push:
     branches: [ main ]
     paths: 
-      - 'web-app/**'
+      - 'frontend/**'
       - '.github/workflows/node.js.yml'
   pull_request:
     branches: [ main ]
     paths: 
-      - 'web-app/**'
+      - 'frontend/**'
       - '.github/workflows/node.js.yml'
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
 
     - name: Production Build
       run: |
-        cd web-app/
+        cd frontend/
         yarn install
         yarn build
 
@@ -60,7 +60,7 @@ jobs:
     
     - name: Run Tests
       run: |
-        cd web-app/
+        cd frontend/
         yarn install
         yarn test
 
@@ -86,13 +86,13 @@ jobs:
 
       - name: Coverage
         run: |
-          cd web-app/
+          cd frontend/
           yarn install
           yarn coverage
 
       - name: CodeCov GitHub Action
         uses: codecov/codecov-action@v3.1.1
         with:
-          file: web-app/coverage/lcov.info
+          file: frontend/coverage/lcov.info
           name: react-frontend-unit-test-${{ matrix.node-version }}
           fail_ci_if_error: true

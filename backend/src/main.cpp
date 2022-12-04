@@ -57,7 +57,7 @@ auto server_handler(const std::string &root_dir, user_database &db) {
   auto router = std::make_unique<handler::router>();
 
   router->http_get("/", &handler::web_app::link);
-  router->http_get("/web-app/", &handler::web_app::redirect);
+  router->http_get("/frontend/", &handler::web_app::redirect);
   router->http_get(R"(/:path(.*)\.:ext(.*))", restinio::path2regex::options_t{}.strict(true),
                    handler::serve_files::from_disk{server_root_dir});
 
