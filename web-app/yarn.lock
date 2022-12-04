@@ -8466,12 +8466,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment-timezone@npm:^0.5.33":
-  version: 0.5.34
-  resolution: "moment-timezone@npm:0.5.34"
+"moment-timezone@npm:^0.5.39":
+  version: 0.5.39
+  resolution: "moment-timezone@npm:0.5.39"
   dependencies:
     moment: ">= 2.9.0"
-  checksum: 403165bf5a58858e4428f66aaece7bcb52d072474a74a68361ad63023092cc9cf0369bea95fafea67410ff52bd6e6e3402ab7375adb72d276360e021d83bb15f
+  checksum: bc45622897bd66e3cd0f2594c86d31f1376e40e6af785ae49fced67d0f62052d26ed116a1b2bb43de3c80f0bcbc4a2a2d576695f0c2bdf6e836d1eadb30c5624
   languageName: node
   linkType: hard
 
@@ -11803,7 +11803,7 @@ typescript@^4.3.5:
     mini-css-extract-plugin: ^2.6.0
     moment: =2.29.1
     moment-locales-webpack-plugin: ^1.2.0
-    moment-timezone: ^0.5.33
+    moment-timezone: ^0.5.39
     moment-timezone-data-webpack-plugin: ^1.5.0
     postcss: ^8.4.14
     postcss-loader: ^6.2.1
