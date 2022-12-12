@@ -10440,16 +10440,16 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"sass@npm:^1.52.2":
-  version: 1.52.2
-  resolution: "sass@npm:1.52.2"
+"sass@npm:^1.56.2":
+  version: 1.56.2
+  resolution: "sass@npm:1.56.2"
   dependencies:
     chokidar: ">=3.0.0 <4.0.0"
     immutable: ^4.0.0
     source-map-js: ">=0.6.2 <2.0.0"
   bin:
     sass: sass.js
-  checksum: 8f9f76b5a482ab74c5b2e4fb4a9e0492300c8547a297c99e42e08afb2bd0983132fd4b1d9166a532471295389c72ee8dab05e0449a24f7f323190a733ab05172
+  checksum: ea07505d90751aeb11cd6c386a1081079795f01c9b0a0fa24b0c9a603083cb946eed8be8d102206bc0a893a1acb58f859d5e5b8c81de78f4b2c23184090c6a6a
   languageName: node
   linkType: hard
 
@@ -11817,7 +11817,7 @@ typescript@^4.3.5:
     react-live-clock: ^5.10.0
     react-moment: ^1.1.2
     rimraf: ^3.0.2
-    sass: ^1.52.2
+    sass: ^1.56.2
     sass-loader: ^12.6.0
     semantic-ui-react: ^2.1.3
     serve: ^12.0.1
