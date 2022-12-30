@@ -103,7 +103,7 @@ jobs:
           python3 build-order-to-matrix.py
           MATRIX=$(cat matrix.json)
           echo "${MATRIX}"
-          echo "::set-output name=matrix::${MATRIX}"
+          echo "matrix=${MATRIX}" >> $GITHUB_OUTPUT
 
   build-deps:
     needs: [build-image, calc-deps]
