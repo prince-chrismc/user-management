@@ -238,8 +238,11 @@ jobs:
       - uses: lukka/get-cmake@latest
       - name: build
         working-directory: backend
+        # This should not be logged in to conan remote since we are building for ubuntu the binaries are available in CCI
         run: |
-          conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=build/conan.lock -pr:b=default -o user-management:logging=${{ matrix.logging }}
+          conan remote disable $CONAN_REMOTE
+          conan profile show default
+          conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=build/conan.lock -o user-management:logging=${{ matrix.logging }}
           conan create conanfile.py $BUILD_VERSION@ --lockfile=build/conan.lock
       - name: upload
         if: github.event_name == 'push' && needs.check.outputs.permitted == 'true'
