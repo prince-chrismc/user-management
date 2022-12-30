@@ -84,7 +84,8 @@ jobs:
           path: ~/.conan/data
           key: alpine-${{ hashFiles('**/conan.lock') }}
       - uses: ./.github/actions/setup-conan
-      - run: conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
+      - name: conan login
+        run: conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
       - name: build order
         working-directory: backend
         run: |
