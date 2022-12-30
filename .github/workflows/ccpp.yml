@@ -30,12 +30,6 @@ jobs:
       with:
         python-version: 3.8
 
-    - name: cache conan data
-      uses: actions/cache@v3
-      with:
-        path: ~/.conan/data
-        key: ${{ runner.os }}-${{ hashFiles('**/conan.lock') }}
-
     - name: cache pip data
       uses: actions/cache@v3
       with:
@@ -55,7 +49,7 @@ jobs:
     - name: conan install
       working-directory: backend
       run: |
-        conan lock create conanfile.py --version=0.0.0 -pr:b=debug -pr:h=debug --lockfile=conan.lock --lockfile-out=build/conan.lock
+        conan lock create conanfile.py --version=0.0.0 -pr=debug --lockfile=conan.lock --lockfile-out=build/conan.lock
         conan install conanfile.py --lockfile=build/conan.lock -if build
 
     - name: configure
