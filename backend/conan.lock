@@ -69,7 +69,7 @@
     "context": "host"
    },
    "11": {
-    "ref": "nlohmann_json/3.10.5#012b57da2a4865a0807933766e19da2b",
+    "ref": "nlohmann_json/3.11.2#a35423bb6e1eb8f931423557e282c7ed",
     "context": "host"
    },
    "12": {
