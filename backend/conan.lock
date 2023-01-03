@@ -58,7 +58,7 @@
     "context": "host"
    },
    "9": {
-    "ref": "openssl/1.1.1s#c5843f5e0776c9e862e08c911cd09958",
+    "ref": "openssl/1.1.1n#2f4f1e70c94733801aa604f0399db280",
     "context": "host"
    },
    "10": {
