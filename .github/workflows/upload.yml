@@ -84,7 +84,8 @@ jobs:
           path: ~/.conan/data
           key: alpine-${{ hashFiles('**/conan.lock') }}
       - uses: ./.github/actions/setup-conan
-      - run: conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
+      - name: conan login
+        run: conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
       - name: build order
         working-directory: backend
         run: |
@@ -102,7 +103,7 @@ jobs:
           python3 build-order-to-matrix.py
           MATRIX=$(cat matrix.json)
           echo "${MATRIX}"
-          echo "::set-output name=matrix::${MATRIX}"
+          echo "matrix=${MATRIX}" >> $GITHUB_OUTPUT
 
   build-deps:
     needs: [build-image, calc-deps]
@@ -237,8 +238,11 @@ jobs:
       - uses: lukka/get-cmake@latest
       - name: build
         working-directory: backend
+        # This should not be logged in to conan remote since we are building for ubuntu the binaries are available in CCI
         run: |
-          conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=build/conan.lock -pr:b=default -o user-management:logging=${{ matrix.logging }}
+          conan remote disable $CONAN_REMOTE
+          conan profile show default
+          conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=build/conan.lock -o user-management:logging=${{ matrix.logging }}
           conan create conanfile.py $BUILD_VERSION@ --lockfile=build/conan.lock
       - name: upload
         if: github.event_name == 'push' && needs.check.outputs.permitted == 'true'
@@ -263,17 +267,17 @@ jobs:
       - uses: ./.github/actions/replace-version
         with:
           new-version: ${{ env.BUILD_VERSION }}
-          target-file: web-app/package.json
+          target-file: frontend/package.json
       - uses: actions/cache@v3
         with:
           path: "**/node_modules"
           key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-      - working-directory: web-app/
+      - working-directory: frontend/
         name: build
         run: |
           yarn install
           yarn build --env API_URL=https://ec2-18-222-250-141.us-east-2.compute.amazonaws.com
-      - working-directory: web-app/
+      - working-directory: frontend/
         name: pack
         if: needs.check.outputs.permitted == 'true'
         run: |
@@ -305,7 +309,7 @@ jobs:
           cp -r /tmp/umfe-unpacked/lib/node_modules/$NAME-frontend/dist /tmp/um/dist/
       - name: build
         run: |
-          docker build /tmp/um --file web-app/Dockerfile --tag ${{ env.name }}
+          docker build /tmp/um --file frontend/Dockerfile --tag ${{ env.name }}
           docker push ${{ env.name }}
       - if: github.event_name == 'push'
         uses: docker/login-action@v2

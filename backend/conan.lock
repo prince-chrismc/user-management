@@ -30,11 +30,11 @@
     "context": "host"
    },
    "2": {
-    "ref": "http_parser/2.9.4#4ab63331fb08b5ff881c3736bba666eb",
+    "ref": "http_parser/2.9.4#e596aa5f4d7bb25e67f1f57ed9611746",
     "context": "host"
    },
    "3": {
-    "ref": "fmt/8.1.1#b3e969f8561a85087bd0365c09bbf4fb",
+    "ref": "fmt/8.1.1#a648a253fda34574733fc2d9aa54cd1c",
     "context": "host"
    },
    "4": {
@@ -62,14 +62,14 @@
     "context": "host"
    },
    "10": {
-    "ref": "json-schema-validator/2.1.0#33b6f056ae85b0daa06a854ad579e3da",
+    "ref": "json-schema-validator/2.1.0#d8363a4207ecb47aa2725e086ba5099e",
     "requires": [
      "11"
     ],
     "context": "host"
    },
    "11": {
-    "ref": "nlohmann_json/3.10.5#012b57da2a4865a0807933766e19da2b",
+    "ref": "nlohmann_json/3.11.2#a35423bb6e1eb8f931423557e282c7ed",
     "context": "host"
    },
    "12": {
@@ -77,7 +77,7 @@
     "context": "host"
    },
    "13": {
-    "ref": "spdlog/1.10.0#6ef9a82ea41aaeb10e7736a99da3503e",
+    "ref": "spdlog/1.10.0#41d5d11adebeadd99647ffe02bd22fe0",
     "requires": [
      "3"
     ],

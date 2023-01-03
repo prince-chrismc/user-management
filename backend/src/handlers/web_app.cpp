@@ -16,7 +16,7 @@ request_status link(const request_handle& req, route_params /*params*/) {
       .append_header(restinio::http_field::expires, std::move(expires_at))
       .append_header(restinio::http_field::content_type, content_type_by_file_extention("html"))
       .set_body(R"###(<html><head><title>User Management</title></head><body>
-          <a href="web-app/">Link to the user front end...</a></body></html>)###")
+          <a href="frontend/">Link to the user front end...</a></body></html>)###")
       .done();
 }
 
