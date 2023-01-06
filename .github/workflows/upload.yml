@@ -247,8 +247,8 @@ jobs:
       - name: upload
         if: github.event_name == 'push' && needs.check.outputs.permitted == 'true'
         run: |
+          conan remote enable $CONAN_REMOTE
           conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
-
           conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
 
   frontend:
