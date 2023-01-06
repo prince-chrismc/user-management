@@ -20,5 +20,5 @@ runs:
       [[ "${{ inputs.github-ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
       [ "$VERSION" == "main" ] && VERSION=latest
       [ "$VERSION" == "merge" ] && VERSION=$(echo "${{ inputs.unique-alt-id }}")
-      echo "::set-output name=version::$(echo $VERSION)"
+      echo "version=$VERSION" >> $GITHUB_OUTPUT
     shell: bash
