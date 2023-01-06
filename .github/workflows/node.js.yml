@@ -2,69 +2,35 @@ name: Frontend CI
 
 on:
   push:
-    branches: [ main ]
-    paths: 
-      - 'frontend/**'
-      - '.github/workflows/node.js.yml'
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - ".github/workflows/node.js.yml"
   pull_request:
-    branches: [ main ]
-    paths: 
-      - 'frontend/**'
-      - '.github/workflows/node.js.yml'
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - ".github/workflows/node.js.yml"
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [12.x, 14.x]
+        node-version: [16.x, 18.x]
 
     steps:
-    - uses: actions/checkout@v3
-      
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
+      - uses: actions/checkout@v3
+      - uses: .github/actions/setup-node
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Cache Node Modules
-      uses: actions/cache@v3
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+      - working-directory: frontend
+        run: |
+          yarn install
+          yarn build
 
-    - name: Production Build
-      run: |
-        cd frontend/
-        yarn install
-        yarn build
-
-  test:
-    needs: [build]
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-      
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v3
-      with:
-        node-version: 12.x
-
-    - name: Cache Node Modules
-      uses: actions/cache@v3
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    
-    - name: Run Tests
-      run: |
-        cd frontend/
-        yarn install
-        yarn test
-
-  coverage: 
+  coverage:
     needs: [build]
     runs-on: ubuntu-latest
 
@@ -72,27 +38,17 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 2
-
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v3
+      - uses: .github/actions/setup-node
         with:
-          node-version: 14.x
+          node-version: 18.x
 
-      - name: Cache Node Modules
-        uses: actions/cache@v3
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-
-      - name: Coverage
+      - working-directory: frontend
         run: |
-          cd frontend/
           yarn install
           yarn coverage
 
-      - name: CodeCov GitHub Action
-        uses: codecov/codecov-action@v3.1.1
+      - uses: codecov/codecov-action@v3
         with:
           file: frontend/coverage/lcov.info
-          name: react-frontend-unit-test-${{ matrix.node-version }}
+          name: react-frontend-unit-tests
           fail_ci_if_error: true
