@@ -51,7 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - id: version
-        run: echo "version=${{ hashFiles('backend/Dockerfile.build') }}"
+        run: echo "version=${{ hashFiles('backend/Dockerfile.build') }}" >> $GITHUB_OUTPUT
       - uses: docker/login-action@v2
         with:
           registry: docker.pkg.github.com
@@ -60,7 +60,7 @@ jobs:
       - id: check
         name: check existence
         run: |
-          docker pull ${{ env.name }}:${{ steps.version.outputs.version }} > /dev/null && echo "exists=true" || echo "exists=false"
+          docker pull ${{ env.name }}:${{ steps.version.outputs.version }} > /dev/null && echo "exists=true" >> $GITHUB_OUTPUT || echo "exists=false" >> $GITHUB_OUTPUT
       - if: ${{ steps.check.outputs.exists == 'false' }}
         run: docker build . --file backend/Dockerfile.build --tag ${{ env.name }}:${{ steps.version.outputs.version }}
       - if: ${{ steps.check.outputs.exists == 'false' }}
