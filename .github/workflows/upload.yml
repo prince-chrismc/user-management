@@ -310,6 +310,7 @@ jobs:
       - uses: github/codeql-action/init@v2
         with:
           languages: 'javascript'
+      - uses: github/codeql-action/analyze@v2
       - working-directory: frontend/
         name: build
         run: |
@@ -326,7 +327,6 @@ jobs:
         run: |
           npm pack
           npm publish $NAME-frontend-$BUILD_VERSION.tgz
-      - uses: github/codeql-action/analyze@v2
 
   frontend-image:
     needs: [setup, frontend, check]
