@@ -8981,16 +8981,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment-timezone-data-webpack-plugin@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "moment-timezone-data-webpack-plugin@npm:1.5.0"
+"moment-timezone-data-webpack-plugin@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "moment-timezone-data-webpack-plugin@npm:1.5.1"
   dependencies:
     find-cache-dir: ^3.0.0
     make-dir: ^3.0.0
   peerDependencies:
     moment-timezone: ">= 0.1.0"
     webpack: 4.x.x || 5.x.x
-  checksum: defe67a8ba94b7523e0601f604cea9f512cb8ed80e9214e8a43f8f53d1702cace38b841b29522764518d69d12c3f70114e73c446035cd96711d65f544f0319a4
+  checksum: 8079cc4a788643236de4a0855ad4518657d210703dc7dc5ad11fe0bf25b2a680cabac525a56b7eae93b65c28abe0e98d790931442b83862c17284461a5f6e9de
   languageName: node
   linkType: hard
 
@@ -9003,7 +9003,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment@npm:=2.29.1, moment@npm:>= 2.9.0":
+"moment@npm:=2.29.4":
+  version: 2.29.4
+  resolution: "moment@npm:2.29.4"
+  checksum: 5aa949ddcfc8dee4984123410cc0cd504caa6ef691bd191a527a1de67529895dcc8a8342cd67fb1953ae87172ea701bb957cea6d30abf0677ca9c62e834a5b5a
+  languageName: node
+  linkType: hard
+
+"moment@npm:>= 2.9.0":
   version: 2.29.1
   resolution: "moment@npm:2.29.1"
   checksum: 86729013febf7160de5b93da69273dd304d674b0224f9544b3abd09a87671ddd2cdd57598261ce57588910d63747ffd5590965e83c790d8bf327083c0e0a06e0
@@ -12343,10 +12350,10 @@ typescript@^4.3.5:
     jest-fetch-mock: ^3.0.3
     js-sha256: ^0.9.0
     mini-css-extract-plugin: ^2.6.0
-    moment: =2.29.1
+    moment: =2.29.4
     moment-locales-webpack-plugin: ^1.2.0
     moment-timezone: ^0.5.40
-    moment-timezone-data-webpack-plugin: ^1.5.0
+    moment-timezone-data-webpack-plugin: ^1.5.1
     postcss: ^8.4.14
     postcss-loader: ^7.0.2
     postcss-preset-env: ^7.8.3
