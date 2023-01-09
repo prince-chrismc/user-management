@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [16.x, 19.x]
 
     steps:
       - uses: actions/checkout@v3
@@ -28,7 +28,6 @@ jobs:
       - working-directory: frontend
         run: |
           yarn install
-          export NODE_OPTIONS=--openssl-legacy-provider
           yarn build
 
   coverage:
@@ -41,7 +40,7 @@ jobs:
           fetch-depth: 2
       - uses: ./.github/actions/setup-node
         with:
-          node-version: 18.x
+          node-version: 19.x
 
       - working-directory: frontend
         run: |
