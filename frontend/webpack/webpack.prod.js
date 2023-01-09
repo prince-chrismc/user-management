@@ -4,6 +4,7 @@ const styles = require('./rules/styles')
 const config = {
   mode: 'production',
   output: {
+    hashFunction: 'xxhash64',
     filename: 'static/[name].[fullhash].js'
   },
   module: {

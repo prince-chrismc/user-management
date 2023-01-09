@@ -1,0 +1,17 @@
+name: "Setup Node"
+description: "Install and configure the conan client for use in the user-management project's back-end"
+inputs:
+  node-version:
+    description: "The node version to install and cache against"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+    - uses: actions/cache@v3
+      with:
+        path: '**/node_modules'
+        key: ${{ runner.os }}-${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+
