@@ -11066,9 +11066,9 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"semantic-ui-react@npm:^2.1.3":
-  version: 2.1.3
-  resolution: "semantic-ui-react@npm:2.1.3"
+"semantic-ui-react@npm:^2.1.4":
+  version: 2.1.4
+  resolution: "semantic-ui-react@npm:2.1.4"
   dependencies:
     "@babel/runtime": ^7.10.5
     "@fluentui/react-component-event-listener": ~0.63.0
@@ -11086,7 +11086,7 @@ resolve@^2.0.0-next.3:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: f2048ee145fd41265018684957e90e66617d30f09ac846e76a1a2c46b911ae40d21fb18a745938a1e35c221f30c2c95502c55662df48aab4d8878d661b7879a0
+  checksum: dc89599ff405c6d53b2313b5d5b1c790c66a8b79275f27e0383dd8fdf5534d573134da126d12d953f517271e8630ea9bff60937b8d0289476eb5298157a521f7
   languageName: node
   linkType: hard
 
@@ -12361,7 +12361,7 @@ typescript@^4.3.5:
     rimraf: ^3.0.2
     sass: ^1.52.2
     sass-loader: ^12.6.0
-    semantic-ui-react: ^2.1.3
+    semantic-ui-react: ^2.1.4
     serve: ^12.0.1
     style-loader: ^3.3.1
     tsconfig-paths-webpack-plugin: ^3.5.2
