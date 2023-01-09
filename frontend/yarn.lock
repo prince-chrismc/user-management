@@ -9614,12 +9614,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.6.2":
-  version: 2.6.2
-  resolution: "prettier@npm:2.6.2"
+"prettier@npm:^2.8.2":
+  version: 2.8.2
+  resolution: "prettier@npm:2.8.2"
   bin:
     prettier: bin-prettier.js
-  checksum: 10af3147eeb6e7038d6bb4cab48bace7095c4f35e9da45215a8fd3aa8785b4ca6e6cc2cc2fee073a19e230ec0271bae0660031b9252c5263eae7c08113aa8f50
+  checksum: 6f85fc14fb0cbdc8b247edff2168fcc5a2bc79fc58b7e9433e245f959781f56dd62202857c896c33e6c20a6d465baabd395201af91dcbb3023bedda07c728f31
   languageName: node
   linkType: hard
 
@@ -11808,7 +11808,7 @@ typescript@^4.3.5:
     postcss: ^8.4.14
     postcss-loader: ^6.2.1
     postcss-preset-env: ^6.7.1
-    prettier: ^2.6.2
+    prettier: ^2.8.2
     prop-types: ^15.8.1
     react: ^17.0.2
     react-async: ^10.0.1
