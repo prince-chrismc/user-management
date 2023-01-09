@@ -5458,12 +5458,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react-hooks@npm:^4.5.0":
-  version: 4.5.0
-  resolution: "eslint-plugin-react-hooks@npm:4.5.0"
+"eslint-plugin-react-hooks@npm:^4.6.0":
+  version: 4.6.0
+  resolution: "eslint-plugin-react-hooks@npm:4.6.0"
   peerDependencies:
     eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0
-  checksum: ee4dcbc02ed0a425b6157d6d87915e03b9e82d4b8a47e4d65314bc4c133ed08f42444bb3155837f1e11f312c7768d92ba9506ddf6c2cef3e2a958ead529b177d
+  checksum: f54a91921be30b5f66882ba7259c47cadf0cfc9906eb973b1693437aec17d082ee65585dbbf77ce426961a6a12996e2d8de8aac82b5bfb02fbd2ef884989cb4e
   languageName: node
   linkType: hard
 
@@ -11792,7 +11792,7 @@ typescript@^4.3.5:
     eslint-plugin-prettier: ^4.0.0
     eslint-plugin-promise: ^5.2.0
     eslint-plugin-react: ^7.30.0
-    eslint-plugin-react-hooks: ^4.5.0
+    eslint-plugin-react-hooks: ^4.6.0
     fork-ts-checker-webpack-plugin: ^6.5.2
     html-webpack-plugin: ^5.5.0
     http-terminator: ^3.2.0
