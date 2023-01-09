@@ -42,7 +42,7 @@ jobs:
           github-ref: ${{ github.ref }}
           unique-alt-id: ${{ github.sha }}
 
-  build-image:
+  backend-build-image:
     runs-on: ubuntu-latest
     outputs:
       name: docker.pkg.github.com/${{ github.repository }}/backend-build-alpine:${{ steps.version.outputs.version }}
@@ -67,11 +67,11 @@ jobs:
         run: docker push ${{ env.name }}:${{ steps.version.outputs.version }}
 
   calc-deps:
-    needs: [build-image, check]
+    needs: [backend-build-image, check]
     if: needs.check.outputs.permitted == 'true'
     runs-on: ubuntu-latest
     container:
-      image: ${{ needs.build-image.outputs.name }}
+      image: ${{ needs.backend-build-image.outputs.name }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ github.token }}
@@ -106,10 +106,10 @@ jobs:
           echo "matrix=${MATRIX}" >> $GITHUB_OUTPUT
 
   build-deps:
-    needs: [build-image, calc-deps]
+    needs: [backend-build-image, calc-deps]
     runs-on: ubuntu-latest
     container:
-      image: ${{ needs.build-image.outputs.name }}
+      image: ${{ needs.backend-build-image.outputs.name }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ github.token }}
@@ -135,10 +135,10 @@ jobs:
       - run: exit 0
 
   alpine-backend:
-    needs: [build-image, build-deps]
+    needs: [backend-build-image, build-deps]
     runs-on: ubuntu-latest
     container:
-      image: ${{ needs.build-image.outputs.name }}
+      image: ${{ needs.backend-build-image.outputs.name }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ github.token }}
@@ -167,10 +167,10 @@ jobs:
         run: conan upload "*" --all -r $CONAN_REMOTE -c
 
   backend-image:
-    needs: [setup, build-image, alpine-backend]
+    needs: [setup, backend-build-image, alpine-backend]
     runs-on: ubuntu-latest
     container:
-      image: ${{ needs.build-image.outputs.name }}
+      image: ${{ needs.backend-build-image.outputs.name }}
       credentials:
         username: ${{ github.repository_owner }}
         password: ${{ github.token }}
@@ -236,6 +236,9 @@ jobs:
           python-version: 3.8
       - uses: ./.github/actions/setup-conan
       - uses: lukka/get-cmake@latest
+      - uses: github/codeql-action/init@v2
+        with:
+          languages: 'cpp'
       - name: build
         working-directory: backend
         # This should not be logged in to conan remote since we are building for ubuntu the binaries are available in CCI
@@ -244,6 +247,7 @@ jobs:
           conan profile show default
           conan lock create conanfile.py --version $BUILD_VERSION --lockfile=conan.lock --lockfile-out=build/conan.lock -o user-management:logging=${{ matrix.logging }}
           conan create conanfile.py $BUILD_VERSION@ --lockfile=build/conan.lock
+      - uses: github/codeql-action/analyze@v2
       - name: upload
         if: github.event_name == 'push' && needs.check.outputs.permitted == 'true'
         run: |
@@ -251,38 +255,78 @@ jobs:
           conan user -p ${{ secrets.JFROG_RTFACT_PASSWORD }} -r $CONAN_REMOTE christopherm@jfrog.com
           conan upload $NAME/$BUILD_VERSION@ -r $CONAN_REMOTE --all
 
+  frontend-build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 19.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup-node
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - working-directory: frontend
+        run: |
+          yarn install
+          yarn build
+
+  frontend-coverage:
+    needs: [frontend-build]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      - uses: ./.github/actions/setup-node
+        with:
+          node-version: 19.x
+
+      - working-directory: frontend
+        run: |
+          yarn install
+          yarn coverage
+
+      - uses: codecov/codecov-action@v3
+        with:
+          file: frontend/coverage/lcov.info
+          name: react-frontend-unit-tests
+          fail_ci_if_error: true
+
   frontend:
-    needs: check
+    needs: [check, frontend-build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: ./.github/actions/setup-node
         with:
           node-version: 16.x # Current LTS
-      - uses: ./.github/actions/setup-rtfact-npm
-        with:
-          registry: ${{ env.NPM_REGISTRY_URL }}
-          auth_token: ${{ secrets.JFROG_RTFACT_NPM_AUTH }}
-          email: "christopherm@jfrog.com"
       - uses: ./.github/actions/replace-version
         with:
           new-version: ${{ env.BUILD_VERSION }}
           target-file: frontend/package.json
-      - uses: actions/cache@v3
+      - uses: github/codeql-action/init@v2
         with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+          languages: 'javascript'
       - working-directory: frontend/
         name: build
         run: |
           yarn install
           yarn build --env API_URL=https://ec2-18-222-250-141.us-east-2.compute.amazonaws.com
+      - uses: ./.github/actions/setup-rtfact-npm
+        with:
+          registry: ${{ env.NPM_REGISTRY_URL }}
+          auth_token: ${{ secrets.JFROG_RTFACT_NPM_AUTH }}
+          email: "christopherm@jfrog.com"
       - working-directory: frontend/
         name: pack
         if: needs.check.outputs.permitted == 'true'
         run: |
           npm pack
           npm publish $NAME-frontend-$BUILD_VERSION.tgz
+      - uses: github/codeql-action/analyze@v2
 
   frontend-image:
     needs: [setup, frontend, check]
