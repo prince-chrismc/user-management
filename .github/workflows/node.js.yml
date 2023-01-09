@@ -28,6 +28,7 @@ jobs:
       - working-directory: frontend
         run: |
           yarn install
+          export NODE_OPTIONS=--openssl-legacy-provider
           yarn build
 
   coverage:
