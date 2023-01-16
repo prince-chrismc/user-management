@@ -2853,19 +2853,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^8.13.0":
-  version: 8.13.0
-  resolution: "@testing-library/dom@npm:8.13.0"
+"@testing-library/dom@npm:^8.19.1":
+  version: 8.19.1
+  resolution: "@testing-library/dom@npm:8.19.1"
   dependencies:
     "@babel/code-frame": ^7.10.4
     "@babel/runtime": ^7.12.5
-    "@types/aria-query": ^4.2.0
+    "@types/aria-query": ^5.0.1
     aria-query: ^5.0.0
     chalk: ^4.1.0
     dom-accessibility-api: ^0.5.9
     lz-string: ^1.4.4
     pretty-format: ^27.0.2
-  checksum: b3a0199d4285f36e6f439183795c275d58ab22f0b92dad51272497e47b94d4916453318957a4053638710af22624a554bcfb5a3ab78dc0419ae7334c2b9f6846
+  checksum: 75ce8eb30a1d456d2334f0ef8795ceef89eef71ec9d0feca44e2c59407b744a207bd453b7031ae7fcc04444341f41dfd5795c395b87b81dd60fcc48b5088dbff
   languageName: node
   linkType: hard
 
@@ -2922,6 +2922,13 @@ __metadata:
   version: 4.2.2
   resolution: "@types/aria-query@npm:4.2.2"
   checksum: 4fbf71637e4cd3fef95d0fe29c53722aeba900f38a3089af7c863ae8491c9bbba101c45680cf50be014c31575fd0d61c89d10cbf75fa7164fb957f53fb4ca21d
+  languageName: node
+  linkType: hard
+
+"@types/aria-query@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@types/aria-query@npm:5.0.1"
+  checksum: 03fee01c9eac5aeefc53228c897e7658ed7b7bb4aceb56b92c56121c1bb04672badab9388d8c32c60612276a54c534dea98e0721530f1191f949ecbaee4b6f32
   languageName: node
   linkType: hard
 
@@ -12496,7 +12503,7 @@ typescript@^4.3.5:
     "@babel/preset-typescript": ^7.14.12
     "@hot-loader/react-dom": ^17.0.2
     "@rooks/use-input": ^4.11.2
-    "@testing-library/dom": ^8.13.0
+    "@testing-library/dom": ^8.19.1
     "@testing-library/jest-dom": ^5.16.4
     "@testing-library/react": ^12.1.1
     "@testing-library/user-event": ^13.5.0
