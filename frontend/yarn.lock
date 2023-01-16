@@ -3328,10 +3328,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/webpack-env@npm:^1.17.0":
-  version: 1.17.0
-  resolution: "@types/webpack-env@npm:1.17.0"
-  checksum: 27e90fde84efcd370cc7e9aa5d8b540e7e082633e98e86626c18f45fc3b72035cd0f66e6773828d392ab9eeb90dc7abdd9314dfcd92b17597a8ae68d91caaffb
+"@types/webpack-env@npm:^1.18.0":
+  version: 1.18.0
+  resolution: "@types/webpack-env@npm:1.18.0"
+  checksum: ad425fcd189cf7329a2f7fd324b02f46ba0ae90910fda2724ff3709fbdebc87d6131308c82e92916662ff2f2178c3d5ae64bc0a4e683148d61b64a3cc2791664
   languageName: node
   linkType: hard
 
@@ -12513,7 +12513,7 @@ typescript@^4.3.5:
     "@types/react-dom": ^17.0.17
     "@types/webpack": ^5.28.0
     "@types/webpack-dev-server": ^4.7.2
-    "@types/webpack-env": ^1.17.0
+    "@types/webpack-env": ^1.18.0
     "@typescript-eslint/eslint-plugin": ^4.33.0
     "@typescript-eslint/parser": ^4.33.0
     babel-jest: ^29.3.1
