@@ -9174,14 +9174,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mini-css-extract-plugin@npm:^2.6.0":
-  version: 2.6.0
-  resolution: "mini-css-extract-plugin@npm:2.6.0"
+"mini-css-extract-plugin@npm:^2.7.2":
+  version: 2.7.2
+  resolution: "mini-css-extract-plugin@npm:2.7.2"
   dependencies:
     schema-utils: ^4.0.0
   peerDependencies:
     webpack: ^5.0.0
-  checksum: 1640b487f5785a0468b0d51e1458694fa543de926119cfde6a534dc496882c4ff9653da6667cd8f8bfad1f81e02c48d0797e340e281f4cda798b863767e2f8b3
+  checksum: c6d37030848d495486e85b920c0fe828131138747bf95fdab50985ea686fa97546dfe67970e8c39ff910877fffefed67aaf552f0796f9b3e538665c0db741302
   languageName: node
   linkType: hard
 
@@ -12688,7 +12688,7 @@ typescript@^4.3.5:
     jest: ^27.5.1
     jest-fetch-mock: ^3.0.3
     js-sha256: ^0.9.0
-    mini-css-extract-plugin: ^2.6.0
+    mini-css-extract-plugin: ^2.7.2
     moment: =2.29.1
     moment-locales-webpack-plugin: ^1.2.0
     moment-timezone: ^0.5.40
