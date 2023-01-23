@@ -95,7 +95,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:7.18.2, @babel/core@npm:^7.12.3, @babel/core@npm:^7.18.2, @babel/core@npm:^7.8.0":
+"@babel/core@npm:7.18.2, @babel/core@npm:^7.12.3, @babel/core@npm:^7.8.0":
   version: 7.18.2
   resolution: "@babel/core@npm:7.18.2"
   dependencies:
@@ -118,7 +118,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:7.20.12, @babel/core@npm:^7.11.6":
+"@babel/core@npm:7.20.12, @babel/core@npm:^7.11.6, @babel/core@npm:^7.20.12":
   version: 7.20.12
   resolution: "@babel/core@npm:7.20.12"
   dependencies:
@@ -12569,7 +12569,7 @@ typescript@^4.3.5:
   version: 0.0.0-use.local
   resolution: "user-management-frontend@workspace:."
   dependencies:
-    "@babel/core": ^7.18.2
+    "@babel/core": ^7.20.12
     "@babel/eslint-parser": ^7.18.2
     "@babel/plugin-proposal-class-properties": ^7.17.12
     "@babel/plugin-transform-runtime": ^7.19.6
