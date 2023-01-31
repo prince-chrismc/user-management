@@ -5340,21 +5340,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"css-loader@npm:^6.7.1":
-  version: 6.7.1
-  resolution: "css-loader@npm:6.7.1"
+"css-loader@npm:^6.7.3":
+  version: 6.7.3
+  resolution: "css-loader@npm:6.7.3"
   dependencies:
     icss-utils: ^5.1.0
-    postcss: ^8.4.7
+    postcss: ^8.4.19
     postcss-modules-extract-imports: ^3.0.0
     postcss-modules-local-by-default: ^4.0.0
     postcss-modules-scope: ^3.0.0
     postcss-modules-values: ^4.0.0
     postcss-value-parser: ^4.2.0
-    semver: ^7.3.5
+    semver: ^7.3.8
   peerDependencies:
     webpack: ^5.0.0
-  checksum: 0acc999a77adef164a506756f1c2006677d4f803c7e3b6a634007b21745b3c7f387443557e8b6418ae336d6e17ae992805cc40bc87b978b6bc2df08aa363d9be
+  checksum: 7776beafbae0d631f44da25d92edc32d855427a609222b0ca385517443c55766167cc3ef0a228ffddeb6bf27a87f2c146d7c205161bb0d4f9758c4cec8fd1824
   languageName: node
   linkType: hard
 
@@ -10434,7 +10434,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.4.14, postcss@npm:^8.4.7":
+"postcss@npm:^8.4.14":
   version: 8.4.14
   resolution: "postcss@npm:8.4.14"
   dependencies:
@@ -10442,6 +10442,17 @@ __metadata:
     picocolors: ^1.0.0
     source-map-js: ^1.0.2
   checksum: 537ba033a691b88a334b3f89d67a6fc16cae920c86aafed30414db5c1243c1d210aec69bb0fd86795b3638c62213dd9a6108106e9b936479a5ba2bf16f49331e
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^8.4.19":
+  version: 8.4.21
+  resolution: "postcss@npm:8.4.21"
+  dependencies:
+    nanoid: ^3.3.4
+    picocolors: ^1.0.0
+    source-map-js: ^1.0.2
+  checksum: 76b9cefb74af346af7ec82c680a8448fc3472deaf19cf9d5d40ebf597e75f2e8ee54b8c83dd772db994276b3d3729628a21147f409d55599a08775b11f9447cd
   languageName: node
   linkType: hard
 
@@ -12650,7 +12661,7 @@ typescript@^4.3.5:
     chalk: ^4.1.2
     core-js: ^3.22.8
     cross-env: ^7.0.3
-    css-loader: ^6.7.1
+    css-loader: ^6.7.3
     eslint: ^7.32.0
     eslint-config-prettier: ^8.6.0
     eslint-config-standard: ^16.0.3
