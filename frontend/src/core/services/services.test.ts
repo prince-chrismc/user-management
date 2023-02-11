@@ -6,8 +6,6 @@ import { Etag } from '../tools/Etag'
 
 import nock from 'nock'
 
-let __error = false
-
 const JSON_USER_123 = {
   id: 123,
   name: 'John Doe',
@@ -85,34 +83,67 @@ test('get list of users', async () => {
   expect(json).toEqual(JSON_USER_LIST)
 })
 
-// test('add new user to list', async () => {
-//   const json = await AddUser(['James Does', 'james@example.com'], null, { signal: null })
-//   console.log(json)
+test('add new user to list', async () => {
+  const newUser = { id: 543, name: 'James Does', email: 'james@example.com' }
+  const scope = nock('http://localhost:3001', {
+    reqheaders: {
+      'content-type': 'application/json'
+    }
+  })
+    .put('/um/v1/users', JSON.stringify({ name: 'James Does', email: 'james@example.com' }))
+    .reply(200, newUser)
 
-//   expect(json).toEqual({ id: 543, name: 'James Does', email: 'james@example.com' })
-// })
+  const json = await AddUser(['James Does', 'james@example.com'], null, { signal: null })
 
-// test('faulty backend > get list', async () => {
-//   __error = true
-//   expect.assertions(1)
+  expect(scope.isDone())
+  expect(json).toEqual(newUser)
+})
 
-//   await expect(LoadUsers()).rejects.toBeInstanceOf(Response)
-// })
+describe('faulty backend', () => {
+  test('get list', async () => {
+    const scope = nock('http://localhost:3001', {
+      reqheaders: {
+        'content-type': 'application/json'
+      }
+    })
+      .get('/um/v1/users')
+      .reply(500)
 
-// test('faulty backend > add user', async () => {
-//   __error = true
-//   expect.assertions(1)
+    expect(scope.isDone())
+    await expect(LoadUsers()).rejects.toBeInstanceOf(Response)
+  })
 
-//   await expect(AddUser(['James Does', 'james@example.com'], null, { signal: null })).rejects.toBeInstanceOf(Response)
-// })
+  test('add user', async () => {
+    const scope = nock('http://localhost:3001', {
+      reqheaders: {
+        'content-type': 'application/json'
+      }
+    })
+      .put('/um/v1/users', JSON.stringify({ name: 'James Does', email: 'james@example.com' }))
+      .reply(500)
 
-// test('delete users', async () => {
-//   const etag = Etag(JSON_USER_123.id, JSON_USER_123.name, JSON_USER_123.email)
-//   const json = await DeleteUser([123, etag], null, { signal: null })
-//   console.log(json)
+    expect(scope.isDone())
+    await expect(AddUser(['James Does', 'james@example.com'], null, { signal: null })).rejects.toBeInstanceOf(Response)
+  })
+})
 
-//   expect(json).toBeNull()
-// })
+
+test('delete users', async () => {
+  const etag = Etag(JSON_USER_123.id, JSON_USER_123.name, JSON_USER_123.email)
+  const scope = nock('http://localhost:3001', {
+    reqheaders: {
+      'content-type': 'application/json',
+      'if-match': etag
+    }
+  })
+    .delete('/um/v1/users/123')
+    .reply(204)
+
+  const json = await DeleteUser([123, etag], null, { signal: null })
+
+  expect(scope.isDone())
+  expect(json).toBeNull()
+})
 
 // test('edit users', async () => {
 //   const etag = Etag(JSON_USER_123.id, JSON_USER_123.name, JSON_USER_123.email)
