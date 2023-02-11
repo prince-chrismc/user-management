@@ -9308,6 +9308,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nock@npm:^13.3.0":
+  version: 13.3.0
+  resolution: "nock@npm:13.3.0"
+  dependencies:
+    debug: ^4.1.0
+    json-stringify-safe: ^5.0.1
+    lodash: ^4.17.21
+    propagate: ^2.0.0
+  checksum: e4b8bf0fcb90ca03e8b020accf481e47bf06346917f368a5b1137c4fc07904874b51e4043ce1d0aae81301f6ca23f873d0353163e3699073953462d47184f91b
+  languageName: node
+  linkType: hard
+
 "node-fetch@npm:2.6.1":
   version: 2.6.1
   resolution: "node-fetch@npm:2.6.1"
@@ -10478,6 +10490,13 @@ __metadata:
     object-assign: ^4.1.1
     react-is: ^16.13.1
   checksum: 4c0e99ebb880135a5f00d56364545f9ae123ec88a7d78d004218cdb4d8184f53455696cbc50c2994916748c38f12f3b535d7be06cb4f893c2ad8fd03c23245c5
+  languageName: node
+  linkType: hard
+
+"propagate@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "propagate@npm:2.0.1"
+  checksum: dd67518106bb3f1ee230b7e246a18285467e010b89703844f120c38e1462b52d79bddd4be0f8db080377a3d55218209674eae9eb672c29a033bf6b44cfc42828
   languageName: node
   linkType: hard
 
@@ -12657,6 +12676,7 @@ typescript@^4.3.5:
     moment-locales-webpack-plugin: ^1.2.0
     moment-timezone: ^0.5.40
     moment-timezone-data-webpack-plugin: ^1.5.1
+    nock: ^13.3.0
     postcss: ^8.4.21
     postcss-loader: ^7.0.2
     postcss-preset-env: ^8.0.1
