@@ -11197,15 +11197,15 @@ resolve@^2.0.0-next.4:
   languageName: node
   linkType: hard
 
-"sass-loader@npm:^12.6.0":
-  version: 12.6.0
-  resolution: "sass-loader@npm:12.6.0"
+"sass-loader@npm:^13.2.0":
+  version: 13.2.0
+  resolution: "sass-loader@npm:13.2.0"
   dependencies:
     klona: ^2.0.4
     neo-async: ^2.6.2
   peerDependencies:
     fibers: ">= 3.1.0"
-    node-sass: ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
+    node-sass: ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
     sass: ^1.3.0
     sass-embedded: "*"
     webpack: ^5.0.0
@@ -11218,7 +11218,7 @@ resolve@^2.0.0-next.4:
       optional: true
     sass-embedded:
       optional: true
-  checksum: f88a9571834e83eb8eb7d13e29e00eeedac3244474cc980525ae756f64ec655a560de1d786be8cf71ba8821f7a646435414b874ce688fa3f7e86c728c1b42944
+  checksum: 1a78bb421e50b12484f934d72a70105b963fcc6ba7e574fa13ffdb8deeb4496c6753cd7e67d358a71f734b8eb48e24ccb78183ecac0b732a58c3b8778e9a46e0
   languageName: node
   linkType: hard
 
@@ -12655,7 +12655,7 @@ typescript@^4.3.5:
     react-test-renderer: ^18.2.0
     rimraf: ^3.0.2
     sass: ^1.58.0
-    sass-loader: ^12.6.0
+    sass-loader: ^13.2.0
     semantic-ui-react: ^2.1.4
     serve: ^12.0.1
     style-loader: ^3.3.1
