@@ -5077,10 +5077,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.27.2":
-  version: 3.27.2
-  resolution: "core-js@npm:3.27.2"
-  checksum: 9dc195c95c24e84ac3e8b4d39f45e772dbc1bc5cd7609be54433e5dcec3b3b2dfdf216810ce80c103d47ea5154987ba4f18201b539cbccb3f09793d350b3b6f1
+"core-js@npm:^3.28.0":
+  version: 3.28.0
+  resolution: "core-js@npm:3.28.0"
+  checksum: 84af8ce3073a546254842778bad0154be2ed8235c5b6b27f57833be8434813b60c6a56006f2cca90820744b9ebce09b1fbfe77302054460c8c3befa1fd487872
   languageName: node
   linkType: hard
 
@@ -12615,7 +12615,7 @@ typescript@^4.3.5:
     babel-plugin-transform-react-remove-prop-types: ^0.4.24
     base64-js: ^1.5.1
     chalk: ^4.1.2
-    core-js: ^3.27.2
+    core-js: ^3.28.0
     cross-env: ^7.0.3
     css-loader: ^6.7.3
     eslint: ^7.32.0
