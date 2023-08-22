@@ -16,9 +16,8 @@ runs:
     - shell: bash
       run: |
         REG_SCOPE=$( echo "${{ inputs.registry }}" | awk -F'^http[s]?:' '{print $2}')
-        echo '$REG_SCOPE:_auth = ${{ inputs.auth_token }}' > ~/.npmrc
-        echo '$REG_SCOPE:email = ${{ inputs.email }}' > ~/.npmrc
-        echo '$REG_SCOPE:username = ${{ inputs.email }}' > ~/.npmrc
-        echo 'always-auth = true' >> ~/.npmrc
-        echo 'email = ${{ inputs.email }}' >> ~/.npmrc
-        echo 'registry = ${{ inputs.registry }}' >> ~/.npmrc
+        echo 'registry=${{ inputs.registry }}' > ~/.npmrc
+        echo "$REG_SCOPE:_password=${{ inputs.auth_token }}" >> ~/.npmrc
+        echo "$REG_SCOPE:username=${{ inputs.email }}" >> ~/.npmrc
+        echo "$REG_SCOPE:email=${{ inputs.email }}" >> ~/.npmrc
+        echo "$REG_SCOPE:always-auth=true" >> ~/.npmrc
