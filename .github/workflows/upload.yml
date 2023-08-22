@@ -326,7 +326,7 @@ jobs:
         if: needs.check.outputs.permitted == 'true'
         run: |
           npm pack
-          npm publish $NAME-frontend-$BUILD_VERSION.tgz
+          npm publish --registry ${{ env.NPM_REGISTRY_URL }} $NAME-frontend-$BUILD_VERSION.tgz
 
   frontend-image:
     needs: [setup, frontend, check]

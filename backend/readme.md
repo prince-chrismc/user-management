@@ -6,7 +6,7 @@ In order to get started you will need to satisfy the following requirements:
 
 - C++14 capable build environment
 - CMake v3.19 (recommend v3.23 to take advantage of presets when working locally)
-- Conan v1.51
+- Conan v1.51 (but less then 2) `pip install "conan<2"`
 
 ### Conan Configuration
 
