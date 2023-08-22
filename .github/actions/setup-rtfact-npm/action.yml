@@ -20,4 +20,3 @@ runs:
         echo 'always-auth = true' >> ~/.npmrc
         echo 'email = ${{ inputs.email }}' >> ~/.npmrc
         echo 'registry = ${{ inputs.registry }}' >> ~/.npmrc
-        npm config fix
