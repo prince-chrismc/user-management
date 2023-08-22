@@ -3,7 +3,7 @@ description: "Install and configure the conan client for use in the user-managem
 runs:
   using: "composite"
   steps:
-    - run: python3 -m pip install conan --upgrade
+    - run: python3 -m pip install conan==~1 --upgrade
       shell: bash
     - run: conan config init --force
       shell: bash
