@@ -1,2 +1,0 @@
-conancenter https://center.conan.io true
-user-management https://superfrogchrismc.jfrog.io/artifactory/api/conan/user-management-conan true

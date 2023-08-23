@@ -13,7 +13,7 @@ class UserManagementConanFile(ConanFile):
     description = "An open-source application delivering a responsive user management experience."
     settings = "os", "compiler", "build_type", "arch"
     options = {"logging": ["console", "syslog"]}
-    default_options = {"logging": "syslog", "restinio:with_openssl": True}
+    default_options = {"logging": "syslog", "restinio/*:with_openssl": True}
 
     def layout(self):
         # Describe mono repo structure
@@ -43,6 +43,7 @@ class UserManagementConanFile(ConanFile):
 
     def build_requirements(self):
         self.test_requires("catch2/2.13.9")
+        self.tool_requires("cmake/[>=3.26 <4]")
 
     def requirements(self):
         self.requires("restinio/0.6.15")
