@@ -70,6 +70,7 @@ jobs:
       with:
         file: backend/build/coverage.info
         name: cpp-backend-unit-tests
+        flags: backend-unit-tests
         fail_ci_if_error: true
 
   macos:

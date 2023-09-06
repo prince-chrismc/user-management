@@ -23,5 +23,5 @@ This repository contains a distributed cloud native application comprised of two
 
 | Component | Build | Coverage |
 | --- | --- | --- |
-| Back-end | [![C++ CI](https://github.com/prince-chrismc/user-management/workflows/C++%20CI/badge.svg)](https://github.com/prince-chrismc/user-management/actions?query=workflow%3A%22C%2B%2B+CI%22)| [![Coverage Status](https://coveralls.io/repos/github/prince-chrismc/user-management/badge.svg?branch=main)](https://coveralls.io/github/prince-chrismc/user-management?branch=main) |
+| Back-end | [![C++ CI](https://github.com/prince-chrismc/user-management/workflows/C++%20CI/badge.svg)](https://github.com/prince-chrismc/user-management/actions?query=workflow%3A%22C%2B%2B+CI%22)| [![codecov](https://img.shields.io/codecov/c/github/prince-chrismc/user-management)](https://codecov.io/gh/prince-chrismc/user-management) |
 | Front-end | [![Node.js CI](https://github.com/prince-chrismc/user-management/workflows/Node.js%20CI/badge.svg)](https://github.com/prince-chrismc/user-management/actions?query=workflow%3A%22Node.js+CI%22) | [![codecov](https://img.shields.io/codecov/c/github/prince-chrismc/user-management)](https://codecov.io/gh/prince-chrismc/user-management) |

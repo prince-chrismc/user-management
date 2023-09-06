@@ -1,6 +1,8 @@
 FROM alpine:3.16
 
+ADD backend/requirements.txt /tmp
+
 RUN apk update && apk add --no-cache \ 
         gcc g++ build-base linux-headers \
         cmake bash libstdc++ perl tar git \
-        py-pip && pip install "conan<2"
+        py-pip && pip install -r /tmp/requirements.txt

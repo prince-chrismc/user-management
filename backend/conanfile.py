@@ -11,9 +11,10 @@ class UserManagementConanFile(ConanFile):
     license = "MIT"
     url = "https://github.com/prince-chrismc/user-management"
     description = "An open-source application delivering a responsive user management experience."
+    package_type = "application"
     settings = "os", "compiler", "build_type", "arch"
     options = {"logging": ["console", "syslog"]}
-    default_options = {"logging": "syslog", "restinio:with_openssl": True}
+    default_options = {"logging": "syslog", "restinio/*:with_openssl": True}
 
     def layout(self):
         # Describe mono repo structure
@@ -56,16 +57,9 @@ class UserManagementConanFile(ConanFile):
         cmake.build()
 
     def package(self):
-        self.copy("*.hpp", src=".")
-        self.copy("*.lib", dst="lib", keep_path=False)
-        self.copy("*.dll", dst="bin", keep_path=False)
-        self.copy("*.so", dst="lib", keep_path=False)
-        self.copy("*.dylib", dst="lib", keep_path=False)
-        self.copy("*.a", dst="lib", keep_path=False)
-        self.copy("*user_database_app", dst="bin", keep_path=False)
-
-    def package_info(self):
-        self.cpp_info.libs = ["user-management"]
+        # TODO(prince-chrismc): Revisit requirements when we look into deploying
+        copy(self, "*.hpp", src=path.join(self.source_folder, "include"), dst=path.join(self.package_folder, "include"))
+        copy(self, "*user_database_app", src=path.join(self.build_folder, "src"), dst=path.join(self.package_folder, "bin"), keep_path=False)
 
     def deploy(self):
         self.copy("user_database_app", src="bin", dst="bin")
