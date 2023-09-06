@@ -293,6 +293,7 @@ jobs:
         with:
           file: frontend/coverage/lcov.info
           name: react-frontend-unit-tests
+          flags: frontend-unit-tests
           fail_ci_if_error: true
 
   frontend:
