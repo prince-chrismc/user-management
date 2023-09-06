@@ -48,10 +48,10 @@ class UserManagementConanFile(ConanFile):
         self.tool_requires("cmake/[>=3.26 <4]")
 
     def requirements(self):
-        self.requires("restinio/0.6.15")
+        self.requires("restinio/[>=0.6.15 <0.7.0]")
         self.requires("json-schema-validator/2.1.0")
         self.requires("lyra/1.6.0")
-        self.requires("spdlog/1.10.0")
+        self.requires("spdlog/[>=1.10.0 <2]")
 
     def build(self):
         cmake = CMake(self)

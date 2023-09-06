@@ -45,9 +45,7 @@ Conan takes the "tool integration" approach that CMake offers and no longer supp
 This means you'll need to call `conan install` before you start working.
 
 ```sh
-# Prepare Conan
-conan lock create conanfile.py --version=0.0.0 -pr:b=default --lockfile=conan.lock --lockfile-out=build/conan.lock
-conan install conanfile.py --lockfile=build/conan.lock -if build
+conan install conanfile.py
 ```
 
 ### Configure CMake
@@ -66,8 +64,7 @@ If you would like to improve build times, [Ninja](https://ninja-build.org/manual
 Simply use the provided `ninja` profile when preparing Conan.
 
 ```sh
-conan lock create conanfile.py --version=0.0.0 -pr:h=ninja -pr:b=ninja --lockfile=conan.lock --lockfile-out=build/conan.lock
-conan install conanfile.py --lockfile=build/conan.lock -if build
+conan install conanfile.py --version=0.0.0 -pr:h=ninja -pr:b=ninja
 ```
 
 ### Setting up in Debug
@@ -75,8 +72,7 @@ conan install conanfile.py --lockfile=build/conan.lock -if build
 Generate a lockfile with the provided `debug` profile and run the `conan install` command.
 
 ```sh
-conan lock create conanfile.py --version=0.0.0 -pr:h=debug -pr:b=debug --lockfile=conan.lock --lockfile-out=build/conan.lock
-conan install conanfile.py --lockfile=build/conan.lock -if build
+conan install conanfile.py --version=0.0.0 -pr:h=debug -pr:b=debug
 ```
 
 Select the `debug` preset when configuration CMake
@@ -111,7 +107,8 @@ When configuring CMake using `cmake --preset release -B build` you can also add 
 To update the top level `conan.lock` run:
 
 ```sh
-conan lock create conanfile.py --version=1.0.0-dev.1 --base --update
+# conan lock create conanfile.py --version=0.0.0 --lockfile="" --lockfile-out=conan.lock --update
+conan install conanfile.py --version=0.0.0 --lockfile="" --lockfile-out=conan.lock --update
 ```
 
 You'll also need to refresh the Conan lockfile and generated information.
@@ -119,16 +116,10 @@ Simply re-run the [`conan install`](#conan-install) command.
 
 ## Usage
 
-### Lock Dependency Graph
-
-```sh
-conan lock create conanfile.py --version 1.0.0-dev.1+`git rev-parse --short HEAD` --lockfile=conan.lock --lockfile-out=build/conan.lock -pr:b=default
-```
-
 ### Package Back-end
 
 ```sh
-conan create conanfile.py 1.0.0-dev.1+`git rev-parse --short HEAD`@ --lockfile build/conan.lock
+conan create conanfile.py 1.0.0-dev.1+`git rev-parse --short HEAD`@ --lockfile=conan.lock
 ```
 
 ### Install Application
@@ -136,7 +127,7 @@ conan create conanfile.py 1.0.0-dev.1+`git rev-parse --short HEAD`@ --lockfile b
 > :notebook: This step requires the [packing](#package-back-end) to be completed first
 
 ```sh
-conan install user-management/1.0.0-dev.1+`git rev-parse --short HEAD`  --lockfile build/conan.lock
+conan install user-management/1.0.0-dev.1+`git rev-parse --short HEAD`  --lockfile=conan.lock
 ```
 
 ### Build Docker Image
